@@ -1,0 +1,19 @@
+Ruby/SDL - https://www.kmc.gr.jp/~ohai/rubysdl.en.html
+MinGW - http://mingw.org/
+
+
+
+$ mkdir lib
+$ cd lib/
+$ mv /d/Downloads/SDL2-devel-2.0.10-mingw.tar.gz .
+$ tar xvf SDL2-devel-2.0.10-mingw.tar.gz
+$ cd SDL2-2.0.10/
+$ make native
+
+
+test_game_00.c - ship moving around
+test_game_01.c - key up events handled
+test_game_02.c - scrolling background
+test_game_03.c - enemy moving back and forth
+test_game_04.c - shooting bullet
+test_game_05.c - collisions
