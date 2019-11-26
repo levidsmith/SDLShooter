@@ -8,6 +8,8 @@
 #define TRUE 1
 #define FALSE 0
 
+#define MAX_ENEMIES 15
+
 //SDL variables
 
 SDL_Window* window = NULL;
@@ -46,8 +48,7 @@ struct Enemy {
   float fChangeMovementCountdown;
   int isAlive;
 };
-struct Enemy *enemy;
-struct Enemy enemyList[5];
+struct Enemy enemyList[MAX_ENEMIES];
 
 struct Bullet {
   int x;
@@ -63,22 +64,19 @@ int iKeepLooping = TRUE;
 
 int iBackgroundOffset;
 
+int iLevelComplete = FALSE;
+
 //FUNCTION PROTOTYPES
 void handleInput(int, int);
 void shoot();
 void checkCollisions();
 void addEnemy(struct Enemy *, int, int);
+void checkLevelComplete();
 
 
 //FUNCTIONS
 
 void start() {
-/*
-  shipPosition.x = 320;
-  shipPosition.y = 240;
-  shipPosition.w = 64;
-  shipPosition.h = 64;
-*/
 
   ship.width = 64;
   ship.height = 64;
@@ -88,40 +86,89 @@ void start() {
   ship.y = 720 - 128;
   ship.isAlive = TRUE;
 
-  enemy = malloc(sizeof(struct Enemy));
-  enemy->x = 320;
-  enemy->y = 64;
-  enemy->width = 64;
-  enemy->height = 64;
-  enemy->isAlive = TRUE;
 
-  struct Enemy e1;
-  addEnemy(&e1, (SCREEN_WIDTH - 64) / 2, 64 + (80 * 0));
+  int x_offset = (SCREEN_WIDTH - (5 * 80)) / 2;
 
-  struct Enemy e2;
-  addEnemy(&e2, (SCREEN_WIDTH - 64) / 2, 64 + (80 * 1));
+  struct Enemy *e1;
+  e1 = malloc(sizeof(struct Enemy));
+  addEnemy(e1, (80 * 0) + x_offset, 64 + (80 * 0));
 
-  struct Enemy e3;
-  addEnemy(&e3, (SCREEN_WIDTH - 64) / 2, 64 + (80 * 2));
+  struct Enemy *e2;
+  e2 = malloc(sizeof(struct Enemy));
+  addEnemy(e2, (80 * 1) + x_offset, 64 + (80 * 0));
 
-  struct Enemy e4;
-  addEnemy(&e4, (SCREEN_WIDTH - 64) / 2, 64 + (80 * 3));
+  struct Enemy *e3;
+  e3 = malloc(sizeof(struct Enemy));
+  addEnemy(e3, (80 * 2) + x_offset, 64 + (80 * 0));
 
-  struct Enemy e5;
-  addEnemy(&e5, (SCREEN_WIDTH - 64) / 2, 64 + (80 * 4));
+  struct Enemy *e4;
+  e4 = malloc(sizeof(struct Enemy));
+  addEnemy(e4, (80 * 3) + x_offset, 64 + (80 * 0));
 
-  enemyList[0] = e1; 
-  enemyList[1] = e2; 
-  enemyList[2] = e3; 
-  enemyList[3] = e4; 
-  enemyList[4] = e5; 
+  struct Enemy *e5;
+  e5 = malloc(sizeof(struct Enemy));
+  addEnemy(e5, (80 * 4) + x_offset, 64 + (80 * 0));
+
+  struct Enemy *e6;
+  e6 = malloc(sizeof(struct Enemy));
+  addEnemy(e6, (80 * 0) + 40 + x_offset, 64 + (80 * 1));
+
+  struct Enemy *e7;
+  e7 = malloc(sizeof(struct Enemy));
+  addEnemy(e7, (80 * 1) + 40 + x_offset, 64 + (80 * 1));
+
+  struct Enemy *e8;
+  e8 = malloc(sizeof(struct Enemy));
+  addEnemy(e8, (80 * 2) + 40 + x_offset, 64 + (80 * 1));
+
+  struct Enemy *e9;
+  e9 = malloc(sizeof(struct Enemy));
+  addEnemy(e9, (80 * 3) + 40 + x_offset, 64 + (80 * 1));
 
 
-/*
-  struct Enemy *enemyTest = &enemyList[2];
-  enemyTest->x = 0;
-*/
-  
+  struct Enemy *e10;
+  e10 = malloc(sizeof(struct Enemy));
+  addEnemy(e10, (80 * 0) + 80 + x_offset, 64 + (80 * 2));
+
+  struct Enemy *e11;
+  e11 = malloc(sizeof(struct Enemy));
+  addEnemy(e11, (80 * 1) + 80 + x_offset, 64 + (80 * 2));
+
+  struct Enemy *e12;
+  e12 = malloc(sizeof(struct Enemy));
+  addEnemy(e12, (80 * 2) + 80 + x_offset, 64 + (80 * 2));
+
+
+  struct Enemy *e13;
+  e13 = malloc(sizeof(struct Enemy));
+  addEnemy(e13, (80 * 0) + 120 + x_offset, 64 + (80 * 3));
+
+  struct Enemy *e14;
+  e14 = malloc(sizeof(struct Enemy));
+  addEnemy(e14, (80 * 1) + 120 + x_offset, 64 + (80 * 3));
+
+
+  struct Enemy *e15;
+  e15 = malloc(sizeof(struct Enemy));
+  addEnemy(e15, (80 * 0) + 160 + x_offset, 64 + (80 * 4));
+
+
+  enemyList[0] = *e1; 
+  enemyList[1] = *e2; 
+  enemyList[2] = *e3; 
+  enemyList[3] = *e4; 
+  enemyList[4] = *e5; 
+  enemyList[5] = *e6; 
+  enemyList[6] = *e7; 
+  enemyList[7] = *e8; 
+  enemyList[8] = *e9; 
+  enemyList[9] = *e10; 
+  enemyList[10] = *e11; 
+  enemyList[11] = *e12; 
+  enemyList[12] = *e13; 
+  enemyList[13] = *e14; 
+  enemyList[14] = *e15; 
+
 
   bullet.isAlive = FALSE;
   bullet.width = 16;
@@ -153,29 +200,14 @@ void update() {
     }
   }
 
-  //update enemy
-  enemy->fLifetime += 0.2;
-  int x1 = (((int) enemy->fLifetime) % 640);
-  if (x1 > 320) {
-    x1 =  640 - x1; 
-  } 
-  enemy->x = x1;
-  enemy->y += enemy->vel_y;
-
   //Update the enemies
-  for (i = 0; i < 5; i++) {
+  for (i = 0; i < MAX_ENEMIES; i++) {
     enemyList[i].fLifetime += 0.2;
-/*
-    x1 = (((int) enemyList[i].fLifetime) % 640);
-    if (x1 > 320) {
-      x1 =  640 - x1; 
-    } 
-*/
 
     enemyList[i].fChangeMovementCountdown = enemyList[i].fChangeMovementCountdown - 1;
     if (enemyList[i].fChangeMovementCountdown <= 0) {
       enemyList[i].vel_x *= -1; 
-      enemyList[i].fChangeMovementCountdown = 60 * 10; 
+      enemyList[i].fChangeMovementCountdown = 60 * 20; 
     } 
     enemyList[i].x += enemyList[i].vel_x;
     enemyList[i].y += enemyList[i].vel_y;
@@ -203,30 +235,17 @@ void update() {
 }
 
 void checkCollisions() {
-/*
-  if ( (enemy->isAlive) && 
-       (bullet.x >= enemy->x && bullet.x < enemy->x + enemy->width) &&
-       (bullet.y >= enemy->y && bullet.y < enemy->y + enemy->height) ) {
-    bullet.isAlive = FALSE;
-    enemy->isAlive = FALSE;
-  } 
-
-  if ( (enemy->isAlive) &&  (ship.isAlive) &&
-       (ship.x >= enemy->x && ship.x < enemy->x + enemy->width) &&
-       (ship.y >= enemy->y && ship.y < enemy->y + enemy->height) ) {
-    ship.isAlive = FALSE;
-  } 
-*/
 
   int i;
 
   //Update the enemies
-  for (i = 0; i < 5; i++) {
+  for (i = 0; i < MAX_ENEMIES; i++) {
     if ( (enemyList[i].isAlive) && (bullet.isAlive) && 
          (bullet.x >= enemyList[i].x && bullet.x < enemyList[i].x + enemyList[i].width) &&
          (bullet.y >= enemyList[i].y && bullet.y < enemyList[i].y + enemyList[i].height) ) {
       bullet.isAlive = FALSE;
       enemyList[i].isAlive = FALSE;
+      checkLevelComplete();
     } 
 
     if ( (enemyList[i].isAlive) &&  (ship.isAlive) &&
@@ -235,11 +254,21 @@ void checkCollisions() {
       ship.isAlive = FALSE;
     } 
 
-
-
   }
 
+}
 
+void checkLevelComplete() {
+  int iComplete = TRUE;
+
+  int i;
+  for (i = 0; i < MAX_ENEMIES; i++) {
+    if  (enemyList[i].isAlive)  {
+      iComplete = FALSE;
+    }
+  }
+
+  iLevelComplete = iComplete;
 
 }
 
@@ -304,17 +333,8 @@ void draw() {
     SDL_BlitSurface(sprBullet, NULL, screenSurface, &pos);
   }
  
-//Draw the enemy
-/*
-  if (enemy->isAlive) {
-    pos.x = enemy->x;
-    pos.y = enemy->y;
-    SDL_BlitSurface(sprEnemy, NULL, screenSurface, &pos);
-  }
-*/
-
 //Draw the enemies
-  for (i = 0; i < 5; i++) {
+  for (i = 0; i < MAX_ENEMIES; i++) {
     if (enemyList[i].isAlive) {
       pos.x = enemyList[i].x;
       pos.y = enemyList[i].y;
@@ -322,6 +342,13 @@ void draw() {
     }
   }
 
+
+  if (iLevelComplete) {
+    pos.x = 0;
+    pos.y = 0;
+    SDL_BlitSurface(sprShip, NULL, screenSurface, &pos);
+
+  }
 
   SDL_UpdateWindowSurface( window);
 }
@@ -362,8 +389,6 @@ int main(int argc, char* args[]) {
   screenSurface = SDL_GetWindowSurface(window);
 
   
-//  SDL_Surface* sprHello;
-//  sprHello = SDL_LoadBMP("hello.bmp");
   sprShip = SDL_LoadBMP("ship.bmp");
   SDL_SetColorKey(sprShip, SDL_TRUE, SDL_MapRGB(sprShip->format, 255, 0, 255));
   sprBackground = SDL_LoadBMP("background.bmp");
@@ -374,7 +399,6 @@ int main(int argc, char* args[]) {
   sprBullet = SDL_LoadBMP("bullet.bmp");
   SDL_SetColorKey(sprBullet, SDL_TRUE, SDL_MapRGB(sprEnemy->format, 255, 0, 255));
 
-//  SDL_BlitSurface(sprHello, NULL, screenSurface, NULL);
   start();
 
   SDL_Event e;
@@ -393,7 +417,6 @@ int main(int argc, char* args[]) {
   }
 
 
-//  SDL_FreeSurface(sprHello);
   SDL_FreeSurface(sprShip);
   SDL_FreeSurface(sprEnemy);
   SDL_FreeSurface(sprBackground);
