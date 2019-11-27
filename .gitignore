@@ -1,1 +1,5 @@
 test_game.exe
+old/*
+build/*
+*.exe
+*.tar.gz

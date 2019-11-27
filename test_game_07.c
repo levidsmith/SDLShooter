@@ -1,10 +1,6 @@
-//2019 Levi D. Smith (levidsmith.com)
+#include <SDL.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-
-#include <SDL.h>
-#include <SDL_ttf.h>
 
 #define SCREEN_WIDTH 1280 
 #define SCREEN_HEIGHT 720 
@@ -23,8 +19,6 @@ SDL_Surface* sprEnemy;
 SDL_Surface* sprBackground;
 SDL_Surface* sprBullet;
 
-TTF_Font *fontDefault;
-TTF_Font *fontLarge;
 
 //VARIABLES
 SDL_Rect shipPosition;
@@ -65,11 +59,12 @@ struct Bullet {
 };
 struct Bullet bullet;
 
-int iKeepLooping = TRUE;
-int iBackgroundOffset;
-int iLevelComplete = FALSE;
 
-int iScore;
+int iKeepLooping = TRUE;
+
+int iBackgroundOffset;
+
+int iLevelComplete = FALSE;
 
 //FUNCTION PROTOTYPES
 void handleInput(int, int);
@@ -178,8 +173,6 @@ void start() {
   bullet.isAlive = FALSE;
   bullet.width = 16;
   bullet.height = 16;
-
-  iScore = 0;
 }
 
 void update() {
@@ -252,7 +245,6 @@ void checkCollisions() {
          (bullet.y >= enemyList[i].y && bullet.y < enemyList[i].y + enemyList[i].height) ) {
       bullet.isAlive = FALSE;
       enemyList[i].isAlive = FALSE;
-      iScore += 100;
       checkLevelComplete();
     } 
 
@@ -351,51 +343,18 @@ void draw() {
   }
 
 
-/*
   if (iLevelComplete) {
     pos.x = 0;
     pos.y = 0;
     SDL_BlitSurface(sprShip, NULL, screenSurface, &pos);
 
   }
-*/
-
-  SDL_Color colorText;
-  colorText.r = 255;
-  colorText.g = 255;
-  colorText.b = 0;
-
-  char strScore[64];
-  sprintf(strScore, "Score: %d", iScore);
-  SDL_Surface *sprText = TTF_RenderText_Solid(fontDefault, strScore, colorText); 
-
-  pos.x = 100;
-  pos.y = 100;
-  SDL_BlitSurface(sprText, NULL, screenSurface, &pos);
-  SDL_FreeSurface(sprText); 
-
-
-  if (iLevelComplete) {
-    colorText.r = 0;
-    colorText.g = 0;
-    colorText.b = 255;
-    pos.x = 320;
-    pos.y = 300;
-    sprText = TTF_RenderText_Solid(fontLarge, "LEVEL COMPLETE", colorText); 
-    SDL_BlitSurface(sprText, NULL, screenSurface, &pos);
-    SDL_FreeSurface(sprText); 
-  }
-
-
-
 
   SDL_UpdateWindowSurface( window);
 }
 
 void shoot() {
   if (ship.isAlive && !bullet.isAlive) {
-
-
     bullet.isAlive = TRUE;
     bullet.x = ship.x + ((ship.width - bullet.width) / 2);
     bullet.y = ship.y;
@@ -440,15 +399,6 @@ int main(int argc, char* args[]) {
   sprBullet = SDL_LoadBMP("bullet.bmp");
   SDL_SetColorKey(sprBullet, SDL_TRUE, SDL_MapRGB(sprEnemy->format, 255, 0, 255));
 
-//handle loading fonts
-
-  if (TTF_Init() == -1) {
-    exit(1);
-  }
-  fontDefault = TTF_OpenFont("SudburyBasin-Regular.ttf", 20);
-  fontLarge = TTF_OpenFont("SudburyBasin-Regular.ttf", 64);
-  
-
   start();
 
   SDL_Event e;
@@ -466,8 +416,6 @@ int main(int argc, char* args[]) {
     SDL_Delay(1);
   }
 
-
-  TTF_Quit();
 
   SDL_FreeSurface(sprShip);
   SDL_FreeSurface(sprEnemy);
