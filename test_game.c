@@ -5,6 +5,7 @@
 
 #include <SDL.h>
 #include <SDL_ttf.h>
+#include <SDL_mixer.h>
 
 #define SCREEN_WIDTH 1280 
 #define SCREEN_HEIGHT 720 
@@ -25,6 +26,9 @@ SDL_Surface* sprBullet;
 
 TTF_Font *fontDefault;
 TTF_Font *fontLarge;
+
+Mix_Chunk *soundShoot;
+Mix_Chunk *soundEnemyDead;
 
 //VARIABLES
 SDL_Rect shipPosition;
@@ -254,6 +258,7 @@ void checkCollisions() {
       enemyList[i].isAlive = FALSE;
       iScore += 100;
       checkLevelComplete();
+      Mix_PlayChannel(-1, soundEnemyDead, 0);
     } 
 
     if ( (enemyList[i].isAlive) &&  (ship.isAlive) &&
@@ -399,6 +404,7 @@ void shoot() {
     bullet.isAlive = TRUE;
     bullet.x = ship.x + ((ship.width - bullet.width) / 2);
     bullet.y = ship.y;
+    Mix_PlayChannel(-1, soundShoot, 0);
   }
 }
 
@@ -448,6 +454,10 @@ int main(int argc, char* args[]) {
   fontDefault = TTF_OpenFont("SudburyBasin-Regular.ttf", 20);
   fontLarge = TTF_OpenFont("SudburyBasin-Regular.ttf", 64);
   
+//handle loading sounds
+  Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096);
+  soundShoot = Mix_LoadWAV("shoot.wav");
+  soundEnemyDead = Mix_LoadWAV("enemy_dead.wav");
 
   start();
 
@@ -468,6 +478,8 @@ int main(int argc, char* args[]) {
 
 
   TTF_Quit();
+
+  Mix_CloseAudio();
 
   SDL_FreeSurface(sprShip);
   SDL_FreeSurface(sprEnemy);
