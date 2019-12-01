@@ -1,3 +1,4 @@
+//2019 Levi D. Smith - levidsmith.com
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -66,6 +67,7 @@ void print_list(struct Node *head) {
 //  printf("end print_list\n");
 }
 
+/*
 int main(void) {
   int *p1;
   int *p2;
@@ -133,3 +135,4 @@ int main(void) {
 
   return 0;
 }
+*/
