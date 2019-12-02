@@ -44,7 +44,6 @@ void update_ship(struct Ship *ship) {
       ship->y = SCREEN_HEIGHT - ship->height;
     }
   }
-
 	
 }
 

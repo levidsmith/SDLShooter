@@ -10,7 +10,9 @@
 #include "enemy.h"
 #include "ship.h"
 #include "level_reader.h"
+#include "bullet.h"
 #include "globals.h"
+#include "linked_list.h"
 
 
 #define MAX_ENEMIES 15
@@ -54,18 +56,9 @@ int iFPS;
 
 
 struct Ship *ship;
-
-
 struct Enemy enemyList[MAX_ENEMIES];
-
-struct Bullet {
-  int x;
-  int y;
-  int width;
-  int height;
-  int isAlive;
-};
-struct Bullet bullet;
+//struct Bullet bullet;
+struct Node *listBullet;
 
 struct EnemyBullet {
   float x;
@@ -90,31 +83,42 @@ void checkCollisions();
 void checkLevelComplete();
 void updateScoreText();
 
+extern struct Node *add_node(struct Node **head, void *value);
+extern int count_list(struct Node *head);
+extern void remove_node(struct Node **head, struct Node *node);
+
 
 //FUNCTIONS
 
 void start() {
+  printf("start\n");
 	
   ship = malloc(sizeof(struct Ship));
   init_ship(ship);
+  
+  printf("ship values x: %d y: %d width: %d height %d\n", ship->x, ship->y, ship->width, ship->height);
+  printf("fontDefault: %x\n", fontDefault);
 
 
-  int iSpacing = 128;
-  int x_offset = (SCREEN_WIDTH - (5 * iSpacing)) / 2;
+//  int iSpacing = 128;
+//  int x_offset = (SCREEN_WIDTH - (5 * iSpacing)) / 2;
 
-  printf("call read_level");
-  read_level("level_00.txt");
+  printf("call read_level\n");
+  read_level("level_00.txt\n");
+
+  printf("finished read_level\n");
 
 
-  bullet.isAlive = FALSE;
-  bullet.width = 16;
-  bullet.height = 16;
+  printf("fontDefault: %x", fontDefault);
 
   iScore = 0;
   updateScoreText();
 
+  printf("finished updateScoreText\n");
+
   Mix_VolumeMusic(MIX_MAX_VOLUME * 0.2);
   Mix_PlayMusic(musicLevel, -1);
+  printf("finished start\n");
   
 }
 
@@ -129,14 +133,29 @@ void update() {
   }
 
 
-  //update bullet
-  if (bullet.isAlive) {
-    bullet.y -= (5 * UNIT_SIZE * DELTA_TIME);
-    if (bullet.y < 0) {
-      bullet.isAlive = FALSE;
-    }
+//update the bullets
+  struct Node *current = listBullet;
+  struct Node *deleteNode = NULL;
+  struct Bullet *bullet;
+  while(current != NULL) {
+//	  printf("looping over bullet\n");
+    bullet = (struct Bullet *) current->data;
+	update_bullet(bullet);
+	if (!bullet->isAlive) {
+		//remove_node(&listBullet, current);
+		deleteNode = current;
+	}
+    current = current->next;
   }
-  
+  if (deleteNode != NULL) {
+	remove_node(&listBullet, deleteNode); //bad because we have to iterate over the list twice, and can only delete
+                                        //one node per loop
+										//however, if we delete the node in the update loop, then it will break
+										//the loop since the current node will be free'd
+  }
+  printf("Total bullets: %d\n", count_list(listBullet));
+
+
 
   //update background
   iBackgroundOffset += 5 * UNIT_SIZE * DELTA_TIME;
@@ -144,26 +163,40 @@ void update() {
     iBackgroundOffset -= 256;
   }
 
-
   checkCollisions();
 }
 
 void checkCollisions() {
-
   int i;
+  struct Bullet *bullet;
+  
+  bullet = NULL;
 
   //Update the enemies
   for (i = 0; i < MAX_ENEMIES; i++) {
-    if ( (enemyList[i].isAlive) && (bullet.isAlive) && 
-         ((bullet.x + bullet.width / 2) >= enemyList[i].x && (bullet.x + bullet.width / 2) < enemyList[i].x + enemyList[i].width) &&
-         ((bullet.y + bullet.height / 2) >= enemyList[i].y && (bullet.y + bullet.height / 2) < enemyList[i].y + enemyList[i].height) ) {
-      bullet.isAlive = FALSE;
+	    struct Node *current = listBullet;
+		struct Bullet *bullet;
+		while(current != NULL) {
+			bullet = (struct Bullet *) current->data;
+
+    if ( (enemyList[i].isAlive) && (bullet != NULL) && (bullet->isAlive) && 
+         ((bullet->x + bullet->width / 2) >= enemyList[i].x && (bullet->x + bullet->width / 2) < enemyList[i].x + enemyList[i].width) &&
+         ((bullet->y + bullet->height / 2) >= enemyList[i].y && (bullet->y + bullet->height / 2) < enemyList[i].y + enemyList[i].height) ) {
+      bullet->isAlive = FALSE;
       enemyList[i].isAlive = FALSE;
       iScore += 100;
 	  updateScoreText();
       checkLevelComplete();
       Mix_PlayChannel(-1, soundEnemyDead, 0);
     } 
+			
+			
+			current = current->next;
+		}
+
+	  
+	  
+	  
 
     if ( (enemyList[i].isAlive) &&  (ship->isAlive) &&
          (ship->x >= enemyList[i].x && ship->x < enemyList[i].x + enemyList[i].width) &&
@@ -228,93 +261,6 @@ void handleInput(int iType, int iKey) {
 
 }
 
-/*
-void draw() {
-	
-	
-//Draw the background
-  int i, j;
-  for (i = -1; i < (SCREEN_HEIGHT / 256) + 1; i++) {
-    for (j = 0; j < SCREEN_WIDTH / 256; j++) {
-      pos.x = j * 256;
-      pos.y = i * 256 + iBackgroundOffset;
-      SDL_BlitSurface(sprBackground, NULL, screenSurface, &pos);
-    }
-  }
-
-//Draw the ship
-  draw_ship(ship);
-
-//Draw the bullet
-  if (bullet.isAlive) {
-    pos.x = bullet.x;
-    pos.y = bullet.y;
-    SDL_BlitSurface(sprBullet, NULL, screenSurface, &pos);
-  }
- 
-//Draw the enemies
-  for (i = 0; i < MAX_ENEMIES; i++) {
-    draw_enemy(&enemyList[i]);
-  }
-
-
-//Draw the score text
-  SDL_Color colorText;
-  colorText.r = 255;
-  colorText.g = 255;
-  colorText.b = 0;
-
-  char strScore[64];
-  sprintf(strScore, "Score: %d", iScore);
-  SDL_Surface *sprText = TTF_RenderText_Solid(fontDefault, strScore, colorText); 
-
-  pos.x = 100;
-  pos.y = 100;
-  SDL_BlitSurface(sprText, NULL, screenSurface, &pos);
-  SDL_FreeSurface(sprText); 
-
-//draw FPS text
-    colorText.r = 255;
-    colorText.g = 255;
-    colorText.b = 255;
-    pos.x = 1000;
-    pos.y = 32;
-    sprText = TTF_RenderText_Solid(fontDefault, strFPS, colorText); 
-    SDL_BlitSurface(sprText, NULL, screenSurface, &pos);
-    SDL_FreeSurface(sprText); 
-
-
-//Draw the level complete text
-  if (iLevelComplete) {
-    colorText.r = 0;
-    colorText.g = 0;
-    colorText.b = 255;
-    pos.x = 320;
-    pos.y = 300;
-    sprText = TTF_RenderText_Solid(fontLarge, "LEVEL COMPLETE", colorText); 
-    SDL_BlitSurface(sprText, NULL, screenSurface, &pos);
-    SDL_FreeSurface(sprText); 
-  }
-
-//Draw Game Over Text
-  if (iGameOver) {
-    colorText.r = 0;
-    colorText.g = 0;
-    colorText.b = 255;
-    pos.x = 320;
-    pos.y = 300;
-    sprText = TTF_RenderText_Solid(fontLarge, "GAME OVER", colorText); 
-    SDL_BlitSurface(sprText, NULL, screenSurface, &pos);
-    SDL_FreeSurface(sprText); 
-  }
-
-
-
-  SDL_UpdateWindowSurface( window);
-}
-
-*/
-
 void draw() {
   //Draw the background
   int i, j;
@@ -334,14 +280,15 @@ void draw() {
   //draw the ship
   draw_ship(ship);
 
-//Draw the bullet
-  if (bullet.isAlive) {
-    pos.x = bullet.x;
-    pos.y = bullet.y;
-	pos.w = bullet.width;
-	pos.h = bullet.height;
-      SDL_RenderCopy(renderer, imgBullet, NULL, &pos);
-//    SDL_BlitSurface(sprBullet, NULL, screenSurface, &pos);
+//Draw the bullets
+  struct Node *current = listBullet;
+  struct Bullet *bullet;
+  while(current != NULL) {
+//    printf("  value: %d, address: %x\n", *((int *) current->data), current);
+    bullet = (struct Bullet *) current->data;
+//	printf("draw bullet at x: %d y: %d\n", bullet->x, bullet->y);
+	draw_bullet(bullet);
+    current = current->next;
   }
  
 //Draw the enemies
@@ -379,17 +326,29 @@ void draw() {
 }
 
 void updateScoreText() {
-  SDL_Color colorText;
-  colorText.r = 255;
-  colorText.g = 255;
-  colorText.b = 0;
+	printf("updateScoreText called\n");
+  SDL_Color colorText = {255, 255, 0, 0};
+//  colorText.r = 255;
+//  colorText.g = 255;
+//  colorText.b = 0;
 
   char strScore[64];
   sprintf(strScore, "Score: %d", iScore);
-  SDL_Surface *sprText = TTF_RenderText_Solid(fontDefault, strScore, colorText);
+
+  printf("before sprText\n");
+  printf("fontDefault: %x", fontDefault);
+  
+  SDL_Surface *sprText;
+
+  sprText = TTF_RenderText_Solid(fontDefault, strScore, colorText);
+//  sprText = TTF_RenderText_Solid(fontDefault, strScore, colorText);
+//  sprText = TTF_RenderText_Solid(fontDefault, "hello", colorText);
+  
+  printf("TTF_GetError: %s\n", TTF_GetError());
+
+  
   imgScoreText = SDL_CreateTextureFromSurface(renderer, sprText);
   SDL_FreeSurface(sprText); 
-
 
   colorText.r = 0;
   colorText.g = 0;
@@ -402,18 +361,23 @@ void updateScoreText() {
   sprText = TTF_RenderText_Solid(fontLarge, "GAME OVER", colorText);
   imgGameOverText = SDL_CreateTextureFromSurface(renderer, sprText);
   SDL_FreeSurface(sprText); 
-
 	
 }
 
 
 void shoot() {
-  if (ship->isAlive && !bullet.isAlive) {
+  struct Bullet *bullet;
+	
+  if (ship != NULL && ship->isAlive) {
+	bullet = malloc(sizeof(struct Bullet));
 
+	printf("ship at x: %d y: %d\n", ship->x, ship->y);
 
-    bullet.isAlive = TRUE;
-    bullet.x = ship->x + ((ship->width - bullet.width) / 2);
-    bullet.y = ship->y;
+	init_bullet(bullet, ship->x + ship->width / 2, ship->y);
+	printf("added bullet at x: %d y: %d\n", bullet->x, bullet->y);
+	
+	add_node(&listBullet, bullet);
+
     Mix_PlayChannel(-1, soundShoot, 0);
   }
 }
@@ -495,6 +459,15 @@ int main(int argc, char* args[]) {
   fontDefault = TTF_OpenFont("SudburyBasin-Regular.ttf", 20);
   fontLarge = TTF_OpenFont("SudburyBasin-Regular.ttf", 64);
   
+  if (!fontDefault || !fontLarge) {
+	  printf("Errors loading font\n");
+  }
+
+//  SDL_Color colorText = {255, 0, 0, 0};
+//  SDL_Surface *sprText = TTF_RenderText_Solid(fontDefault, "hello", colorText);
+updateScoreText();
+
+  
 //handle loading sounds
   Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096);
   soundShoot = Mix_LoadWAV("assets/audio/shoot.wav");
@@ -502,47 +475,54 @@ int main(int argc, char* args[]) {
 
   musicLevel = Mix_LoadMUS("assets/audio/sdl-shooter-level.wav");
 
+
+
   start();
 
   iTime = SDL_GetTicks();
   
-  SDL_Event e;
-  while (iKeepLooping == TRUE) {
+ // while (iKeepLooping == TRUE) {
+	while(1) {
+      SDL_Event theEvent;
+
+//	printf("update\n");
     update();
 
+//	printf("draw\n");
     draw();
 	SDL_RenderPresent(renderer);
 
 //    while (SDL_PollEvent(&e) != 0) {
-    while (SDL_PollEvent(&e)) {
+    //while (SDL_PollEvent(&e)) {
+	if (SDL_PollEvent(&theEvent)) {
 			printf("SDL_PollEvent\n");
 			
 	//SDL_PollEvent(&e);
 
-      if (e.type  == SDL_QUIT) {
+      if (theEvent.type  == SDL_QUIT) {
 		printf("Close button pressed\n");
-        iKeepLooping = FALSE;
+//        iKeepLooping = FALSE;
 		printf("Stop looping\n");
 		break;
 		printf("Shouldn't get here\n");
-      } else if (e.type == SDL_KEYDOWN || e.type == SDL_KEYUP) {
-        handleInput(e.type, e.key.keysym.sym);  
+      } else if (theEvent.type == SDL_KEYDOWN || theEvent.type == SDL_KEYUP) {
+        handleInput(theEvent.type, theEvent.key.keysym.sym);  
       }
 
     }
 	
 
     //Set target frame rate
-//    iDelay = TICK_INTERVAL - (SDL_GetTicks() - iTime);
+	/*
     iDelay = (1000 * DELTA_TIME) - (SDL_GetTicks() - iTime);
 	if (iDelay < 0) {
 		iDelay = 0;
 	}
     SDL_Delay(iDelay);
 	iFPS = 1000 / (SDL_GetTicks() - iTime);
-//	sprintf(strFPS, "FPS: %d", iFPS);
 	iTime = SDL_GetTicks();
-//	printf("iTime: %d iDelay: %d FPS: %d\n", iTime, iDelay, iFPS);
+	*/
+	SDL_Delay(16);  //just set this to a constant for now.  seems to resolve freezes
   }
   
   printf("Stopped looping\n");

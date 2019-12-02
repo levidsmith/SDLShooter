@@ -1,11 +1,8 @@
 //2019 Levi D. Smith - levidsmith.com
 #include <stdio.h>
 #include <stdlib.h>
+#include "linked_list.h"
 
-struct Node {
-  void *data;
-  struct Node *next;
-};
 
 struct Node *add_node(struct Node **head, void *value) {
 //  printf("Address of list head is %x\n", head);
@@ -33,9 +30,9 @@ void remove_node(struct Node **head, struct Node *node) {
   previous = NULL;
 
   while(current != NULL) {
-    printf("  Checking value %d, address %x\n", *((int *) current->data), current);
+//    printf("  Checking value %d, address %x\n", *((int *) current->data), current);
     if (current == node) {
-      printf("  Found node to remove: %d, address %x\n", *((int *) current->data), current);
+//      printf("  Found node to remove: %d, address %x\n", *((int *) current->data), current);
 
       if (previous == NULL) {
         *head = current->next;
@@ -66,6 +63,21 @@ void print_list(struct Node *head) {
   }
 //  printf("end print_list\n");
 }
+
+int count_list(struct Node *head) {
+	int iCount;
+	struct Node *current = head;
+
+	iCount = 0;
+	while(current != NULL) {
+		iCount++;
+		current = current->next;
+	}
+	
+	return iCount;
+
+}
+
 
 /*
 int main(void) {

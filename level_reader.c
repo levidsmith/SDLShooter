@@ -6,6 +6,7 @@
 #include "enemy.h"
 
 extern struct Enemy enemyList[15];
+//extern struct Enemy *listEnemy;
 
 void read_level(char *strFile) {
   int x, y;
@@ -20,7 +21,7 @@ void read_level(char *strFile) {
   x = 0;
   y = 64;
   while (fgets(strLine, iCols, f) != NULL) {
-    printf("strLine: %s\n", strLine);
+    printf("strLine: %s", strLine);
     for (i = 0; i < iCols; i++) {
       if (strLine[i] == '0') {
 
