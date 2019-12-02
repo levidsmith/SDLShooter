@@ -2,4 +2,5 @@ test_game.exe
 old/*
 build/*
 *.exe
+*.o
 *.tar.gz

@@ -29,6 +29,7 @@ SDL_Texture *imgBackground;
 SDL_Texture *imgBullet;
 SDL_Texture *imgScoreText;
 SDL_Texture *imgLevelCompleteText;
+SDL_Texture *imgGameOverText;
 
 
 TTF_Font *fontDefault;
@@ -36,6 +37,8 @@ TTF_Font *fontLarge;
 
 Mix_Chunk *soundShoot;
 Mix_Chunk *soundEnemyDead;
+
+Mix_Music *musicLevel; 
 
 //VARIABLES
 //SDL_Rect shipPosition;
@@ -109,6 +112,9 @@ void start() {
 
   iScore = 0;
   updateScoreText();
+
+  Mix_VolumeMusic(MIX_MAX_VOLUME * 0.2);
+  Mix_PlayMusic(musicLevel, -1);
   
 }
 
@@ -201,6 +207,8 @@ void handleInput(int iType, int iKey) {
       shoot(); 
     } else if (iKey == SDLK_q || iKey == SDLK_ESCAPE) {
       iKeepLooping = FALSE;
+    } else if (iKey == SDLK_m || iKey == SDLK_ESCAPE) {
+      Mix_VolumeMusic(0);
     }  
   }
 
@@ -357,6 +365,15 @@ void draw() {
     SDL_RenderCopy(renderer, imgLevelCompleteText, NULL, &pos);
   }
 
+//Draw game over text
+  if (iGameOver) {
+    pos.x = 320;
+    pos.y = 300;
+  
+    SDL_QueryTexture(imgGameOverText, NULL, NULL, &(pos.w), &(pos.h)); 
+    SDL_RenderCopy(renderer, imgGameOverText, NULL, &pos);
+  }
+
 	
 
 }
@@ -380,6 +397,10 @@ void updateScoreText() {
 
   sprText = TTF_RenderText_Solid(fontLarge, "LEVEL COMPLETE", colorText);
   imgLevelCompleteText = SDL_CreateTextureFromSurface(renderer, sprText);
+  SDL_FreeSurface(sprText); 
+
+  sprText = TTF_RenderText_Solid(fontLarge, "GAME OVER", colorText);
+  imgGameOverText = SDL_CreateTextureFromSurface(renderer, sprText);
   SDL_FreeSurface(sprText); 
 
 	
@@ -440,22 +461,22 @@ int main(int argc, char* args[]) {
   SDL_Surface* sprBullet;
 
   
-  sprShip = SDL_LoadBMP("ship.bmp");
+  sprShip = SDL_LoadBMP("assets/images/ship.bmp");
   SDL_SetColorKey(sprShip, SDL_TRUE, SDL_MapRGB(sprShip->format, 255, 0, 255));
   imgShip = SDL_CreateTextureFromSurface(renderer, sprShip);
   
-  sprBackground = SDL_LoadBMP("background.bmp");
+  sprBackground = SDL_LoadBMP("assets/images/background.bmp");
   imgBackground = SDL_CreateTextureFromSurface(renderer, sprBackground);
 
-  sprEnemy_00 = SDL_LoadBMP("enemy.bmp");
+  sprEnemy_00 = SDL_LoadBMP("assets/images/enemy.bmp");
   SDL_SetColorKey(sprEnemy_00, SDL_TRUE, SDL_MapRGB(sprEnemy_00->format, 255, 0, 255));
   imgEnemy_00 = SDL_CreateTextureFromSurface(renderer, sprEnemy_00);
 
-  sprEnemy_01 = SDL_LoadBMP("enemy_01_a.bmp");
+  sprEnemy_01 = SDL_LoadBMP("assets/images/enemy_01_a.bmp");
   SDL_SetColorKey(sprEnemy_01, SDL_TRUE, SDL_MapRGB(sprEnemy_01->format, 255, 0, 255));
   imgEnemy_01 = SDL_CreateTextureFromSurface(renderer, sprEnemy_01);
 
-  sprBullet = SDL_LoadBMP("bullet.bmp");
+  sprBullet = SDL_LoadBMP("assets/images/bullet.bmp");
   SDL_SetColorKey(sprBullet, SDL_TRUE, SDL_MapRGB(sprBullet->format, 255, 0, 255));
   imgBullet = SDL_CreateTextureFromSurface(renderer, sprBullet);
 
@@ -476,8 +497,10 @@ int main(int argc, char* args[]) {
   
 //handle loading sounds
   Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096);
-  soundShoot = Mix_LoadWAV("shoot.wav");
-  soundEnemyDead = Mix_LoadWAV("enemy_dead.wav");
+  soundShoot = Mix_LoadWAV("assets/audio/shoot.wav");
+  soundEnemyDead = Mix_LoadWAV("assets/audio/enemy_dead.wav");
+
+  musicLevel = Mix_LoadMUS("assets/audio/sdl-shooter-level.wav");
 
   start();
 
@@ -525,6 +548,8 @@ int main(int argc, char* args[]) {
   printf("Stopped looping\n");
 
   TTF_Quit();
+
+  Mix_FreeMusic(musicLevel);
 
   Mix_CloseAudio();
 
