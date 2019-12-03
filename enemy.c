@@ -1,15 +1,14 @@
 //2019 Levi D. Smith - levidsmith.com
 #include <SDL.h>
+#include <stdio.h>
 #include "enemy.h"
 #include "globals.h"
 
-//extern SDL_Surface *screenSurface;
-//extern SDL_Surface *sprEnemy_00;
-//extern SDL_Surface *sprEnemy_01;
-
 extern SDL_Renderer *renderer;
-extern SDL_Texture *imgEnemy_00;
-extern SDL_Texture *imgEnemy_01;
+extern SDL_Texture *imgEnemyAlpha_00;
+extern SDL_Texture *imgEnemyAlpha_01;
+extern SDL_Texture *imgEnemyBravo_00;
+extern SDL_Texture *imgEnemyBravo_01;
 
 
 
@@ -23,11 +22,12 @@ void init_enemy(struct Enemy *enemy, int init_x, int init_y) {
   enemy->fChangeMovementCountdown = 1;
   enemy->isAlive = TRUE;
   enemy->iType = 0;
+  enemy->fLifetime = 0;
 
 }
 
 void update_enemy(struct Enemy *enemy) {
-    enemy->fLifetime += 0.2;
+    enemy->fLifetime += DELTA_TIME;
 
     switch(enemy->iType) {
       case 0:
@@ -56,6 +56,10 @@ void update_enemy(struct Enemy *enemy) {
 
 void draw_enemy(struct Enemy *enemy) {
     SDL_Rect pos;
+	
+	
+	int iSpriteIndex = ((int) (enemy->fLifetime * 2)) % 2; //change sprite every 0.5 seconds
+	
 
     if (enemy->isAlive) {
       pos.x = enemy->x;
@@ -65,13 +69,21 @@ void draw_enemy(struct Enemy *enemy) {
 
       switch(enemy->iType) {
         case 0:
-//          SDL_BlitSurface(sprEnemy_00, NULL, screenSurface, &pos);
-	      SDL_RenderCopy(renderer, imgEnemy_00, NULL, &pos);
+          if (iSpriteIndex == 0) {
+	        SDL_RenderCopy(renderer, imgEnemyAlpha_00, NULL, &pos);
+		  } else if (iSpriteIndex == 1) {
+	        SDL_RenderCopy(renderer, imgEnemyAlpha_01, NULL, &pos);
+		  }
 
           break;
         case 1:
-//          SDL_BlitSurface(sprEnemy_01, NULL, screenSurface, &pos);
-	      SDL_RenderCopy(renderer, imgEnemy_01, NULL, &pos);
+		  
+          if (iSpriteIndex == 0) {
+	        SDL_RenderCopy(renderer, imgEnemyBravo_00, NULL, &pos);
+		  } else if (iSpriteIndex == 1) {
+	        SDL_RenderCopy(renderer, imgEnemyBravo_01, NULL, &pos);
+		  }
+
           break;
       }
     }

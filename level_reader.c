@@ -5,8 +5,10 @@
 #include "level_reader.h"
 #include "enemy.h"
 
-extern struct Enemy enemyList[15];
-//extern struct Enemy *listEnemy;
+extern struct Node *listEnemy;
+
+extern struct Node *add_node(struct Node **head, void *value);
+
 
 void read_level(char *strFile) {
   int x, y;
@@ -31,7 +33,7 @@ void read_level(char *strFile) {
 
         e1->iType = 0;
 
-        enemyList[iEnemyCount] = *e1;
+        add_node(&listEnemy, e1);
         iEnemyCount++;
       } else if (strLine[i] == '1') {
 
@@ -41,7 +43,8 @@ void read_level(char *strFile) {
 
         e1->iType = 1;
 
-        enemyList[iEnemyCount] = *e1;
+        add_node(&listEnemy, e1);
+
         iEnemyCount++;
 
 

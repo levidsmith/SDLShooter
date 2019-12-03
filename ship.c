@@ -3,9 +3,6 @@
 #include "ship.h"
 #include "globals.h"
 
-//extern SDL_Surface *screenSurface;
-//extern SDL_Surface *sprShip;
-
 extern SDL_Renderer *renderer;
 extern SDL_Texture *imgShip;
 
@@ -18,6 +15,7 @@ void init_ship(struct Ship *ship) {
   ship->x = (SCREEN_WIDTH - ship->width) / 2;
   ship->y = 720 - 128;
   ship->isAlive = TRUE;
+  ship->fShootDelay = 0;
 
 }
 
@@ -44,6 +42,13 @@ void update_ship(struct Ship *ship) {
       ship->y = SCREEN_HEIGHT - ship->height;
     }
   }
+  
+  if (ship->fShootDelay > 0) {
+	  ship->fShootDelay -= DELTA_TIME;
+	  if (ship->fShootDelay < 0) {
+		  ship->fShootDelay = 0;
+	  }
+  }
 	
 }
 
@@ -53,11 +58,14 @@ void draw_ship(struct Ship *ship) {
   if (ship->isAlive) {
 	pos.x = ship->x;
 	pos.y = ship->y;
-//    SDL_BlitSurface(sprShip, NULL, screenSurface, &pos);
 	pos.w = ship->width;
 	pos.h = ship->height;
     SDL_RenderCopy(renderer, imgShip, NULL, &pos);
   }
 
 	
+}
+
+void shoot_ship(struct Ship *ship) {
+	ship->fShootDelay = 0.5;
 }

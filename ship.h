@@ -7,8 +7,10 @@ struct Ship {
   int width;
   int height;
   int isAlive;
+  float fShootDelay;
 };
 
 void init_ship(struct Ship *);
 void update_ship(struct Ship *);
 void draw_ship(struct Ship *);
+void shoot_ship(struct Ship *);
