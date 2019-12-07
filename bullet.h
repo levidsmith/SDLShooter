@@ -2,9 +2,12 @@
 struct Bullet {
   int x;
   int y;
+  float vel_y;
   int width;
   int height;
   int isAlive;
+  int iHitsPlayer;
+  int iHitsEnemy;
 };
 
 void init_bullet(struct Bullet *, int, int);

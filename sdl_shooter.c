@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #include <SDL.h>
 #include <SDL_ttf.h>
@@ -31,6 +32,7 @@ SDL_Texture *imgEnemyBravo_00;
 SDL_Texture *imgEnemyBravo_01;
 SDL_Texture *imgBackground;
 SDL_Texture *imgBullet;
+SDL_Texture *imgBulletEnemy;
 SDL_Texture *imgScoreText;
 SDL_Texture *imgLevelCompleteText;
 SDL_Texture *imgGameOverText;
@@ -40,7 +42,9 @@ TTF_Font *fontDefault;
 TTF_Font *fontLarge;
 
 Mix_Chunk *soundShoot;
+Mix_Chunk *soundShipDead;
 Mix_Chunk *soundEnemyDead;
+Mix_Chunk *soundEnemyShoot;
 
 Mix_Music *musicLevel; 
 
@@ -62,13 +66,6 @@ struct Ship *ship;
 struct Node *listBullet;
 struct Node *listEnemy;
 
-struct EnemyBullet {
-  float x;
-  float y;
-  int width;
-  int height;
-  int isAlive;  
-};
 
 int iKeepLooping = TRUE;
 int iBackgroundOffset;
@@ -200,11 +197,64 @@ void checkCollisions() {
   struct Bullet *bullet;
   
   bullet = NULL;
+  
+  //some room for improvement here, since we're looping over the enemy list twice
+  
+  //Check bullet collision
+  currentBullet = listBullet;
+  while (currentBullet != NULL) {
+	  bullet = (struct Bullet *) currentBullet->data;
 
-  //Update the enemies
+		//bullet collision with enemy
+			currentEnemy = listEnemy;
+			while (currentEnemy != NULL) {
+				enemy = (struct Enemy *) currentEnemy->data;
+
+
+
+		  if ( (bullet->iHitsEnemy) &&
+			(enemy->isAlive) && (bullet != NULL) && (bullet->isAlive) && 
+			  ((bullet->x + bullet->width / 2) >= enemy->x && (bullet->x + bullet->width / 2) < enemy->x + enemy->width) &&
+			  ((bullet->y + bullet->height / 2) >= enemy->y && (bullet->y + bullet->height / 2) < enemy->y + enemy->height) ) {
+		    bullet->isAlive = FALSE;
+		    enemy->isAlive = FALSE;
+		    iScore += 100;
+		    updateScoreText();
+		    Mix_PlayChannel(-1, soundEnemyDead, 0);
+          } 
+
+
+				
+				currentEnemy = currentEnemy->next;
+			}
+			
+			
+		//bullet collision with ship
+		if ( (bullet->iHitsPlayer) &&
+			(bullet->isAlive) &&  (ship->isAlive) &&
+			  ((bullet->x + bullet->width / 2) >= ship->x && (bullet->x + bullet->width / 2) < ship->x + ship->width) &&
+			  ((bullet->y + bullet->height / 2) >= ship->y && (bullet->y + bullet->height / 2) < ship->y + ship->height) ) {
+			ship->isAlive = FALSE;
+			iGameOver = TRUE;
+		    Mix_PlayChannel(-1, soundShipDead, 0);
+
+	  
+		} 
+
+			
+			
+			
+			currentBullet = currentBullet->next;
+		  
+  }
+  
+
+  //Check Enemy collision
 	currentEnemy = listEnemy;
 	while (currentEnemy != NULL) {
+		
 		enemy = (struct Enemy *) currentEnemy->data;
+		/*
 	    currentBullet = listBullet;
 		
 		while(currentBullet != NULL) {
@@ -223,22 +273,26 @@ void checkCollisions() {
 			
 		  currentBullet = currentBullet->next;
 	    }
+		*/
 
 	  
 	  
-    //check collision with ship	  
-    if ( (enemy->isAlive) &&  (ship->isAlive) &&
-         (ship->x >= enemy->x && ship->x < enemy->x + enemy->width) &&
-         (ship->y >= enemy->y && ship->y < enemy->y + enemy->height) ) {
-      ship->isAlive = FALSE;
-      iGameOver = TRUE;
+		//check collision with ship	  
+		if ( (enemy->isAlive) &&  (ship->isAlive) &&
+			(ship->x >= enemy->x && ship->x < enemy->x + enemy->width) &&
+			(ship->y >= enemy->y && ship->y < enemy->y + enemy->height) ) {
+		ship->isAlive = FALSE;
+		iGameOver = TRUE;
 	  
-    } 
+		} 
 
-    currentEnemy = currentEnemy->next;
-	
+		currentEnemy = currentEnemy->next;
 
     }
+	
+	
+	
+	
 
 }
 
@@ -413,6 +467,10 @@ void shoot() {
 	printf("ship at x: %d y: %d\n", ship->x, ship->y);
 
 	init_bullet(bullet, ship->x + ship->width / 2, ship->y);
+
+		bullet->vel_y = 5;
+	bullet->iHitsEnemy = TRUE;
+
 	printf("added bullet at x: %d y: %d\n", bullet->x, bullet->y);
 	
 	add_node(&listBullet, bullet);
@@ -425,6 +483,9 @@ void shoot() {
 
 int main(int argc, char* args[]) {
 
+  //seed randomizer
+  srand(time(NULL));
+  printf("random number %d\n", rand());
 
 //  if (SDL_Init( SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0) {
   if (SDL_Init( SDL_INIT_VIDEO) < 0) {
@@ -439,6 +500,8 @@ int main(int argc, char* args[]) {
   }
   renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 //  screenSurface = SDL_GetWindowSurface(window);
+
+
 
 
   //load media  
@@ -480,6 +543,11 @@ int main(int argc, char* args[]) {
   SDL_SetColorKey(sprBullet, SDL_TRUE, SDL_MapRGB(sprBullet->format, 255, 0, 255));
   imgBullet = SDL_CreateTextureFromSurface(renderer, sprBullet);
 
+  sprBullet = SDL_LoadBMP("assets/images/bullet_enemy.bmp");
+  SDL_SetColorKey(sprBullet, SDL_TRUE, SDL_MapRGB(sprBullet->format, 255, 0, 255));
+  imgBulletEnemy = SDL_CreateTextureFromSurface(renderer, sprBullet);
+
+
   SDL_FreeSurface(sprShip);
   SDL_FreeSurface(sprBackground);
   SDL_FreeSurface(sprBullet);
@@ -501,6 +569,8 @@ int main(int argc, char* args[]) {
   Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096);
   soundShoot = Mix_LoadWAV("assets/audio/shoot.wav");
   soundEnemyDead = Mix_LoadWAV("assets/audio/enemy_dead.wav");
+  soundEnemyShoot = Mix_LoadWAV("assets/audio/enemy_shoot.wav");
+  soundShipDead = Mix_LoadWAV("assets/audio/ship_dead.wav");
 
   musicLevel = Mix_LoadMUS("assets/audio/sdl-shooter-level.wav");
 
@@ -555,6 +625,12 @@ int main(int argc, char* args[]) {
   printf("Stopped looping\n");
 
   TTF_Quit();
+
+
+  Mix_FreeChunk(soundShoot);
+  Mix_FreeChunk(soundEnemyDead);
+  Mix_FreeChunk(soundEnemyShoot);
+  Mix_FreeChunk(soundShipDead);
 
   Mix_FreeMusic(musicLevel);
 

@@ -11,8 +11,11 @@ struct Enemy {
   float fChangeMovementCountdown;
   int isAlive;
   int iType;
+  float fShootDelay;
 };
 
-void init_enemy(struct Enemy *, int, int);
+void init_enemy(struct Enemy *, int, int, int);
 void update_enemy(struct Enemy *);
 void draw_enemy(struct Enemy *);
+void shoot_enemy(struct Enemy *enemy);
+void setShootDelay_enemy(struct Enemy *);

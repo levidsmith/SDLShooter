@@ -29,9 +29,9 @@ void read_level(char *strFile) {
 
         struct Enemy *e1;
         e1 = malloc(sizeof(struct Enemy));
-        init_enemy(e1, x, y);
+        init_enemy(e1, x, y, 0);
 
-        e1->iType = 0;
+//        e1->iType = 0;
 
         add_node(&listEnemy, e1);
         iEnemyCount++;
@@ -39,9 +39,9 @@ void read_level(char *strFile) {
 
         struct Enemy *e1;
         e1 = malloc(sizeof(struct Enemy));
-        init_enemy(e1, x, y);
+        init_enemy(e1, x, y, 1);
 
-        e1->iType = 1;
+//        e1->iType = 1;
 
         add_node(&listEnemy, e1);
 

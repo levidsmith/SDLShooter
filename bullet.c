@@ -5,19 +5,23 @@
 
 extern SDL_Renderer *renderer;
 extern SDL_Texture *imgBullet;
+extern SDL_Texture *imgBulletEnemy;
 
 void init_bullet(struct Bullet *bullet, int init_x, int init_y) {
   bullet->x = (float) init_x;
   bullet->y = (float) init_y;
+  bullet->vel_y = 0;
   bullet->isAlive = TRUE;
   bullet->width = 16;
   bullet->height = 16;
+  bullet->iHitsPlayer = FALSE;
+  bullet->iHitsEnemy = FALSE;
 
 }
 
 void update_bullet(struct Bullet *bullet) {
   if (bullet->isAlive) {
-    bullet->y -= (5 * UNIT_SIZE * DELTA_TIME);
+    bullet->y -= (bullet->vel_y * UNIT_SIZE * DELTA_TIME);
     if (bullet->y < 0) {
       bullet->isAlive = FALSE;
     }
@@ -33,7 +37,16 @@ void draw_bullet(struct Bullet *bullet) {
     pos.y = bullet->y;
 	pos.w = bullet->width;
 	pos.h = bullet->height;
-    SDL_RenderCopy(renderer, imgBullet, NULL, &pos);
+	
+	if (bullet->iHitsEnemy) {
+		SDL_RenderCopy(renderer, imgBullet, NULL, &pos);
+	} else if (bullet->iHitsPlayer) {
+		SDL_RenderCopy(renderer, imgBulletEnemy, NULL, &pos);
+	} else {
+		SDL_RenderCopy(renderer, imgBullet, NULL, &pos);
+		
+	}
+		
   }
 
 	
