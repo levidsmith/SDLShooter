@@ -85,6 +85,7 @@ void update_enemy(struct Enemy *enemy) {
 void draw_enemy(struct Enemy *enemy) {
     SDL_Rect pos;
 	
+//	printf("enemy x: %f y %f\n", enemy->x, enemy->y);
 	
 	int iSpriteIndex = ((int) (enemy->fLifetime * 2)) % 2; //change sprite every 0.5 seconds
 	

@@ -36,6 +36,7 @@ SDL_Texture *imgBulletEnemy;
 SDL_Texture *imgScoreText;
 SDL_Texture *imgLevelCompleteText;
 SDL_Texture *imgGameOverText;
+SDL_Texture *imgLevel;
 
 
 TTF_Font *fontDefault;
@@ -73,6 +74,7 @@ int iLevelComplete = FALSE;
 int iGameOver = FALSE;
 
 int iScore;
+int iCurrentLevel = 0;
 
 //FUNCTION PROTOTYPES
 void handleInput(int, int);
@@ -83,6 +85,7 @@ void updateScoreText();
 
 extern struct Node *add_node(struct Node **head, void *value);
 extern int count_list(struct Node *head);
+extern void clear_list(struct Node **head);
 extern void remove_node(struct Node **head, struct Node *node);
 
 
@@ -90,6 +93,10 @@ extern void remove_node(struct Node **head, struct Node *node);
 
 void start() {
   printf("start\n");
+
+  clear_list(&listBullet);
+  clear_list(&listEnemy);
+
 	
   ship = malloc(sizeof(struct Ship));
   init_ship(ship);
@@ -98,7 +105,7 @@ void start() {
   printf("fontDefault: %x\n", fontDefault);
 
   printf("call read_level\n");
-  read_level("level_00.txt\n");
+  read_level("level_00.txt\n", iCurrentLevel);
 
   printf("finished read_level\n");
 
@@ -107,12 +114,18 @@ void start() {
 
   iScore = 0;
   updateScoreText();
+  
+
+  iLevelComplete = FALSE;
+  iGameOver = FALSE;
+
 
   printf("finished updateScoreText\n");
 
   Mix_VolumeMusic(MIX_MAX_VOLUME * 0.2);
   Mix_PlayMusic(musicLevel, -1);
   printf("finished start\n");
+  
   
 }
 
@@ -297,7 +310,7 @@ void checkCollisions() {
 }
 
 void checkLevelComplete() {
-  int iComplete = TRUE;
+  int iNoMoreEnemies = TRUE;
   
 
   int iCount;
@@ -308,11 +321,24 @@ void checkLevelComplete() {
 
   
   if (iCount > 0) {
-	  iComplete = FALSE;
+	  iNoMoreEnemies = FALSE;
   }
+  
+  if (iNoMoreEnemies) {
+	  iCurrentLevel++;
+	  if (iCurrentLevel > 2) {
+		  iLevelComplete = TRUE;
+	  } else {
+		read_level("level_00.txt\n", iCurrentLevel);
+	  }
+
+		  
+  }
+  
+  
 
 
-  iLevelComplete = iComplete;
+//  iLevelComplete = iComplete;
 
 }
 
@@ -331,7 +357,14 @@ void handleInput(int iType, int iKey) {
       ship->vel_x = fSpeed;
     } else if (iKey == SDLK_SPACE) {
       //shoot(); 
-	  iButtonFireDown = TRUE;
+	  if (iLevelComplete) {
+		  iCurrentLevel = 0;
+		  start();
+	  } else if (iGameOver) {
+		  start();
+	  } else {
+		iButtonFireDown = TRUE;
+	  }
     } else if (iKey == SDLK_q || iKey == SDLK_ESCAPE) {
       iKeepLooping = FALSE;
     } else if (iKey == SDLK_m || iKey == SDLK_ESCAPE) {
@@ -401,8 +434,16 @@ void draw() {
   SDL_QueryTexture(imgScoreText, NULL, NULL, &(pos.w), &(pos.h)); 
   SDL_RenderCopy(renderer, imgScoreText, NULL, &pos);
 
+//Draw level number
+  pos.x = 100;
+  pos.y = 640;
+  
+  SDL_QueryTexture(imgLevel, NULL, NULL, &(pos.w), &(pos.h)); 
+  SDL_RenderCopy(renderer, imgLevel, NULL, &pos);
+
 //Draw level complete text
   if (iLevelComplete) {
+		  
     pos.x = 320;
     pos.y = 300;
   
@@ -427,6 +468,7 @@ void updateScoreText() {
 	printf("updateScoreText called\n");
   SDL_Color colorText = {255, 255, 0, 0};
 
+  //score display
   char strScore[64];
   sprintf(strScore, "Score: %d", iScore);
 
@@ -442,7 +484,22 @@ void updateScoreText() {
   
   imgScoreText = SDL_CreateTextureFromSurface(renderer, sprText);
   SDL_FreeSurface(sprText); 
+  
+  
+  //level display
+  colorText.r = 0;
+  colorText.g = 255;
+  colorText.b = 0;
 
+  char strLevel[20];
+  sprintf(strLevel, "Area %d", iCurrentLevel + 1);
+  sprText = TTF_RenderText_Solid(fontDefault, strLevel, colorText);
+  imgLevel = SDL_CreateTextureFromSurface(renderer, sprText);
+  SDL_FreeSurface(sprText); 
+  
+
+
+  //level complete display
   colorText.r = 0;
   colorText.g = 0;
   colorText.b = 255;
@@ -451,6 +508,7 @@ void updateScoreText() {
   imgLevelCompleteText = SDL_CreateTextureFromSurface(renderer, sprText);
   SDL_FreeSurface(sprText); 
 
+  //game over display
   sprText = TTF_RenderText_Solid(fontLarge, "GAME OVER", colorText);
   imgGameOverText = SDL_CreateTextureFromSurface(renderer, sprText);
   SDL_FreeSurface(sprText); 
@@ -479,6 +537,7 @@ void shoot() {
     Mix_PlayChannel(-1, soundShoot, 0);
   }
 }
+
 
 
 int main(int argc, char* args[]) {
@@ -647,6 +706,7 @@ int main(int argc, char* args[]) {
   SDL_DestroyTexture(imgBullet);
   SDL_DestroyTexture(imgScoreText);
   SDL_DestroyTexture(imgLevelCompleteText);
+  SDL_DestroyTexture(imgLevel);
 
   SDL_DestroyRenderer(renderer);
 

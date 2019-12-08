@@ -64,6 +64,22 @@ void print_list(struct Node *head) {
 //  printf("end print_list\n");
 }
 
+void clear_list(struct Node **head) {
+  struct Node *currentNode;
+//  struct Node *nextNode;
+  
+  currentNode = *head;
+//  nextNode = NULL;
+
+  while(currentNode != NULL) {
+        *head = currentNode->next;
+        free(currentNode);
+        currentNode = *head;
+	
+  }
+}
+
+
 int count_list(struct Node *head) {
 	int iCount;
 	struct Node *current = head;
