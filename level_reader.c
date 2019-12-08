@@ -1,6 +1,7 @@
 //2019 Levi D. Smith - levidsmith.com
 #include <stdio.h>
 #include <stdlib.h>
+//#include <string.h>
 
 #include "level_reader.h"
 #include "enemy.h"
@@ -66,6 +67,7 @@ void read_level(char *strFile, int iLevelToRead) {
 		if (i == 0 && strLine[i] == '=') {
 			iLevel++;
 			y = 0;
+			break;  //break to prevent processing any more characters on this line
 
 		} 
 		
@@ -78,5 +80,42 @@ void read_level(char *strFile, int iLevelToRead) {
     
   }
   fclose(f); 
+  
+  printf("Enemies spawned: %d\n", iEnemyCount);
+
+}
+
+
+
+int read_count_levels(char *strFile) {
+	int iLevelCount;
+	int i;
+	int iCols;
+
+  iLevelCount = 0;  //this is really a count of levels after the first one (index 0)
+  iCols = 64; //only need to read the first character on the line
+
+  printf("Start Reading file\n");
+  char strLine[iCols];
+  FILE *f = fopen(strFile, "r");
+  while (fgets(strLine, iCols, f) != NULL) {
+  printf("Got a line: %s\n", strLine);
+	  
+    for (i = 0; i < iCols; i++) {
+		if (i == 0 && strLine[i] == '=') {
+			iLevelCount++;
+			break;  //break to prevent processing any more characters on this line
+		} 
+    }
+	
+	
+    
+  }
+  fclose(f); 
+  printf("End Reading file\n");
+  
+  printf("total levels: %d\n", iLevelCount);
+  
+  return iLevelCount;
 
 }

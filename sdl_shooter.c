@@ -75,6 +75,7 @@ int iGameOver = FALSE;
 
 int iScore;
 int iCurrentLevel = 0;
+int iLevelCount = -1;
 
 //FUNCTION PROTOTYPES
 void handleInput(int, int);
@@ -104,8 +105,15 @@ void start() {
   printf("ship values x: %d y: %d width: %d height %d\n", ship->x, ship->y, ship->width, ship->height);
   printf("fontDefault: %x\n", fontDefault);
 
+
+  //read level
+  if (iLevelCount < 0) {
+	  iLevelCount = read_count_levels("level_00.txt");
+  }
+  printf("iLevelCount: %d\n", iLevelCount);
+//  iLevelCount = 2;
   printf("call read_level\n");
-  read_level("level_00.txt\n", iCurrentLevel);
+  read_level("level_00.txt", iCurrentLevel);
 
   printf("finished read_level\n");
 
@@ -326,7 +334,7 @@ void checkLevelComplete() {
   
   if (iNoMoreEnemies) {
 	  iCurrentLevel++;
-	  if (iCurrentLevel > 2) {
+	  if (iCurrentLevel > iLevelCount) {
 		  iLevelComplete = TRUE;
 	  } else {
 		read_level("level_00.txt\n", iCurrentLevel);
