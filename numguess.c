@@ -15,7 +15,7 @@ int main(void) {
   printf("rand: %d\n", rand() % 5);
   printf("rand: %d\n", rand() % 5);
   printf("rand: %d\n", rand() % 5);
-  exit(0);
+//  exit(0);
 
   srand(time(NULL));
   iHiddenNumber = rand();

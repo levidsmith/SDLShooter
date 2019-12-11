@@ -1,7 +1,7 @@
 //2019 Levi D. Smith - levidsmith.com
 #include <stdio.h>
 #include <stdlib.h>
-//#include <string.h>
+#include <string.h>
 
 #include "level_reader.h"
 #include "enemy.h"
@@ -19,16 +19,17 @@ void read_level(char *strFile, int iLevelToRead) {
 
   printf("Reading level\n");
 
-  int iCols = (1280 / 64) + 1;
+  int iCols;
+//  iCols = (1280 / 64) + 1;
+  iCols = 21;
   char strLine[iCols];
   FILE *f = fopen("level_00.txt", "r");
   x = 0;
   y = 0;
   while (fgets(strLine, iCols, f) != NULL) {
 
-	  
     printf("strLine: %s", strLine);
-    for (i = 0; i < iCols; i++) {
+    for (i = 0; i < strlen(strLine); i++) {
 		
 		if (iLevel == iLevelToRead) {
 	
@@ -37,7 +38,6 @@ void read_level(char *strFile, int iLevelToRead) {
 
 				struct Enemy *e1;
 				e1 = malloc(sizeof(struct Enemy));
-				x = i * 64;
 				init_enemy(e1, x, y, 0);
 
 
@@ -47,7 +47,6 @@ void read_level(char *strFile, int iLevelToRead) {
 
 				struct Enemy *e1;
 				e1 = malloc(sizeof(struct Enemy));
-				x = i * 64;
 				init_enemy(e1, x, y, 1);
 
 
@@ -55,9 +54,13 @@ void read_level(char *strFile, int iLevelToRead) {
 
 				iEnemyCount++;
 			}
+
+  			x = i * 64;
 			
 			if (strLine[i] == '\n') {
 				y += 64;
+                                memset(strLine, 0, sizeof(strLine)); //clear the character array
+                             //   break; //quit reading characters which may be from old character array
 
 			}
 
@@ -70,9 +73,6 @@ void read_level(char *strFile, int iLevelToRead) {
 			break;  //break to prevent processing any more characters on this line
 
 		} 
-		
-
-
      
     }
 	
