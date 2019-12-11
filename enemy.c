@@ -37,6 +37,7 @@ void init_enemy(struct Enemy *enemy, int init_x, int init_y, int init_iType) {
   enemy->iType = init_iType;
   enemy->fLifetime = 0;
   enemy->fShootDelay = 0;
+  enemy->hasDrop = FALSE;
   
   setShootDelay_enemy(enemy);
 

@@ -12,6 +12,7 @@ struct Enemy {
   int isAlive;
   int iType;
   float fShootDelay;
+  int hasDrop;
 };
 
 void init_enemy(struct Enemy *, int, int, int);

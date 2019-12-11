@@ -16,6 +16,7 @@ void init_ship(struct Ship *ship) {
   ship->y = 720 - 128;
   ship->isAlive = TRUE;
   ship->fShootDelay = 0;
+  ship->fMaxShootDelay = 0.5;
 
 }
 
@@ -67,5 +68,13 @@ void draw_ship(struct Ship *ship) {
 }
 
 void shoot_ship(struct Ship *ship) {
-	ship->fShootDelay = 0.5;
+//	ship->fShootDelay = 0.5;
+	ship->fShootDelay = ship->fMaxShootDelay;
+}
+
+void increaseFireRate_ship(struct Ship *ship) {
+	ship->fMaxShootDelay -= 0.1;
+	if (ship->fMaxShootDelay < 0.1) {
+		ship->fMaxShootDelay = 0.1;
+	}
 }

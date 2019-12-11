@@ -5,6 +5,7 @@
 
 #include "level_reader.h"
 #include "enemy.h"
+#include "globals.h"
 
 extern struct Node *listEnemy;
 
@@ -16,6 +17,9 @@ void read_level(char *strFile, int iLevelToRead) {
   int i;
   int iLevel = 0;
   int iEnemyCount = 0;
+  
+  int iDropCountdown = getDropCountdown();
+  
 
   printf("Reading level\n");
 
@@ -26,6 +30,7 @@ void read_level(char *strFile, int iLevelToRead) {
   FILE *f = fopen("level_00.txt", "r");
   x = 0;
   y = 0;
+  
   while (fgets(strLine, iCols, f) != NULL) {
 
     printf("strLine: %s", strLine);
@@ -39,6 +44,12 @@ void read_level(char *strFile, int iLevelToRead) {
 				struct Enemy *e1;
 				e1 = malloc(sizeof(struct Enemy));
 				init_enemy(e1, x, y, 0);
+				if (iDropCountdown <= 0) {
+					e1->hasDrop = TRUE;
+					iDropCountdown = getDropCountdown();
+				} else {
+					iDropCountdown--;
+				}
 
 
 				add_node(&listEnemy, e1);
@@ -48,6 +59,13 @@ void read_level(char *strFile, int iLevelToRead) {
 				struct Enemy *e1;
 				e1 = malloc(sizeof(struct Enemy));
 				init_enemy(e1, x, y, 1);
+
+				if (iDropCountdown <= 0) {
+					e1->hasDrop = TRUE;
+					iDropCountdown = 2 + getDropCountdown();
+				} else {
+					iDropCountdown--;
+				}
 
 
 				add_node(&listEnemy, e1);
@@ -118,4 +136,11 @@ int read_count_levels(char *strFile) {
   
   return iLevelCount;
 
+}
+
+int getDropCountdown() {
+	int iReturn;
+	iReturn = 5 + (rand() % 3);
+	printf("getDropCountdown: %d\n", iReturn);
+	return iReturn;
 }

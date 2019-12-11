@@ -13,11 +13,9 @@
 #include "ship.h"
 #include "level_reader.h"
 #include "bullet.h"
+#include "powerup.h"
 #include "globals.h"
 #include "linked_list.h"
-
-
-#define MAX_ENEMIES 15
 
 //SDL variables
 SDL_Window* window = NULL;
@@ -38,6 +36,7 @@ SDL_Texture *imgScoreText;
 SDL_Texture *imgLevelCompleteText;
 SDL_Texture *imgGameOverText;
 SDL_Texture *imgLevel;
+SDL_Texture *imgPowerupAlpha;
 
 
 TTF_Font *fontDefault;
@@ -47,6 +46,7 @@ Mix_Chunk *soundShoot;
 Mix_Chunk *soundShipDead;
 Mix_Chunk *soundEnemyDead;
 Mix_Chunk *soundEnemyShoot;
+Mix_Chunk *soundPowerup;
 
 Mix_Music *musicLevel; 
 
@@ -62,11 +62,10 @@ int iFPS;
 
 int iButtonFireDown = FALSE;
 
-
-
 struct Ship *ship;
 struct Node *listBullet;
 struct Node *listEnemy;
+struct Node *listPowerup;
 
 
 int iKeepLooping = TRUE;
@@ -98,6 +97,7 @@ void start() {
 
   clear_list(&listBullet);
   clear_list(&listEnemy);
+  clear_list(&listPowerup);
 
 	
   ship = malloc(sizeof(struct Ship));
@@ -117,6 +117,11 @@ void start() {
   read_level("level_00.txt", iCurrentLevel);
 
   printf("finished read_level\n");
+  
+//  struct Powerup *powerup = malloc(sizeof(struct Powerup));
+//  init_powerup(powerup, 50, 50, 0);
+//  add_node(&listPowerup, powerup);
+  
 
 
   printf("fontDefault: %x", fontDefault);
@@ -199,6 +204,24 @@ void update() {
 //  printf("Total bullets: %d\n", count_list(listBullet));
 
 
+  //Update the powerups
+  current = listPowerup;
+  deleteNode = NULL;
+  struct Powerup *powerup;
+  while(current != NULL) {
+    powerup = (struct Powerup *) current->data;
+	update_powerup(powerup);
+	if (!powerup->isAlive) {
+		deleteNode = current;
+	}
+    current = current->next;
+  }
+  if (deleteNode != NULL) {
+    remove_node(&listPowerup, deleteNode);
+	deleteNode = NULL;
+  }
+
+
 
   //update background
   iBackgroundOffset += 5 * UNIT_SIZE * DELTA_TIME;
@@ -243,6 +266,14 @@ void checkCollisions() {
 		    iScore += 100;
 		    updateScoreText();
 		    Mix_PlayChannel(-1, soundEnemyDead, 0);
+			
+			if (enemy->hasDrop) {
+				struct Powerup *powerup = malloc(sizeof(struct Powerup));
+				init_powerup(powerup, enemy->x, enemy->y, 0);
+				add_node(&listPowerup, powerup);
+			}
+
+			
           } 
 
 
@@ -276,28 +307,6 @@ void checkCollisions() {
 	while (currentEnemy != NULL) {
 		
 		enemy = (struct Enemy *) currentEnemy->data;
-		/*
-	    currentBullet = listBullet;
-		
-		while(currentBullet != NULL) {
-			bullet = (struct Bullet *) currentBullet->data;
-
-		  if ( (enemy->isAlive) && (bullet != NULL) && (bullet->isAlive) && 
-			  ((bullet->x + bullet->width / 2) >= enemy->x && (bullet->x + bullet->width / 2) < enemy->x + enemy->width) &&
-			  ((bullet->y + bullet->height / 2) >= enemy->y && (bullet->y + bullet->height / 2) < enemy->y + enemy->height) ) {
-		    bullet->isAlive = FALSE;
-		    enemy->isAlive = FALSE;
-		    iScore += 100;
-		    updateScoreText();
-		    Mix_PlayChannel(-1, soundEnemyDead, 0);
-          } 
-			
-			
-		  currentBullet = currentBullet->next;
-	    }
-		*/
-
-	  
 	  
 		//check collision with ship	  
 		if ( (enemy->isAlive) &&  (ship->isAlive) &&
@@ -312,6 +321,31 @@ void checkCollisions() {
 
     }
 	
+
+  //Check Powerup collision
+    struct Node *currentPowerup;
+	struct Powerup *powerup;
+
+	currentPowerup = listPowerup;
+	while (currentPowerup != NULL) {
+		
+		powerup = (struct Powerup *) currentPowerup->data;
+	  
+		//check collision with ship	  
+		if ( (ship->isAlive) &&  (powerup->isAlive) &&
+//			(ship->x >= powerup->x && ship->x < powerup->x + powerup->width) &&
+//			(ship->y >= powerup->y && ship->y < powerup->y + powerup->height) ) {
+			(powerup->x + (powerup->width / 2) >= ship->x && powerup->x + (powerup->width / 2) < ship->x + ship->width) &&
+			(powerup->y + (powerup->height / 2) >= ship->y && powerup->y + (powerup->height / 2) < ship->y + ship->height) ) {
+				increaseFireRate_ship(ship);
+				powerup->isAlive = FALSE;
+				Mix_PlayChannel(-1, soundPowerup, 0);
+	  
+		} 
+
+		currentPowerup = currentPowerup->next;
+
+    }
 	
 	
 	
@@ -435,6 +469,16 @@ void draw() {
 	draw_enemy(enemy);
     current = current->next;
   }  
+  
+//Draw the powerups
+  current = listPowerup;
+  struct Powerup *powerup;
+  while(current != NULL) {
+    powerup = (struct Powerup *) current->data;
+	draw_powerup(powerup);
+    current = current->next;
+  }  
+
 
 //Draw the score text
   pos.x = 100;
@@ -553,7 +597,7 @@ int main(int argc, char* args[]) {
 
   //seed randomizer
   srand(time(NULL));
-  printf("random number %d\n", rand());
+//  printf("random number %d\n", rand());
 
 //  if (SDL_Init( SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0) {
   if (SDL_Init( SDL_INIT_VIDEO) < 0) {
@@ -577,6 +621,7 @@ int main(int argc, char* args[]) {
   SDL_Surface* sprEnemy;
   SDL_Surface* sprBackground;
   SDL_Surface* sprBullet;
+  SDL_Surface  *sprPowerup;
 
   
   sprShip = SDL_LoadBMP("assets/images/ship.bmp");
@@ -615,10 +660,17 @@ int main(int argc, char* args[]) {
   SDL_SetColorKey(sprBullet, SDL_TRUE, SDL_MapRGB(sprBullet->format, 255, 0, 255));
   imgBulletEnemy = SDL_CreateTextureFromSurface(renderer, sprBullet);
 
+  sprPowerup = SDL_LoadBMP("assets/images/powerup_alpha.bmp");
+  SDL_SetColorKey(sprPowerup, SDL_TRUE, SDL_MapRGB(sprPowerup->format, 255, 0, 255));
+  imgPowerupAlpha = SDL_CreateTextureFromSurface(renderer, sprPowerup);
+  
+  printf("created textures\n");
+
 
   SDL_FreeSurface(sprShip);
   SDL_FreeSurface(sprBackground);
   SDL_FreeSurface(sprBullet);
+  SDL_FreeSurface(sprPowerup);
 
 
 //handle loading fonts
@@ -639,6 +691,7 @@ int main(int argc, char* args[]) {
   soundEnemyDead = Mix_LoadWAV("assets/audio/enemy_dead.wav");
   soundEnemyShoot = Mix_LoadWAV("assets/audio/enemy_shoot.wav");
   soundShipDead = Mix_LoadWAV("assets/audio/ship_dead.wav");
+  soundPowerup = Mix_LoadWAV("assets/audio/powerup.wav");
 
   musicLevel = Mix_LoadMUS("assets/audio/sdl-shooter-level.wav");
 
@@ -699,6 +752,7 @@ int main(int argc, char* args[]) {
   Mix_FreeChunk(soundEnemyDead);
   Mix_FreeChunk(soundEnemyShoot);
   Mix_FreeChunk(soundShipDead);
+  Mix_FreeChunk(soundPowerup);
 
   Mix_FreeMusic(musicLevel);
 

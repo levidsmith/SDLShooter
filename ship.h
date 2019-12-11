@@ -8,9 +8,11 @@ struct Ship {
   int height;
   int isAlive;
   float fShootDelay;
+  float fMaxShootDelay;
 };
 
 void init_ship(struct Ship *);
 void update_ship(struct Ship *);
 void draw_ship(struct Ship *);
 void shoot_ship(struct Ship *);
+void increaseFireRate_ship(struct Ship *);
