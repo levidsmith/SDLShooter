@@ -1,4 +1,5 @@
 //2019 Levi D. Smith - levidsmith.com
+#include <math.h>
 #include <SDL.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,6 +14,12 @@ extern SDL_Texture *imgEnemyAlpha_00;
 extern SDL_Texture *imgEnemyAlpha_01;
 extern SDL_Texture *imgEnemyBravo_00;
 extern SDL_Texture *imgEnemyBravo_01;
+extern SDL_Texture *imgEnemyCharlie_00;
+extern SDL_Texture *imgEnemyCharlie_01;
+extern SDL_Texture *imgEnemyDelta_00;
+extern SDL_Texture *imgEnemyDelta_01;
+
+
 extern Mix_Chunk *soundEnemyShoot;
 
 
@@ -28,6 +35,8 @@ extern void remove_node(struct Node **head, struct Node *node);
 void init_enemy(struct Enemy *enemy, int init_x, int init_y, int init_iType) {
   enemy->x = init_x;
   enemy->y = init_y;
+  enemy->orig_x = init_x;
+  enemy->orig_y = init_y;
   enemy->vel_x = UNIT_SIZE * 3;
   enemy->vel_y = 0;
   enemy->width = 64;
@@ -64,6 +73,16 @@ void update_enemy(struct Enemy *enemy) {
           enemy->x -= SCREEN_WIDTH;
         }
         break;
+	  case 2:
+	    enemy->x = enemy->orig_x + 250 * sin(enemy->fLifetime * PI);
+		enemy->y += 64 * DELTA_TIME;
+		break;
+	  case 3:
+	    enemy->x = enemy->orig_x + (128 * cos(enemy->fLifetime * PI));
+		enemy->y = enemy->orig_y + (128 * sin(enemy->fLifetime * PI));
+		break;
+
+
     }
 	
 	if (enemy->fShootDelay > 0) {
@@ -115,6 +134,25 @@ void draw_enemy(struct Enemy *enemy) {
 		  }
 
           break;
+        case 2:
+		  
+          if (iSpriteIndex == 0) {
+	        SDL_RenderCopy(renderer, imgEnemyCharlie_00, NULL, &pos);
+		  } else if (iSpriteIndex == 1) {
+	        SDL_RenderCopy(renderer, imgEnemyCharlie_01, NULL, &pos);
+		  }
+
+          break;
+        case 3:
+		  
+          if (iSpriteIndex == 0) {
+	        SDL_RenderCopy(renderer, imgEnemyDelta_00, NULL, &pos);
+		  } else if (iSpriteIndex == 1) {
+	        SDL_RenderCopy(renderer, imgEnemyDelta_01, NULL, &pos);
+		  }
+
+          break;
+		  
       }
     }
 

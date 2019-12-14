@@ -3,6 +3,8 @@ struct Enemy {
   int iHealth;
   float x;
   float y;
+  float orig_x;
+  float orig_y;
   int width;
   int height;
   float vel_x;

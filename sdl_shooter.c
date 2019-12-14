@@ -29,6 +29,12 @@ SDL_Texture *imgEnemyAlpha_00;
 SDL_Texture *imgEnemyAlpha_01;
 SDL_Texture *imgEnemyBravo_00;
 SDL_Texture *imgEnemyBravo_01;
+SDL_Texture *imgEnemyCharlie_00;
+SDL_Texture *imgEnemyCharlie_01;
+SDL_Texture *imgEnemyDelta_00;
+SDL_Texture *imgEnemyDelta_01;
+
+
 SDL_Texture *imgBackground;
 SDL_Texture *imgBullet;
 SDL_Texture *imgBulletEnemy;
@@ -651,6 +657,26 @@ int main(int argc, char* args[]) {
   imgEnemyBravo_01 = SDL_CreateTextureFromSurface(renderer, sprEnemy);
   SDL_FreeSurface(sprEnemy);
 
+  sprEnemy = SDL_LoadBMP("assets/images/enemy_charlie1.bmp");
+  SDL_SetColorKey(sprEnemy, SDL_TRUE, SDL_MapRGB(sprEnemy->format, 255, 0, 255));
+  imgEnemyCharlie_00 = SDL_CreateTextureFromSurface(renderer, sprEnemy);
+  SDL_FreeSurface(sprEnemy);
+
+  sprEnemy = SDL_LoadBMP("assets/images/enemy_charlie2.bmp");
+  SDL_SetColorKey(sprEnemy, SDL_TRUE, SDL_MapRGB(sprEnemy->format, 255, 0, 255));
+  imgEnemyCharlie_01 = SDL_CreateTextureFromSurface(renderer, sprEnemy);
+  SDL_FreeSurface(sprEnemy);
+
+  sprEnemy = SDL_LoadBMP("assets/images/enemy_delta1.bmp");
+  SDL_SetColorKey(sprEnemy, SDL_TRUE, SDL_MapRGB(sprEnemy->format, 255, 0, 255));
+  imgEnemyDelta_00 = SDL_CreateTextureFromSurface(renderer, sprEnemy);
+  SDL_FreeSurface(sprEnemy);
+
+  sprEnemy = SDL_LoadBMP("assets/images/enemy_delta2.bmp");
+  SDL_SetColorKey(sprEnemy, SDL_TRUE, SDL_MapRGB(sprEnemy->format, 255, 0, 255));
+  imgEnemyDelta_01 = SDL_CreateTextureFromSurface(renderer, sprEnemy);
+  SDL_FreeSurface(sprEnemy);
+
 
   sprBullet = SDL_LoadBMP("assets/images/bullet.bmp");
   SDL_SetColorKey(sprBullet, SDL_TRUE, SDL_MapRGB(sprBullet->format, 255, 0, 255));
@@ -765,6 +791,10 @@ int main(int argc, char* args[]) {
   SDL_DestroyTexture(imgEnemyAlpha_01);
   SDL_DestroyTexture(imgEnemyBravo_00);
   SDL_DestroyTexture(imgEnemyBravo_01);
+  SDL_DestroyTexture(imgEnemyCharlie_00);
+  SDL_DestroyTexture(imgEnemyCharlie_01);
+  SDL_DestroyTexture(imgEnemyDelta_00);
+  SDL_DestroyTexture(imgEnemyDelta_01);
   
   SDL_DestroyTexture(imgBullet);
   SDL_DestroyTexture(imgScoreText);
