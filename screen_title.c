@@ -24,7 +24,6 @@ extern Mix_Music *musicTitle;
 
 
 int iBackgroundOffset;
-
 SDL_Rect pos;
 
 

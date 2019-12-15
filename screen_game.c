@@ -67,6 +67,8 @@ int iScore;
 int iCurrentLevel = 0;
 int iLevelCount = -1;
 
+float fKeyPressDelay = 0;
+
 
 
 void start_screen_game() {
@@ -208,6 +210,13 @@ void update_screen_game() {
   }
 
   checkCollisions();
+  
+  if (fKeyPressDelay > 0) {
+	  fKeyPressDelay -= DELTA_TIME;
+	  if (fKeyPressDelay < 0) {
+		  fKeyPressDelay = 0;
+	  }
+  }
 
 }
 
@@ -276,7 +285,7 @@ void draw_screen_game() {
   if (iLevelComplete) {
 		  
     pos.x = 320;
-    pos.y = 300;
+    pos.y = 300 + (fKeyPressDelay * UNIT_SIZE);
   
     SDL_QueryTexture(imgLevelCompleteText, NULL, NULL, &(pos.w), &(pos.h)); 
     SDL_RenderCopy(renderer, imgLevelCompleteText, NULL, &pos);
@@ -285,7 +294,7 @@ void draw_screen_game() {
 //Draw game over text
   if (iGameOver) {
     pos.x = 320;
-    pos.y = 300;
+    pos.y = 300 + (fKeyPressDelay * UNIT_SIZE);
   
     SDL_QueryTexture(imgGameOverText, NULL, NULL, &(pos.w), &(pos.h)); 
     SDL_RenderCopy(renderer, imgGameOverText, NULL, &pos);
@@ -354,6 +363,7 @@ void checkCollisions() {
 			ship->isAlive = FALSE;
 			iGameOver = TRUE;
 		    Mix_PlayChannel(-1, soundShipDead, 0);
+			fKeyPressDelay = 5;
 
 	  
 		} 
@@ -378,6 +388,7 @@ void checkCollisions() {
 			(ship->y >= enemy->y && ship->y < enemy->y + enemy->height) ) {
 		ship->isAlive = FALSE;
 		iGameOver = TRUE;
+		fKeyPressDelay = 5;
 	  
 		} 
 
@@ -436,6 +447,7 @@ void checkLevelComplete() {
 	  iCurrentLevel++;
 	  if (iCurrentLevel > iLevelCount) {
 		  iLevelComplete = TRUE;
+		  fKeyPressDelay = 5;
 	  } else {
 		read_level("level_00.txt\n", iCurrentLevel);
 	  }
@@ -455,23 +467,29 @@ void handleInput_screen_game(int iType, int iKey) {
   float fSpeed = UNIT_SIZE * 5;
 
   if (iType == SDL_KEYDOWN) {
-    if (iKey == SDLK_UP) {
+    if (iKey == SDLK_UP || iKey == SDLK_w) {
       ship->vel_y = -fSpeed;
-    } else if (iKey == SDLK_DOWN) {
+    } else if (iKey == SDLK_DOWN || iKey == SDLK_s) {
       ship->vel_y = fSpeed;
-    } else if (iKey == SDLK_LEFT) {
+    } else if (iKey == SDLK_LEFT || iKey == SDLK_a) {
       ship->vel_x = -fSpeed;
-    } else if (iKey == SDLK_RIGHT) {
+    } else if (iKey == SDLK_RIGHT || iKey == SDLK_d) {
       ship->vel_x = fSpeed;
     } else if (iKey == SDLK_SPACE) {
       //shoot(); 
 	  if (iLevelComplete) {
 //		  iCurrentLevel = 0;
 //		  start_screen_game();
+		if (fKeyPressDelay <= 0) {
+
     	  iCurrentLevel = 0;
-		setCurrentScreen(0);
+			setCurrentScreen(0);
+		}
 	  } else if (iGameOver) {
+		  		if (fKeyPressDelay <= 0) {
+
 		  start_screen_game();
+				}
 	  } else {
 		iButtonFireDown = TRUE;
 	  }
@@ -485,13 +503,13 @@ void handleInput_screen_game(int iType, int iKey) {
 
 
   if (iType == SDL_KEYUP) {
-    if (iKey == SDLK_UP && ship->vel_y < 0) {
+    if ((iKey == SDLK_UP || iKey == SDLK_w) && ship->vel_y < 0) {
       ship->vel_y = 0;
-    } else if (iKey == SDLK_DOWN && ship->vel_y > 0) {
+    } else if ((iKey == SDLK_DOWN  || iKey == SDLK_s) && ship->vel_y > 0) {
       ship->vel_y = 0;
-    } else if (iKey == SDLK_LEFT && ship->vel_x < 0) {
+    } else if ((iKey == SDLK_LEFT || iKey == SDLK_a) && ship->vel_x < 0) {
       ship->vel_x = 0;
-    } else if (iKey == SDLK_RIGHT && ship->vel_x > 0) {
+    } else if ((iKey == SDLK_RIGHT || iKey == SDLK_d) && ship->vel_x > 0) {
       ship->vel_x = 0;
     } else if (iKey == SDLK_SPACE) {
 	  iButtonFireDown = FALSE;
