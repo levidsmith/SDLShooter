@@ -24,8 +24,10 @@ SDL_Renderer* renderer = NULL;
 SDL_Surface* screenSurface = NULL;
 
 SDL_Texture *imgShip;
-SDL_Texture *imgEnemyAlpha_00;
-SDL_Texture *imgEnemyAlpha_01;
+SDL_Texture *imgEnemyAlpha_L1_00;
+SDL_Texture *imgEnemyAlpha_L1_01;
+SDL_Texture *imgEnemyAlpha_L2_00;
+SDL_Texture *imgEnemyAlpha_L2_01;
 SDL_Texture *imgEnemyBravo_00;
 SDL_Texture *imgEnemyBravo_01;
 SDL_Texture *imgEnemyCharlie_00;
@@ -53,6 +55,7 @@ Mix_Chunk *soundShoot;
 Mix_Chunk *soundShipDead;
 Mix_Chunk *soundEnemyDead;
 Mix_Chunk *soundEnemyShoot;
+Mix_Chunk *soundEnemyHit;
 Mix_Chunk *soundPowerup;
 
 Mix_Music *musicGame; 
@@ -195,13 +198,24 @@ int main(int argc, char* args[]) {
 
   sprEnemy = SDL_LoadBMP("assets/images/enemy_alpha1.bmp");
   SDL_SetColorKey(sprEnemy, SDL_TRUE, SDL_MapRGB(sprEnemy->format, 255, 0, 255));
-  imgEnemyAlpha_00 = SDL_CreateTextureFromSurface(renderer, sprEnemy);
+  imgEnemyAlpha_L1_00 = SDL_CreateTextureFromSurface(renderer, sprEnemy);
   SDL_FreeSurface(sprEnemy);
 
   sprEnemy = SDL_LoadBMP("assets/images/enemy_alpha2.bmp");
   SDL_SetColorKey(sprEnemy, SDL_TRUE, SDL_MapRGB(sprEnemy->format, 255, 0, 255));
-  imgEnemyAlpha_01 = SDL_CreateTextureFromSurface(renderer, sprEnemy);
+  imgEnemyAlpha_L1_01 = SDL_CreateTextureFromSurface(renderer, sprEnemy);
   SDL_FreeSurface(sprEnemy);
+
+  sprEnemy = SDL_LoadBMP("assets/images/enemy_alpha_l2_1.bmp");
+  SDL_SetColorKey(sprEnemy, SDL_TRUE, SDL_MapRGB(sprEnemy->format, 255, 0, 255));
+  imgEnemyAlpha_L2_00 = SDL_CreateTextureFromSurface(renderer, sprEnemy);
+  SDL_FreeSurface(sprEnemy);
+
+  sprEnemy = SDL_LoadBMP("assets/images/enemy_alpha_l2_2.bmp");
+  SDL_SetColorKey(sprEnemy, SDL_TRUE, SDL_MapRGB(sprEnemy->format, 255, 0, 255));
+  imgEnemyAlpha_L2_01 = SDL_CreateTextureFromSurface(renderer, sprEnemy);
+  SDL_FreeSurface(sprEnemy);
+
 
   sprEnemy = SDL_LoadBMP("assets/images/enemy_bravo1.bmp");
   SDL_SetColorKey(sprEnemy, SDL_TRUE, SDL_MapRGB(sprEnemy->format, 255, 0, 255));
@@ -272,6 +286,7 @@ int main(int argc, char* args[]) {
   soundShoot = Mix_LoadWAV("assets/audio/shoot.wav");
   soundEnemyDead = Mix_LoadWAV("assets/audio/enemy_dead.wav");
   soundEnemyShoot = Mix_LoadWAV("assets/audio/enemy_shoot.wav");
+  soundEnemyHit = Mix_LoadWAV("assets/audio/enemy_hit.wav");
   soundShipDead = Mix_LoadWAV("assets/audio/ship_dead.wav");
   soundPowerup = Mix_LoadWAV("assets/audio/powerup.wav");
 
@@ -334,6 +349,7 @@ int main(int argc, char* args[]) {
   Mix_FreeChunk(soundShoot);
   Mix_FreeChunk(soundEnemyDead);
   Mix_FreeChunk(soundEnemyShoot);
+  Mix_FreeChunk(soundEnemyHit);
   Mix_FreeChunk(soundShipDead);
   Mix_FreeChunk(soundPowerup);
 
@@ -346,8 +362,10 @@ int main(int argc, char* args[]) {
   
   SDL_DestroyTexture(imgShip);
   SDL_DestroyTexture(imgBackground);
-  SDL_DestroyTexture(imgEnemyAlpha_00);
-  SDL_DestroyTexture(imgEnemyAlpha_01);
+  SDL_DestroyTexture(imgEnemyAlpha_L1_00);
+  SDL_DestroyTexture(imgEnemyAlpha_L1_01);
+  SDL_DestroyTexture(imgEnemyAlpha_L2_00);
+  SDL_DestroyTexture(imgEnemyAlpha_L2_01);
   SDL_DestroyTexture(imgEnemyBravo_00);
   SDL_DestroyTexture(imgEnemyBravo_01);
   SDL_DestroyTexture(imgEnemyCharlie_00);

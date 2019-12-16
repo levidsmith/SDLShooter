@@ -10,8 +10,10 @@
 #include "globals.h"
 
 extern SDL_Renderer *renderer;
-extern SDL_Texture *imgEnemyAlpha_00;
-extern SDL_Texture *imgEnemyAlpha_01;
+extern SDL_Texture *imgEnemyAlpha_L1_00;
+extern SDL_Texture *imgEnemyAlpha_L1_01;
+extern SDL_Texture *imgEnemyAlpha_L2_00;
+extern SDL_Texture *imgEnemyAlpha_L2_01;
 extern SDL_Texture *imgEnemyBravo_00;
 extern SDL_Texture *imgEnemyBravo_01;
 extern SDL_Texture *imgEnemyCharlie_00;
@@ -47,6 +49,9 @@ void init_enemy(struct Enemy *enemy, int init_x, int init_y, int init_iType) {
   enemy->fLifetime = 0;
   enemy->fShootDelay = 0;
   enemy->hasDrop = FALSE;
+  enemy->iHealth = 1;
+  enemy->iLevel = 1;
+  enemy->fDamagedCountdown = 0;
   
   setShootDelay_enemy(enemy);
 
@@ -96,6 +101,16 @@ void update_enemy(struct Enemy *enemy) {
 		}
 	}
 	
+	if (enemy->fDamagedCountdown > 0) {
+		enemy->fDamagedCountdown -= DELTA_TIME;
+		
+		if (enemy->fDamagedCountdown < 0) {
+			enemy->fDamagedCountdown = 0;
+			
+		}
+		
+	}
+	
 
     if (enemy->y > SCREEN_HEIGHT) {
       enemy->y -= SCREEN_HEIGHT;
@@ -104,6 +119,7 @@ void update_enemy(struct Enemy *enemy) {
 
 void draw_enemy(struct Enemy *enemy) {
     SDL_Rect pos;
+	SDL_Texture *img = NULL;
 	
 //	printf("enemy x: %f y %f\n", enemy->x, enemy->y);
 	
@@ -119,41 +135,77 @@ void draw_enemy(struct Enemy *enemy) {
       switch(enemy->iType) {
         case 0:
           if (iSpriteIndex == 0) {
-	        SDL_RenderCopy(renderer, imgEnemyAlpha_00, NULL, &pos);
+			  if (enemy->iLevel == 1) {
+				//SDL_RenderCopy(renderer, imgEnemyAlpha_L1_00, NULL, &pos);
+				img = imgEnemyAlpha_L1_00;
+			  } else if (enemy->iLevel == 2) {
+				  //SDL_RenderCopy(renderer, imgEnemyAlpha_L2_00, NULL, &pos);
+				img = imgEnemyAlpha_L2_00;
+			  }
 		  } else if (iSpriteIndex == 1) {
-	        SDL_RenderCopy(renderer, imgEnemyAlpha_01, NULL, &pos);
+			  if (enemy->iLevel == 1) {
+//				SDL_RenderCopy(renderer, imgEnemyAlpha_L1_01, NULL, &pos);
+				img = imgEnemyAlpha_L1_01;
+
+			  } else if (enemy->iLevel == 2) {
+//				  SDL_RenderCopy(renderer, imgEnemyAlpha_L2_01, NULL, &pos);
+				img = imgEnemyAlpha_L2_01;
+
+			  }
 		  }
 
           break;
         case 1:
 		  
           if (iSpriteIndex == 0) {
-	        SDL_RenderCopy(renderer, imgEnemyBravo_00, NULL, &pos);
+//	        SDL_RenderCopy(renderer, imgEnemyBravo_00, NULL, &pos);
+				img = imgEnemyBravo_00;
+
 		  } else if (iSpriteIndex == 1) {
-	        SDL_RenderCopy(renderer, imgEnemyBravo_01, NULL, &pos);
+//	        SDL_RenderCopy(renderer, imgEnemyBravo_01, NULL, &pos);
+				img = imgEnemyBravo_01;
 		  }
 
           break;
         case 2:
 		  
           if (iSpriteIndex == 0) {
-	        SDL_RenderCopy(renderer, imgEnemyCharlie_00, NULL, &pos);
+//	        SDL_RenderCopy(renderer, imgEnemyCharlie_00, NULL, &pos);
+				img = imgEnemyCharlie_00;
+
 		  } else if (iSpriteIndex == 1) {
-	        SDL_RenderCopy(renderer, imgEnemyCharlie_01, NULL, &pos);
+			  	img = imgEnemyCharlie_01;
+
+//	        SDL_RenderCopy(renderer, imgEnemyCharlie_01, NULL, &pos);
 		  }
 
           break;
         case 3:
 		  
           if (iSpriteIndex == 0) {
-	        SDL_RenderCopy(renderer, imgEnemyDelta_00, NULL, &pos);
+				img = imgEnemyDelta_00;
+			  
+//	        SDL_RenderCopy(renderer, imgEnemyDelta_00, NULL, &pos);
 		  } else if (iSpriteIndex == 1) {
-	        SDL_RenderCopy(renderer, imgEnemyDelta_01, NULL, &pos);
+				img = imgEnemyDelta_01;
+			  
+//	        SDL_RenderCopy(renderer, imgEnemyDelta_01, NULL, &pos);
 		  }
 
           break;
 		  
       }
+	
+		if (img != NULL) {
+			if (enemy->fDamagedCountdown > 0) {
+					SDL_SetTextureColorMod(img, 255, 0, 0);
+			} else {
+				SDL_SetTextureColorMod(img, 255, 255, 255);
+
+			}
+			SDL_RenderCopy(renderer, img, NULL, &pos);
+		}
+
     }
 
 }
@@ -192,5 +244,16 @@ void setShootDelay_enemy(struct Enemy *enemy) {
 		break;
   }
 	
+}
+
+void damage_enemy(struct Enemy *enemy, int iDamageAmount) {
+	enemy->iHealth -= iDamageAmount;
+	if (enemy->iHealth <= 0) {
+		enemy->isAlive = FALSE;
+		
+	}
+  enemy->fDamagedCountdown = 0.2;
+  
+
 }
 

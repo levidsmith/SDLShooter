@@ -24,6 +24,7 @@ extern void clear_list(struct Node **head);
 extern void remove_node(struct Node **head, struct Node *node);
 extern SDL_Renderer* renderer;
 extern void setCurrentScreen(int iScreen);
+extern void damage_enemy(struct Enemy *enemy, int iDamageAmount);
 
 
 //VARIABLES
@@ -42,6 +43,7 @@ extern Mix_Chunk *soundShoot;
 extern Mix_Chunk *soundShipDead;
 extern Mix_Chunk *soundEnemyDead;
 extern Mix_Chunk *soundEnemyShoot;
+extern Mix_Chunk *soundEnemyHit;
 extern Mix_Chunk *soundPowerup;
 
 
@@ -335,17 +337,29 @@ void checkCollisions() {
 			  ((bullet->x + bullet->width / 2) >= enemy->x && (bullet->x + bullet->width / 2) < enemy->x + enemy->width) &&
 			  ((bullet->y + bullet->height / 2) >= enemy->y && (bullet->y + bullet->height / 2) < enemy->y + enemy->height) ) {
 		    bullet->isAlive = FALSE;
-		    enemy->isAlive = FALSE;
-		    iScore += 100;
-		    updateScoreText();
-		    Mix_PlayChannel(-1, soundEnemyDead, 0);
+//		    enemy->isAlive = FALSE;
+			damage_enemy(enemy, 1);
+//			enemy->iHealth--;
+			if (!enemy->isAlive) {
+//			    enemy->isAlive = FALSE;
+//				enemy->fDamagedCountdown = 0.5;
+				iScore += 100;
+				
+					    updateScoreText();
+				Mix_PlayChannel(-1, soundEnemyDead, 0);
 			
-			if (enemy->hasDrop) {
-				struct Powerup *powerup = malloc(sizeof(struct Powerup));
-				init_powerup(powerup, enemy->x, enemy->y, 0);
-				add_node(&listPowerup, powerup);
-			}
+				if (enemy->hasDrop) {
+					struct Powerup *powerup = malloc(sizeof(struct Powerup));
+					init_powerup(powerup, enemy->x, enemy->y, 0);
+					add_node(&listPowerup, powerup);
+				}
 
+				
+			} else {
+				Mix_PlayChannel(-1, soundEnemyHit, 0);
+
+			}
+	
 			
           } 
 

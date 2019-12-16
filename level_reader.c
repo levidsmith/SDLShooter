@@ -76,6 +76,7 @@ void read_level(char *strFile, int iLevelToRead) {
 				struct Enemy *e1;
 				e1 = malloc(sizeof(struct Enemy));
 				init_enemy(e1, x, y, 2);
+				e1->iHealth = 3;
 
 				if (iDropCountdown <= 0) {
 					e1->hasDrop = TRUE;
@@ -96,6 +97,7 @@ void read_level(char *strFile, int iLevelToRead) {
 					struct Enemy *e1;
 					e1 = malloc(sizeof(struct Enemy));
 					init_enemy(e1, x, y, 3);
+					e1->iHealth = 5;
 
 					if (iDropCountdown <= 0) {
 						e1->hasDrop = TRUE;
@@ -110,6 +112,24 @@ void read_level(char *strFile, int iLevelToRead) {
 					add_node(&listEnemy, e1);
 					iEnemyCount++;
 				}
+			} else 	if (strLine[i] == '4') {
+
+				struct Enemy *e1;
+				e1 = malloc(sizeof(struct Enemy));
+				init_enemy(e1, x, y, 0);
+				e1->iLevel = 2;
+				e1->iHealth = 3;
+				if (iDropCountdown <= 0) {
+					e1->hasDrop = TRUE;
+					iDropCountdown = getDropCountdown();
+				} else {
+					iDropCountdown--;
+				}
+
+
+				add_node(&listEnemy, e1);
+				iEnemyCount++;
+
 
 			}
 

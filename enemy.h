@@ -1,5 +1,6 @@
 //2019 Levi D. Smith - levidsmith.com
 struct Enemy {
+  int iLevel;
   int iHealth;
   float x;
   float y;
@@ -15,6 +16,7 @@ struct Enemy {
   int iType;
   float fShootDelay;
   int hasDrop;
+  float fDamagedCountdown;
 };
 
 void init_enemy(struct Enemy *, int, int, int);
