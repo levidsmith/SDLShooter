@@ -56,9 +56,9 @@ void print_list(struct Node *head) {
   struct Node *current = head;
 
   printf("start print_list\n");
-  printf("  head address: %x\n", head);
+//  printf("  head address: %x\n", head);
   while(current != NULL) {
-    printf("  value: %d, address: %x\n", *((int *) current->data), current);
+//    printf("  value: %d, address: %x\n", *((int *) current->data), current);
     current = current->next;
   }
 //  printf("end print_list\n");

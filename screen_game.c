@@ -85,7 +85,6 @@ void start_screen_game() {
   init_ship(ship);
   
   printf("ship values x: %d y: %d width: %d height %d\n", ship->x, ship->y, ship->width, ship->height);
-  printf("fontDefault: %x\n", fontDefault);
 
 
   //read level
@@ -105,7 +104,6 @@ void start_screen_game() {
   
 
 
-  printf("fontDefault: %x", fontDefault);
 
   iScore = 0;
   updateScoreText();
@@ -539,7 +537,6 @@ void updateScoreText() {
   sprintf(strScore, "Score: %d", iScore);
 
   printf("before sprText\n");
-  printf("fontDefault: %x", fontDefault);
   
   SDL_Surface *sprText;
 
