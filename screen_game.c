@@ -206,7 +206,7 @@ void update_screen_game() {
 
 
   //update background
-  iBackgroundOffset += 3 * UNIT_SIZE * DELTA_TIME;
+  iBackgroundOffset += 10 * UNIT_SIZE * DELTA_TIME;
   if (iBackgroundOffset > 255) {
     iBackgroundOffset -= 256;
   }
@@ -353,10 +353,6 @@ void checkCollisions() {
 					init_powerup(powerup, enemy->x, enemy->y, 0);
 					add_node(&listPowerup, powerup);
 				}
-
-				
-			} else {
-				Mix_PlayChannel(-1, soundEnemyHit, 0);
 
 			}
 	

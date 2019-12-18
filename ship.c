@@ -74,7 +74,7 @@ void shoot_ship(struct Ship *ship) {
 
 void increaseFireRate_ship(struct Ship *ship) {
 	ship->fMaxShootDelay -= 0.1;
-	if (ship->fMaxShootDelay < 0.1) {
-		ship->fMaxShootDelay = 0.1;
+	if (ship->fMaxShootDelay < 0.2) {
+		ship->fMaxShootDelay = 0.2;
 	}
 }

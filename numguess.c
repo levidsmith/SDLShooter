@@ -8,6 +8,8 @@ int main(void) {
   int iGuess;
   int iGuesses;
 
+  
+
   printf("rand: %d\n", rand() % 5);
   printf("rand: %d\n", rand() % 5);
   printf("rand: %d\n", rand() % 5);
