@@ -315,7 +315,7 @@ void shoot_enemy(struct Enemy *enemy) {
 
 	init_bullet(bullet, enemy->x + enemy->width / 2, enemy->y);
 
-	bullet->vel_y = -5;
+	bullet->vel_y = 5;
 	bullet->iHitsPlayer = TRUE;
 
 //	printf("added bullet at x: %d y: %d\n", bullet->x, bullet->y);

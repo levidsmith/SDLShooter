@@ -10,6 +10,7 @@ extern SDL_Texture *imgBulletEnemy;
 void init_bullet(struct Bullet *bullet, int init_x, int init_y) {
   bullet->x = (float) init_x;
   bullet->y = (float) init_y;
+  bullet->vel_x = 0;
   bullet->vel_y = 0;
   bullet->isAlive = TRUE;
   bullet->width = 16;
@@ -21,8 +22,9 @@ void init_bullet(struct Bullet *bullet, int init_x, int init_y) {
 
 void update_bullet(struct Bullet *bullet) {
   if (bullet->isAlive) {
-    bullet->y -= (bullet->vel_y * UNIT_SIZE * DELTA_TIME);
-    if (bullet->y < 0) {
+	bullet->x += bullet->vel_x * UNIT_SIZE * DELTA_TIME;
+    bullet->y += bullet->vel_y * UNIT_SIZE * DELTA_TIME;
+    if (bullet->y < 0 || bullet->y > SCREEN_HEIGHT) {
       bullet->isAlive = FALSE;
     }
   }

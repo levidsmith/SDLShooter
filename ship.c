@@ -1,10 +1,17 @@
 //2019 Levi D. Smith - levidsmith.com
 #include <SDL.h>
+#include <SDL_mixer.h>
+#include <stdlib.h>
+#include "linked_list.h"
 #include "ship.h"
+#include "bullet.h"
 #include "globals.h"
 
 extern SDL_Renderer *renderer;
 extern SDL_Texture *imgShip;
+extern Mix_Chunk *soundShoot;
+extern Mix_Chunk *soundWeaponSelect;
+
 
 
 void init_ship(struct Ship *ship) {
@@ -17,6 +24,9 @@ void init_ship(struct Ship *ship) {
   ship->isAlive = TRUE;
   ship->fShootDelay = 0;
   ship->fMaxShootDelay = 0.5;
+  ship->fMaxEnergy = 200;
+  ship->fEnergy = ship->fMaxEnergy;
+  ship->iWeaponType = 0;
 
 }
 
@@ -50,6 +60,12 @@ void update_ship(struct Ship *ship) {
 		  ship->fShootDelay = 0;
 	  }
   }
+  
+  //update energy
+  ship->fEnergy += 10 * DELTA_TIME;
+  if (ship->fEnergy > ship->fMaxEnergy) {
+	  ship->fEnergy = ship->fMaxEnergy;
+  }
 	
 }
 
@@ -67,14 +83,108 @@ void draw_ship(struct Ship *ship) {
 	
 }
 
-void shoot_ship(struct Ship *ship) {
+void shoot_ship(struct Ship *ship, struct Node **listBullet) {
 //	ship->fShootDelay = 0.5;
-	ship->fShootDelay = ship->fMaxShootDelay;
+
+  if (ship->iWeaponType == 0) {
+
+	if (ship->fEnergy >= 5) {
+		struct Bullet *bullet;
+		
+		bullet = malloc(sizeof(struct Bullet));
+		init_bullet(bullet, ship->x + ship->width / 2, ship->y);
+		bullet->vel_y = -5;
+		bullet->iHitsEnemy = TRUE;
+
+
+		
+		ship->fShootDelay = ship->fMaxShootDelay;
+		ship->fEnergy -= 5;
+		
+		add_node(listBullet, bullet);
+
+		
+		Mix_PlayChannel(-1, soundShoot, 0);
+	}
+  } else if (ship->iWeaponType == 1) {
+
+	if (ship->fEnergy >= 8) {
+		struct Bullet *bullet;
+		
+		bullet = malloc(sizeof(struct Bullet));
+		init_bullet(bullet, ship->x + ship->width / 2, ship->y);
+		bullet->vel_y = -5;
+		bullet->iHitsEnemy = TRUE;
+
+
+		
+		ship->fShootDelay = ship->fMaxShootDelay * 0.5;
+		ship->fEnergy -= 5;
+		
+		add_node(listBullet, bullet);
+
+		
+		Mix_PlayChannel(-1, soundShoot, 0);
+	}
+	
+	
+  } else if (ship->iWeaponType == 2) {
+	if (ship->fEnergy >= 15) {
+		struct Bullet *bullet;
+		float fVelX = 0.7071;
+		float fVelY = 0.7071;
+		
+		bullet = malloc(sizeof(struct Bullet));
+		init_bullet(bullet, ship->x + ship->width / 2, ship->y);
+		bullet->vel_y = -5;
+		bullet->iHitsEnemy = TRUE;
+		add_node(listBullet, bullet);
+
+		bullet = malloc(sizeof(struct Bullet));
+		init_bullet(bullet, ship->x + ship->width / 2, ship->y);
+		bullet->vel_x = 5.0 * fVelX;
+		bullet->vel_y = -5.0 * fVelY;
+		bullet->iHitsEnemy = TRUE;
+		add_node(listBullet, bullet);
+
+		bullet = malloc(sizeof(struct Bullet));
+		init_bullet(bullet, ship->x + ship->width / 2, ship->y);
+		bullet->vel_x = 5.0 * -fVelX;
+		bullet->vel_y = -5.0 * fVelY;
+		bullet->iHitsEnemy = TRUE;
+		add_node(listBullet, bullet);
+
+		
+		ship->fShootDelay = ship->fMaxShootDelay;
+		ship->fEnergy -= 15;
+		
+
+		
+		Mix_PlayChannel(-1, soundShoot, 0);
+	}
+	  
+  }
 }
 
 void increaseFireRate_ship(struct Ship *ship) {
+	/*
 	ship->fMaxShootDelay -= 0.1;
 	if (ship->fMaxShootDelay < 0.2) {
 		ship->fMaxShootDelay = 0.2;
 	}
+	*/
+	ship->fEnergy += 50;
+	if (ship->fEnergy > ship->fMaxEnergy) {
+		ship->fEnergy = ship->fMaxEnergy;
+	}
+	
+}
+
+void selectWeaponUp_ship(struct Ship *ship) {
+	ship->iWeaponType++;
+	if (ship->iWeaponType > 2) {
+		ship->iWeaponType = 0;
+	}
+	Mix_PlayChannel(-1, soundWeaponSelect, 0);
+
 }

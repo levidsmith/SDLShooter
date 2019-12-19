@@ -38,6 +38,8 @@ extern SDL_Texture *imgScoreText;
 extern SDL_Texture *imgLevelCompleteText;
 extern SDL_Texture *imgGameOverText;
 extern SDL_Texture *imgLevel;
+extern SDL_Texture *imgWeaponText;
+
 
 extern Mix_Chunk *soundShoot;
 extern Mix_Chunk *soundShipDead;
@@ -53,6 +55,7 @@ SDL_Rect pos;
 SDL_Rect posText;
 
 int iButtonFireDown = FALSE;
+int iButtonOptionDown = FALSE;
 
 struct Ship *ship;
 struct Node *listBullet;
@@ -247,6 +250,21 @@ void draw_screen_game() {
 	draw_bullet(bullet);
     current = current->next;
   }
+  
+//Draw energy meter
+  SDL_Rect rectMeter;
+  SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+  SDL_SetRenderDrawColor(renderer, 0, 0, 0, 128);
+  rectMeter.x = 100;
+  rectMeter.y = 640 - 32;
+  rectMeter.w = ship->fMaxEnergy;
+  rectMeter.h =  32;
+  SDL_RenderFillRect(renderer, &rectMeter);
+
+  SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+  rectMeter.w = ship->fEnergy;
+  SDL_RenderFillRect(renderer, &rectMeter);
+
  
 //Draw the enemies
   current = listEnemy;
@@ -280,6 +298,12 @@ void draw_screen_game() {
   
   SDL_QueryTexture(imgLevel, NULL, NULL, &(pos.w), &(pos.h)); 
   SDL_RenderCopy(renderer, imgLevel, NULL, &pos);
+
+//draw weapon text
+  pos.x = 100;
+  pos.y = 640 - 64;
+  SDL_QueryTexture(imgWeaponText, NULL, NULL, &(pos.w), &(pos.h)); 
+  SDL_RenderCopy(renderer, imgWeaponText, NULL, &pos);
 
 //Draw level complete text
   if (iLevelComplete) {
@@ -506,7 +530,14 @@ void handleInput_screen_game(int iType, int iKey) {
 	  setCurrentScreen(0);
     } else if (iKey == SDLK_m || iKey == SDLK_ESCAPE) {
       Mix_VolumeMusic(0);
-    }  
+    } else if (iKey == SDLK_TAB) {
+		if (iButtonOptionDown == FALSE) {
+			selectWeaponUp_ship(ship);
+			updateScoreText();
+			iButtonOptionDown = TRUE;
+		}
+	}
+
   }
 
 
@@ -521,6 +552,8 @@ void handleInput_screen_game(int iType, int iKey) {
       ship->vel_x = 0;
     } else if (iKey == SDLK_SPACE) {
 	  iButtonFireDown = FALSE;
+    } else if (iKey == SDLK_TAB) {
+	  iButtonOptionDown = FALSE;
     }  
   }
 
@@ -559,6 +592,17 @@ void updateScoreText() {
   sprText = TTF_RenderText_Solid(fontDefault, strLevel, colorText);
   imgLevel = SDL_CreateTextureFromSurface(renderer, sprText);
   SDL_FreeSurface(sprText); 
+
+  //weapon display
+  colorText.r = 255;
+  colorText.g = 0;
+  colorText.b = 0;
+
+  char strWeapon[20];
+  sprintf(strWeapon, "Weapon %d", ship->iWeaponType);
+  sprText = TTF_RenderText_Solid(fontDefault, strWeapon, colorText);
+  imgWeaponText = SDL_CreateTextureFromSurface(renderer, sprText);
+  SDL_FreeSurface(sprText); 
   
 
 
@@ -583,6 +627,7 @@ void shoot() {
   struct Bullet *bullet;
 	
   if (ship != NULL && (ship->fShootDelay <= 0) && ship->isAlive) {
+	  /*
 	bullet = malloc(sizeof(struct Bullet));
 
 	printf("ship at x: %d y: %d\n", ship->x, ship->y);
@@ -593,11 +638,12 @@ void shoot() {
 	bullet->iHitsEnemy = TRUE;
 
 	printf("added bullet at x: %d y: %d\n", bullet->x, bullet->y);
-	
 	add_node(&listBullet, bullet);
-	shoot_ship(ship);
+	*/
 
-    Mix_PlayChannel(-1, soundShoot, 0);
+	shoot_ship(ship, &listBullet);
+	
+//    Mix_PlayChannel(-1, soundShoot, 0);
   }
 }
 

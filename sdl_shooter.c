@@ -48,6 +48,7 @@ SDL_Texture *imgScoreText;
 SDL_Texture *imgLevelCompleteText;
 SDL_Texture *imgGameOverText;
 SDL_Texture *imgLevel;
+SDL_Texture *imgWeaponText;
 SDL_Texture *imgPowerupAlpha;
 SDL_Texture *imgTitleText;
 SDL_Texture *imgCopyrightText;
@@ -63,6 +64,7 @@ Mix_Chunk *soundEnemyShoot;
 Mix_Chunk *soundEnemyHit;
 Mix_Chunk *soundEnemyShield;
 Mix_Chunk *soundPowerup;
+Mix_Chunk *soundWeaponSelect;
 
 Mix_Music *musicGame; 
 Mix_Music *musicTitle; 
@@ -316,6 +318,7 @@ int main(int argc, char* args[]) {
   soundEnemyShield = Mix_LoadWAV("assets/audio/enemy_shield.wav");
   soundShipDead = Mix_LoadWAV("assets/audio/ship_dead.wav");
   soundPowerup = Mix_LoadWAV("assets/audio/powerup.wav");
+  soundWeaponSelect = Mix_LoadWAV("assets/audio/weapon_select.wav");
 
   musicGame = Mix_LoadMUS("assets/audio/sdl-shooter-level.wav");
   musicTitle = Mix_LoadMUS("assets/audio/sdl-shooter-title.wav");
@@ -380,6 +383,7 @@ int main(int argc, char* args[]) {
   Mix_FreeChunk(soundEnemyShield);
   Mix_FreeChunk(soundShipDead);
   Mix_FreeChunk(soundPowerup);
+  Mix_FreeChunk(soundWeaponSelect);
 
   Mix_FreeMusic(musicGame);
   Mix_FreeMusic(musicTitle);
@@ -409,6 +413,7 @@ int main(int argc, char* args[]) {
   SDL_DestroyTexture(imgScoreText);
   SDL_DestroyTexture(imgLevelCompleteText);
   SDL_DestroyTexture(imgLevel);
+  SDL_DestroyTexture(imgWeaponText);
 
   SDL_DestroyRenderer(renderer);
 

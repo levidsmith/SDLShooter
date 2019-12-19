@@ -1,8 +1,9 @@
 //2019 Levi D. Smith - levidsmith.com
 struct Bullet {
-  int x;
-  int y;
+  float x;
+  float y;
   float vel_y;
+  float vel_x;
   int width;
   int height;
   int isAlive;

@@ -9,10 +9,14 @@ struct Ship {
   int isAlive;
   float fShootDelay;
   float fMaxShootDelay;
+  float fEnergy;
+  float fMaxEnergy;
+  int iWeaponType;
 };
 
 void init_ship(struct Ship *);
 void update_ship(struct Ship *);
 void draw_ship(struct Ship *);
-void shoot_ship(struct Ship *);
+void shoot_ship(struct Ship *, struct Node **listBullet);
 void increaseFireRate_ship(struct Ship *);
+void selectWeaponUp_ship(struct Ship *ship);
