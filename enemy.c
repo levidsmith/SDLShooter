@@ -6,6 +6,8 @@
 #include <SDL_mixer.h>
 #include "enemy.h"
 #include "bullet.h"
+#include "powerup.h"
+#include "explosion.h"
 #include "linked_list.h"
 #include "globals.h"
 
@@ -34,9 +36,12 @@ extern Mix_Chunk *soundEnemyShield;
 
 
 extern struct Node *listBullet;
+extern struct Node *listPowerup;
+extern struct Node *listExplosion;
 extern struct Node *add_node(struct Node **head, void *value);
 extern int count_list(struct Node *head);
 extern void remove_node(struct Node **head, struct Node *node);
+extern int iScore;
 
 
 
@@ -358,7 +363,8 @@ void damage_enemy(struct Enemy *enemy, int iDamageAmount) {
 		enemy->iHealth -= iTotalDamage;
 		if (enemy->iHealth <= 0) {
 			enemy->isAlive = FALSE;
-			Mix_PlayChannel(-1, soundEnemyDead, 0);
+			destroy_enemy(enemy);
+//			Mix_PlayChannel(-1, soundEnemyDead, 0);
 		
 		} else {
 			Mix_PlayChannel(-1, soundEnemyHit, 0);
@@ -374,6 +380,32 @@ void damage_enemy(struct Enemy *enemy, int iDamageAmount) {
   
 
 }
+
+void destroy_enemy(struct Enemy *enemy) {
+				enemy->isAlive = FALSE;
+				iScore += 100;
+				
+//					    updateScoreText();
+				Mix_PlayChannel(-1, soundEnemyDead, 0);
+				
+			
+				if (enemy->hasDrop) {
+					struct Powerup *powerup = malloc(sizeof(struct Powerup));
+					init_powerup(powerup, enemy->x, enemy->y, 0);
+					add_node(&listPowerup, powerup);
+				}
+				
+				struct Explosion *explosion = malloc(sizeof(struct Explosion));
+				init_explosion(explosion, enemy->x, enemy->y, enemy->width / 2);
+				explosion->c.r = 255;
+				explosion->c.g = 128;
+				explosion->c.b = 128;
+				
+				add_node(&listExplosion, explosion);
+
+	
+}
+
 
 void setTargetPosition_enemy(struct Enemy *enemy, float x, float y) {
 	float fSpeed = 1;

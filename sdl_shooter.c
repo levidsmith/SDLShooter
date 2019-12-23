@@ -1,5 +1,4 @@
 //2019 Levi D. Smith - levidsmith.com
-//New stuff
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -38,6 +37,8 @@ SDL_Texture *imgEnemyEcho_00;
 SDL_Texture *imgEnemyEcho_01;
 SDL_Texture *imgEnemyEcho_02;
 SDL_Texture *imgEnemyEcho_03;
+SDL_Texture *imgExplosion_L2_00;
+SDL_Texture *imgExplosion_L2_01;
 
 
 
@@ -195,6 +196,7 @@ int main(int argc, char* args[]) {
   SDL_Surface* sprBackground;
   SDL_Surface* sprBullet;
   SDL_Surface  *sprPowerup;
+  SDL_Surface *sprExplosion;
 
   
   sprShip = SDL_LoadBMP("assets/images/ship.bmp");
@@ -287,6 +289,15 @@ int main(int argc, char* args[]) {
   sprPowerup = SDL_LoadBMP("assets/images/powerup_alpha.bmp");
   SDL_SetColorKey(sprPowerup, SDL_TRUE, SDL_MapRGB(sprPowerup->format, 255, 0, 255));
   imgPowerupAlpha = SDL_CreateTextureFromSurface(renderer, sprPowerup);
+
+  sprExplosion = SDL_LoadBMP("assets/images/explosion_l2_1.bmp");
+  SDL_SetColorKey(sprExplosion, SDL_TRUE, SDL_MapRGB(sprExplosion->format, 255, 0, 255));
+  imgExplosion_L2_00 = SDL_CreateTextureFromSurface(renderer, sprExplosion);
+
+  sprExplosion = SDL_LoadBMP("assets/images/explosion_l2_2.bmp");
+  SDL_SetColorKey(sprExplosion, SDL_TRUE, SDL_MapRGB(sprExplosion->format, 255, 0, 255));
+  imgExplosion_L2_01 = SDL_CreateTextureFromSurface(renderer, sprExplosion);
+
   
   printf("created textures\n");
 
@@ -408,6 +419,8 @@ int main(int argc, char* args[]) {
   SDL_DestroyTexture(imgEnemyEcho_01);
   SDL_DestroyTexture(imgEnemyEcho_02);
   SDL_DestroyTexture(imgEnemyEcho_03);
+  SDL_DestroyTexture(imgExplosion_L2_00);
+  SDL_DestroyTexture(imgExplosion_L2_01);
   
   SDL_DestroyTexture(imgBullet);
   SDL_DestroyTexture(imgScoreText);

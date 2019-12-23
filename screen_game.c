@@ -4,6 +4,7 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 #include <SDL_mixer.h>
+#include <math.h>
 
 #include "globals.h"
 #include "screen_game.h"
@@ -13,6 +14,7 @@
 #include "level_reader.h"
 #include "bullet.h"
 #include "powerup.h"
+#include "explosion.h"
 
 
 
@@ -61,6 +63,7 @@ struct Ship *ship;
 struct Node *listBullet;
 struct Node *listEnemy;
 struct Node *listPowerup;
+struct Node *listExplosion;
 
 
 extern int iKeepLooping;
@@ -74,7 +77,7 @@ int iLevelCount = -1;
 
 float fKeyPressDelay = 0;
 
-char *strWeaponNames[5] = {"Normal", "Speed Shot", "Tri Shot", "Wave Shot", "Dual Wave Shot" };
+char *strWeaponNames[7] = {"Normal", "Speed Shot", "Tri Shot", "Wave Shot", "Dual Wave Shot", "Blast", "Blast 2" };
 
 
 
@@ -84,6 +87,14 @@ void start_screen_game() {
   clear_list(&listBullet);
   clear_list(&listEnemy);
   clear_list(&listPowerup);
+  clear_list(&listExplosion);
+
+/*
+			struct Explosion *explosion = malloc(sizeof(struct Explosion));
+			init_explosion(explosion, 0, 0,
+									  64 / 2);
+			add_node(&listExplosion, explosion);
+*/			
 
 	
   ship = malloc(sizeof(struct Ship));
@@ -207,6 +218,25 @@ void update_screen_game() {
   }
 
 
+//Update the explosions  //Update the powerups
+  current = listExplosion;
+  deleteNode = NULL;
+  struct Explosion *explosion;
+  while(current != NULL) {
+    explosion = (struct Explosion *) current->data;
+	update_explosion(explosion);
+	if (!explosion->isAlive) {
+		deleteNode = current;
+	}
+    current = current->next;
+  }
+  if (deleteNode != NULL) {
+    remove_node(&listExplosion, deleteNode);
+	deleteNode = NULL;
+  }
+
+
+
 
   //update background
   iBackgroundOffset += 10 * UNIT_SIZE * DELTA_TIME;
@@ -285,6 +315,16 @@ void draw_screen_game() {
 	draw_powerup(powerup);
     current = current->next;
   }  
+  
+//Draw explosions
+  current = listExplosion;
+  struct Explosion *explosion;
+  while(current != NULL) {
+	  explosion = (struct Explosion *) current->data;
+	  draw_explosion(explosion);
+	  current = current->next;
+	  
+  }
 
 
 //Draw the score text
@@ -364,22 +404,14 @@ void checkCollisions() {
 //		    enemy->isAlive = FALSE;
 			damage_enemy(enemy, 1);
 //			enemy->iHealth--;
+/*
 			if (!enemy->isAlive) {
-//			    enemy->isAlive = FALSE;
-//				enemy->fDamagedCountdown = 0.5;
-				iScore += 100;
-				
-					    updateScoreText();
-				Mix_PlayChannel(-1, soundEnemyDead, 0);
-			
-				if (enemy->hasDrop) {
-					struct Powerup *powerup = malloc(sizeof(struct Powerup));
-					init_powerup(powerup, enemy->x, enemy->y, 0);
-					add_node(&listPowerup, powerup);
-				}
-
+				destroyEnemy(enemy);
 			}
-	
+*/			
+
+
+
 			
           } 
 
@@ -387,6 +419,61 @@ void checkCollisions() {
 				
 				currentEnemy = currentEnemy->next;
 			}
+
+
+//exploding bullet			
+		if (!bullet->isAlive && bullet->fBlastRadius > 0) {
+			printf("Bullet blast: %f\n", bullet->fBlastRadius);
+			float fExplosionX = bullet->x - ((bullet->width + UNIT_SIZE * bullet->fBlastRadius) / 2);
+			float fExplosionY = bullet->y - ((bullet->width + UNIT_SIZE * bullet->fBlastRadius) / 2);
+			
+			struct Explosion *explosion = malloc(sizeof(struct Explosion));
+			explosion->c.r = 0;
+			explosion->c.g = 255;
+			explosion->c.b = 255;
+			init_explosion(explosion, fExplosionX, fExplosionY,
+									  UNIT_SIZE * bullet->fBlastRadius);
+			add_node(&listExplosion, explosion);
+
+			
+
+			currentEnemy = listEnemy;
+			while (currentEnemy != NULL) {
+				enemy = (struct Enemy *) currentEnemy->data;
+				
+				if (enemy->isAlive) {
+					//were just checking to see if the center of the enemy is in the radius of the explosion
+					if (getDistance(fExplosionX + (explosion->fRadius), fExplosionY + (explosion->fRadius), 
+									enemy->x + (enemy->width / 2), enemy->y + (enemy->height / 2))
+									< UNIT_SIZE * bullet->fBlastRadius) {
+						damage_enemy(enemy, 1);
+
+						
+					}
+					
+				}
+
+
+				currentEnemy = currentEnemy->next;
+			}
+
+
+			/*
+			struct Bullet *explodeBullet;
+					explodeBullet = malloc(sizeof(struct Bullet));
+					init_bullet(explodeBullet, bullet->x - bullet->fBlastRadius, bullet->y - bullet->fBlastRadius);
+					explodeBullet->width = UNIT_SIZE * bullet->fBlastRadius * 2;
+					explodeBullet->height = UNIT_SIZE * bullet->fBlastRadius * 2;
+					
+					explodeBullet->iHitsEnemy = TRUE;
+					
+					add_node(&listBullet, explodeBullet);
+		
+//		Mix_PlayChannel(-1, soundShoot, 0);
+*/
+
+			
+		}
 			
 			
 		//bullet collision with ship
@@ -460,6 +547,8 @@ void checkCollisions() {
 	
 
 }
+
+
 
 
 void checkLevelComplete() {

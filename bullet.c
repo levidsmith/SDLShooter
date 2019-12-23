@@ -22,6 +22,7 @@ void init_bullet(struct Bullet *bullet, int init_x, int init_y) {
   bullet->iHitsEnemy = FALSE;
   bullet->fLifetime = 0;
   bullet->fWaveAmplitude = 0;
+  bullet->fBlastRadius = 0;
 
 }
 

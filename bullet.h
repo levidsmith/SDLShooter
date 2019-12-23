@@ -13,6 +13,7 @@ struct Bullet {
   int iHitsEnemy;
   float fWaveAmplitude;
   float fLifetime;
+  float fBlastRadius;
 };
 
 void init_bullet(struct Bullet *, int, int);

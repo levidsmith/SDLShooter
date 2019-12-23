@@ -174,7 +174,7 @@ void shoot_ship(struct Ship *ship, struct Node **listBullet) {
 
 
 		
-		ship->fShootDelay = ship->fMaxShootDelay * 0.5;
+		ship->fShootDelay = ship->fMaxShootDelay;
 		ship->fEnergy -= 8;
 		
 		add_node(listBullet, bullet);
@@ -202,8 +202,46 @@ void shoot_ship(struct Ship *ship, struct Node **listBullet) {
 		add_node(listBullet, bullet);
 
 		
-		ship->fShootDelay = ship->fMaxShootDelay * 0.5;
+		ship->fShootDelay = ship->fMaxShootDelay;
 		ship->fEnergy -= 16;
+		
+
+		
+		Mix_PlayChannel(-1, soundShoot, 0);
+	}
+  } else if (ship->iWeaponType == 5) {
+	if (ship->fEnergy >= 12) {
+		struct Bullet *bullet;
+		
+		bullet = malloc(sizeof(struct Bullet));
+		init_bullet(bullet, ship->x + ship->width / 2, ship->y);
+		bullet->vel_y = -5;
+		bullet->iHitsEnemy = TRUE;
+		bullet->fBlastRadius = 2;
+		add_node(listBullet, bullet);
+
+
+		ship->fShootDelay = ship->fMaxShootDelay;
+		ship->fEnergy -= 12;
+		
+
+		
+		Mix_PlayChannel(-1, soundShoot, 0);
+	}
+  } else if (ship->iWeaponType == 6) {
+	if (ship->fEnergy >= 24) {
+		struct Bullet *bullet;
+		
+		bullet = malloc(sizeof(struct Bullet));
+		init_bullet(bullet, ship->x + ship->width / 2, ship->y);
+		bullet->vel_y = -5;
+		bullet->iHitsEnemy = TRUE;
+		bullet->fBlastRadius = 4;
+		add_node(listBullet, bullet);
+
+
+		ship->fShootDelay = ship->fMaxShootDelay;
+		ship->fEnergy -= 12;
 		
 
 		
@@ -229,7 +267,7 @@ void increaseFireRate_ship(struct Ship *ship) {
 
 void selectWeaponUp_ship(struct Ship *ship) {
 	ship->iWeaponType++;
-	if (ship->iWeaponType > 4) {
+	if (ship->iWeaponType > 6) {
 		ship->iWeaponType = 0;
 	}
 	Mix_PlayChannel(-1, soundWeaponSelect, 0);
