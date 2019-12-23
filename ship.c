@@ -37,20 +37,20 @@ void update_ship(struct Ship *ship) {
     ship->x += ship->vel_x * DELTA_TIME;
     ship->y += ship->vel_y * DELTA_TIME;
 
-    if (ship->x < 0) {
-      ship->x = 0;
+    if (ship->x < ship->width) {
+      ship->x = ship->width;
     }
 
-    if (ship->y < SCREEN_HEIGHT - (3 * ship->height)) {
-      ship->y = SCREEN_HEIGHT - (3 * ship->height);
+    if (ship->y < ship->height) {
+      ship->y = ship->height;
     }
 
-    if (ship->x > SCREEN_WIDTH - (ship->width)) {
-      ship->x = SCREEN_WIDTH - (ship->width);
+    if (ship->x > SCREEN_WIDTH - (ship->width * 2)) {
+      ship->x = SCREEN_WIDTH - (ship->width * 2);
     }
 
-    if (ship->y > SCREEN_HEIGHT - ship->height) {
-      ship->y = SCREEN_HEIGHT - ship->height;
+    if (ship->y > SCREEN_HEIGHT - (ship->height * 2)) {
+      ship->y = SCREEN_HEIGHT - (ship->height * 2);
     }
   }
   
@@ -162,6 +162,53 @@ void shoot_ship(struct Ship *ship, struct Node **listBullet) {
 		
 		Mix_PlayChannel(-1, soundShoot, 0);
 	}
+  } else if (ship->iWeaponType == 3) {
+	if (ship->fEnergy >= 8) {
+		struct Bullet *bullet;
+		
+		bullet = malloc(sizeof(struct Bullet));
+		init_bullet(bullet, ship->x + ship->width / 2, ship->y);
+		bullet->vel_y = -5;
+		bullet->iHitsEnemy = TRUE;
+		bullet->fWaveAmplitude = 2;
+
+
+		
+		ship->fShootDelay = ship->fMaxShootDelay * 0.5;
+		ship->fEnergy -= 8;
+		
+		add_node(listBullet, bullet);
+
+		
+		Mix_PlayChannel(-1, soundShoot, 0);
+	}
+  } else if (ship->iWeaponType == 4) {
+	if (ship->fEnergy >= 16) {
+		struct Bullet *bullet;
+		
+		bullet = malloc(sizeof(struct Bullet));
+		init_bullet(bullet, ship->x + ship->width / 2, ship->y);
+		bullet->vel_y = -5;
+		bullet->iHitsEnemy = TRUE;
+		bullet->fWaveAmplitude = 2;
+		add_node(listBullet, bullet);
+
+
+		bullet = malloc(sizeof(struct Bullet));
+		init_bullet(bullet, ship->x + ship->width / 2, ship->y);
+		bullet->vel_y = -5;
+		bullet->iHitsEnemy = TRUE;
+		bullet->fWaveAmplitude = -2;
+		add_node(listBullet, bullet);
+
+		
+		ship->fShootDelay = ship->fMaxShootDelay * 0.5;
+		ship->fEnergy -= 16;
+		
+
+		
+		Mix_PlayChannel(-1, soundShoot, 0);
+	}
 	  
   }
 }
@@ -182,7 +229,7 @@ void increaseFireRate_ship(struct Ship *ship) {
 
 void selectWeaponUp_ship(struct Ship *ship) {
 	ship->iWeaponType++;
-	if (ship->iWeaponType > 2) {
+	if (ship->iWeaponType > 4) {
 		ship->iWeaponType = 0;
 	}
 	Mix_PlayChannel(-1, soundWeaponSelect, 0);

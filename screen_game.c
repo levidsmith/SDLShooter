@@ -74,6 +74,8 @@ int iLevelCount = -1;
 
 float fKeyPressDelay = 0;
 
+char *strWeaponNames[5] = {"Normal", "Speed Shot", "Tri Shot", "Wave Shot", "Dual Wave Shot" };
+
 
 
 void start_screen_game() {
@@ -598,8 +600,8 @@ void updateScoreText() {
   colorText.g = 0;
   colorText.b = 0;
 
-  char strWeapon[20];
-  sprintf(strWeapon, "Weapon %d", ship->iWeaponType);
+  char strWeapon[64];
+  sprintf(strWeapon, "%s", strWeaponNames[ship->iWeaponType]);
   sprText = TTF_RenderText_Solid(fontDefault, strWeapon, colorText);
   imgWeaponText = SDL_CreateTextureFromSurface(renderer, sprText);
   SDL_FreeSurface(sprText); 

@@ -69,7 +69,8 @@ void init_enemy(struct Enemy *enemy, int init_x, int init_y, int init_iType) {
 	  //setTargetPosition_enemy(enemy, rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT);
 	  //setTargetPosition_enemy(enemy, 400.0, 400.0);
 //		setTargetPosition_enemy(enemy, (float) (rand() % 400), (float) (rand() % 400));
-	  setTargetPosition_enemy(enemy, 64 + (rand() % (SCREEN_WIDTH - (64 * 3))), 64 + (rand() % (SCREEN_HEIGHT - (64 * 3))));
+//	  setTargetPosition_enemy(enemy, 64 + (rand() % (SCREEN_WIDTH - (64 * 3))), 64 + (rand() % (SCREEN_HEIGHT - (64 * 3))));
+	  setTargetPosition_enemy(enemy, (1 + (rand() % ((SCREEN_WIDTH / 64) - 2))) * 64, (1 + (rand() % ((SCREEN_HEIGHT / 64) - 2))) * 64);
   }
 
 }
@@ -114,7 +115,8 @@ void update_enemy(struct Enemy *enemy) {
 //				enemy->target_y = rand() % SCREEN_HEIGHT;
 //				enemy->iMoveToTarget = TRUE;
 //				enemy->fAwakeCountdown = 1;
-	  setTargetPosition_enemy(enemy, 64 + (rand() % (SCREEN_WIDTH - (64 * 3))), 64 + (rand() % (SCREEN_HEIGHT - (64 * 3))));
+//	  setTargetPosition_enemy(enemy, 64 + (rand() % (SCREEN_WIDTH - (64 * 3))), 64 + (rand() % (SCREEN_HEIGHT - (64 * 3))));
+	  setTargetPosition_enemy(enemy, (1 + (rand() % ((SCREEN_WIDTH / 64) - 2))) * 64, (1 + (rand() % ((SCREEN_HEIGHT / 64) - 2))) * 64);
 
 			}
 		} else if (enemy->iMoveToTarget) {
@@ -377,6 +379,8 @@ void setTargetPosition_enemy(struct Enemy *enemy, float x, float y) {
 	float fSpeed = 1;
 	enemy->target_x = x;
 	enemy->target_y = y;
+	
+	
 
 	printf("Enemy at x: %f, y: %f, Target position x: %f, y: %f\n", enemy->x, enemy->y, enemy->target_x, enemy->target_y);
 	
