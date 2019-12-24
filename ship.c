@@ -273,3 +273,11 @@ void selectWeaponUp_ship(struct Ship *ship) {
 	Mix_PlayChannel(-1, soundWeaponSelect, 0);
 
 }
+
+float getCenterX_ship(struct Ship *ship) {
+	return ship->x + (ship->width / 2);
+}
+
+float getCenterY_ship(struct Ship *ship) {
+	return ship->y + (ship->height / 2);
+}

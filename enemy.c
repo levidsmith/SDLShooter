@@ -10,6 +10,7 @@
 #include "explosion.h"
 #include "linked_list.h"
 #include "globals.h"
+#include "ship.h"
 
 extern SDL_Renderer *renderer;
 extern SDL_Texture *imgEnemyAlpha_L1_00;
@@ -42,7 +43,8 @@ extern struct Node *add_node(struct Node **head, void *value);
 extern int count_list(struct Node *head);
 extern void remove_node(struct Node **head, struct Node *node);
 extern int iScore;
-
+extern struct Ship *ship;
+extern void updateScoreText();
 
 
 
@@ -68,13 +70,10 @@ void init_enemy(struct Enemy *enemy, int init_x, int init_y, int init_iType) {
   enemy->target_x = 0;
   enemy->target_y = 0;
   enemy->iMoveToTarget = FALSE;
+  enemy->iPoints = 50;
   
   setShootDelay_enemy(enemy);
   if (enemy->iType == 4) {
-	  //setTargetPosition_enemy(enemy, rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT);
-	  //setTargetPosition_enemy(enemy, 400.0, 400.0);
-//		setTargetPosition_enemy(enemy, (float) (rand() % 400), (float) (rand() % 400));
-//	  setTargetPosition_enemy(enemy, 64 + (rand() % (SCREEN_WIDTH - (64 * 3))), 64 + (rand() % (SCREEN_HEIGHT - (64 * 3))));
 	  setTargetPosition_enemy(enemy, (1 + (rand() % ((SCREEN_WIDTH / 64) - 2))) * 64, (1 + (rand() % ((SCREEN_HEIGHT / 64) - 2))) * 64);
   }
 
@@ -94,6 +93,9 @@ void update_enemy(struct Enemy *enemy) {
         enemy->x += enemy->vel_x * DELTA_TIME;
         enemy->y += enemy->vel_y;
         break;
+
+
+
       case 1:  
         enemy->vel_x = (1 * UNIT_SIZE);
         enemy->x += (enemy->vel_x * DELTA_TIME);
@@ -101,7 +103,9 @@ void update_enemy(struct Enemy *enemy) {
           enemy->x -= SCREEN_WIDTH;
         }
         break;
-	  case 2:
+
+
+      case 2:
 	    enemy->x = enemy->orig_x + 250 * sin(enemy->fLifetime * PI);
 		enemy->y += 64 * DELTA_TIME;
 		break;
@@ -114,13 +118,6 @@ void update_enemy(struct Enemy *enemy) {
 			enemy->fWaitCountdown -= DELTA_TIME;
 			if (enemy->fWaitCountdown <= 0) {
 				enemy->fWaitCountdown = 0;
-//				setTargetPosition_enemy(enemy, rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT);
-//				setTargetPosition_enemy(enemy, 600, 200);
-//				enemy->target_x = rand() % SCREEN_WIDTH;
-//				enemy->target_y = rand() % SCREEN_HEIGHT;
-//				enemy->iMoveToTarget = TRUE;
-//				enemy->fAwakeCountdown = 1;
-//	  setTargetPosition_enemy(enemy, 64 + (rand() % (SCREEN_WIDTH - (64 * 3))), 64 + (rand() % (SCREEN_HEIGHT - (64 * 3))));
 	  setTargetPosition_enemy(enemy, (1 + (rand() % ((SCREEN_WIDTH / 64) - 2))) * 64, (1 + (rand() % ((SCREEN_HEIGHT / 64) - 2))) * 64);
 
 			}
@@ -136,33 +133,8 @@ void update_enemy(struct Enemy *enemy) {
 				enemy->vel_y = 0;
 				enemy->iMoveToTarget = FALSE;
 				enemy->fWaitCountdown = 5;
-//				enemy->fShootDelay = 0.5;
 			}
 			
-			/*
-			if (enemy->x < enemy->target_x) {
-				enemy->x += 1 * UNIT_SIZE * DELTA_TIME;
-			} else if (enemy->x > enemy->target_x) {
-				enemy->x -= 1 * UNIT_SIZE * DELTA_TIME;
-			}
-			
-			if (enemy->y < enemy->target_y) {
-				enemy->y += 1 * UNIT_SIZE * DELTA_TIME;
-			} else if (enemy->y > enemy->target_y) {
-				enemy->y -= 1 * UNIT_SIZE * DELTA_TIME;
-			}
-			*/
-
-			
-/*
-		} else if (enemy->fAwakeCountdown > 0) {
-			enemy->fAwakeCountdown -= DELTA_TIME;
-			if (enemy->fAwakeCountdown <= 0) {
-//				enemy->fAwakeCountdown = 0;
-				enemy->fSleepCountdown = 2;
-				
-			}
-*/			
 			
 		}
 		
@@ -177,11 +149,10 @@ void update_enemy(struct Enemy *enemy) {
 		if (enemy->fShootDelay <= 0) {
 			shoot_enemy(enemy);
 			setShootDelay_enemy(enemy);
-			
-			
-			
 		}
 	}
+
+
 	
 	if (enemy->fDamagedCountdown > 0) {
 		enemy->fDamagedCountdown -= DELTA_TIME;
@@ -314,23 +285,41 @@ void draw_enemy(struct Enemy *enemy) {
 
 void shoot_enemy(struct Enemy *enemy) {
   struct Bullet *bullet;
+	float fDistance;
 	
   if (enemy != NULL && (enemy->fShootDelay <= 0) && enemy->isAlive) {
-	bullet = malloc(sizeof(struct Bullet));
 
-//	printf("ship at x: %d y: %d\n", ship->x, ship->y);
+	  switch(enemy->iType) {
+	     case 0:
+             case 1:
+	bullet = malloc(sizeof(struct Bullet));
 
 	init_bullet(bullet, enemy->x + enemy->width / 2, enemy->y);
 
 	bullet->vel_y = 5;
 	bullet->iHitsPlayer = TRUE;
+	
+	add_node(&listBullet, bullet);
+	Mix_PlayChannel(-1, soundEnemyShoot, 0);
+ 	 	    break;
 
-//	printf("added bullet at x: %d y: %d\n", bullet->x, bullet->y);
+	     case 3:
+	bullet = malloc(sizeof(struct Bullet));
+
+	init_bullet(bullet, enemy->x + enemy->width / 2, enemy->y);
+
+        fDistance	= getDistance(ship->x, ship->y, bullet->x, bullet->y);
+	bullet->vel_x = 5 * (getCenterX_ship(ship) - getCenterX_bullet(bullet)) / fDistance;
+	bullet->vel_y = 5 * (getCenterY_ship(ship) - getCenterY_bullet(bullet)) / fDistance;
+	bullet->iHitsPlayer = TRUE;
 	
 	add_node(&listBullet, bullet);
 	Mix_PlayChannel(-1, soundEnemyShoot, 0);
 
-//    Mix_PlayChannel(-1, soundShoot, 0);
+		    break;
+		    
+	  }
+
   }
 }
 
@@ -341,6 +330,9 @@ void setShootDelay_enemy(struct Enemy *enemy) {
 		break;
 	case 1:
 		enemy->fShootDelay = 5 + ((rand() % 50) * 0.1); //between 5 and 10 seconds
+		break;
+	case 3:
+		enemy->fShootDelay = 2; //2 seconds
 		break;
   }
 	
@@ -383,7 +375,7 @@ void damage_enemy(struct Enemy *enemy, int iDamageAmount) {
 
 void destroy_enemy(struct Enemy *enemy) {
 				enemy->isAlive = FALSE;
-				iScore += 100;
+				iScore += enemy->iPoints;
 				
 //					    updateScoreText();
 				Mix_PlayChannel(-1, soundEnemyDead, 0);
@@ -402,6 +394,9 @@ void destroy_enemy(struct Enemy *enemy) {
 				explosion->c.b = 128;
 				
 				add_node(&listExplosion, explosion);
+				
+			  updateScoreText();
+
 
 	
 }

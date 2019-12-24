@@ -44,6 +44,7 @@ void read_level(char *strFile, int iLevelToRead) {
 				struct Enemy *e1;
 				e1 = malloc(sizeof(struct Enemy));
 				init_enemy(e1, x, y, 0);
+				e1->iPoints = 50;
 				if (iDropCountdown <= 0) {
 					e1->hasDrop = TRUE;
 					iDropCountdown = getDropCountdown();
@@ -54,11 +55,32 @@ void read_level(char *strFile, int iLevelToRead) {
 
 				add_node(&listEnemy, e1);
 				iEnemyCount++;
-			} else if (strLine[i] == '1') {
+
+			} else 	if (strLine[i] == '1') {
+
+				struct Enemy *e1;
+				e1 = malloc(sizeof(struct Enemy));
+				init_enemy(e1, x, y, 0);
+				e1->iPoints = 200;
+				e1->iLevel = 2;
+				e1->iHealth = 3;
+				if (iDropCountdown <= 0) {
+					e1->hasDrop = TRUE;
+					iDropCountdown = getDropCountdown();
+				} else {
+					iDropCountdown--;
+				}
+
+
+				add_node(&listEnemy, e1);
+				iEnemyCount++;
+
+			} else if (strLine[i] == '2') {
 
 				struct Enemy *e1;
 				e1 = malloc(sizeof(struct Enemy));
 				init_enemy(e1, x, y, 1);
+				e1->iPoints = 100;
 
 				if (iDropCountdown <= 0) {
 					e1->hasDrop = TRUE;
@@ -71,11 +93,14 @@ void read_level(char *strFile, int iLevelToRead) {
 				add_node(&listEnemy, e1);
 
 				iEnemyCount++;
-			} else if (strLine[i] == '2') {
+
+			} else if (strLine[i] == '4') {
 
 				struct Enemy *e1;
 				e1 = malloc(sizeof(struct Enemy));
 				init_enemy(e1, x, y, 2);
+				e1->iPoints = 250;
+				
 				e1->iHealth = 3;
 
 				if (iDropCountdown <= 0) {
@@ -88,7 +113,8 @@ void read_level(char *strFile, int iLevelToRead) {
 
 				add_node(&listEnemy, e1);
 				iEnemyCount++;
-			} else if (strLine[i] == '3') {
+
+			} else if (strLine[i] == '6') {
 				
 				int j;
 				
@@ -97,6 +123,8 @@ void read_level(char *strFile, int iLevelToRead) {
 					struct Enemy *e1;
 					e1 = malloc(sizeof(struct Enemy));
 					init_enemy(e1, x, y, 3);
+					e1->iPoints = 500;
+					
 					e1->iHealth = 5;
 
 					if (iDropCountdown <= 0) {
@@ -112,29 +140,13 @@ void read_level(char *strFile, int iLevelToRead) {
 					add_node(&listEnemy, e1);
 					iEnemyCount++;
 				}
-			} else 	if (strLine[i] == '4') {
 
-				struct Enemy *e1;
-				e1 = malloc(sizeof(struct Enemy));
-				init_enemy(e1, x, y, 0);
-				e1->iLevel = 2;
-				e1->iHealth = 3;
-				if (iDropCountdown <= 0) {
-					e1->hasDrop = TRUE;
-					iDropCountdown = getDropCountdown();
-				} else {
-					iDropCountdown--;
-				}
-
-
-				add_node(&listEnemy, e1);
-				iEnemyCount++;
-
-			} else 	if (strLine[i] == '5') {
+			} else 	if (strLine[i] == '8') {
 
 				struct Enemy *e1;
 				e1 = malloc(sizeof(struct Enemy));
 				init_enemy(e1, x, y, 4);
+				e1->iPoints = 150;
 				e1->iHealth = 3;
 
 				if (iDropCountdown <= 0) {

@@ -66,3 +66,11 @@ void draw_bullet(struct Bullet *bullet) {
 
 	
 }
+
+float getCenterX_bullet(struct Bullet *bullet) {
+	return bullet->x + (bullet->width / 2);
+}
+
+float getCenterY_bullet(struct Bullet *bullet) {
+	return bullet->y + (bullet->height / 2);
+}

@@ -21,6 +21,7 @@ struct Enemy {
   int hasDrop;
   float fDamagedCountdown;
   float fWaitCountdown;
+  int iPoints;
 };
 
 void init_enemy(struct Enemy *, int, int, int);

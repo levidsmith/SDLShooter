@@ -20,3 +20,6 @@ void draw_ship(struct Ship *);
 void shoot_ship(struct Ship *, struct Node **listBullet);
 void increaseFireRate_ship(struct Ship *);
 void selectWeaponUp_ship(struct Ship *ship);
+float getCenterX_ship(struct Ship *ship);
+float getCenterY_ship(struct Ship *ship);
+

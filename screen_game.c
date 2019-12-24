@@ -51,8 +51,6 @@ extern Mix_Chunk *soundEnemyHit;
 extern Mix_Chunk *soundPowerup;
 
 
-
-
 SDL_Rect pos;
 SDL_Rect posText;
 
@@ -274,14 +272,6 @@ void draw_screen_game() {
   draw_ship(ship);
 
   struct Node *current;
-//Draw the bullets
-  current = listBullet;
-  struct Bullet *bullet;
-  while(current != NULL) {
-    bullet = (struct Bullet *) current->data;
-	draw_bullet(bullet);
-    current = current->next;
-  }
   
 //Draw energy meter
   SDL_Rect rectMeter;
@@ -324,6 +314,16 @@ void draw_screen_game() {
 	  draw_explosion(explosion);
 	  current = current->next;
 	  
+  }
+
+
+//Draw the bullets
+  current = listBullet;
+  struct Bullet *bullet;
+  while(current != NULL) {
+    bullet = (struct Bullet *) current->data;
+	draw_bullet(bullet);
+    current = current->next;
   }
 
 
