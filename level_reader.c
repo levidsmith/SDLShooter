@@ -2,7 +2,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <SDL2/SDL.h>
+
+//MinGW style
+#include "SDL.h"
+//MacOS - XCode Style
+//#include <SDL2/SDL.h>
+
 
 #include "level_reader.h"
 #include "enemy.h"

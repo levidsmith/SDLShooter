@@ -1,6 +1,15 @@
 //2019 Levi D. Smith - levidsmith.com
-#include <SDL2/SDL.h>
 #include <math.h>
+
+//MinGW style
+#include "SDL.h"
+#include "SDL_ttf.h"
+#include "SDL_mixer.h"
+//MacOS - XCode Style
+//#include <SDL2/SDL.h>
+//#include <SDL2_ttf/SDL_ttf.h>
+//#include <SDL2_mixer/SDL_mixer.h>
+
 #include "bullet.h"
 #include "globals.h"
 

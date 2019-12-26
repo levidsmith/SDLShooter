@@ -1,8 +1,16 @@
 //2019 Levi D. Smith - levidsmith.com
 #include <stdio.h>
-#include <SDL2/SDL.h>
-#include "globals.h"
 
+//MinGW style
+#include "SDL.h"
+#include "SDL_ttf.h"
+#include "SDL_mixer.h"
+//MacOS Style
+//#include <SDL2/SDL.h>
+//#include <SDL2_ttf/SDL_ttf.h>
+//#include <SDL2_mixer/SDL_mixer.h>
+
+#include "globals.h"
 #include "powerup.h"
 
 extern SDL_Renderer *renderer;
