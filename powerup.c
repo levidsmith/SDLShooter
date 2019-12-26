@@ -1,6 +1,6 @@
 //2019 Levi D. Smith - levidsmith.com
 #include <stdio.h>
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include "globals.h"
 
 #include "powerup.h"

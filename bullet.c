@@ -1,5 +1,5 @@
 //2019 Levi D. Smith - levidsmith.com
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include <math.h>
 #include "bullet.h"
 #include "globals.h"

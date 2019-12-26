@@ -1,9 +1,9 @@
 //2019 Levi D. Smith
 #include <stdio.h>
 #include <stdlib.h>
-#include <SDL.h>
-#include <SDL_ttf.h>
-#include <SDL_mixer.h>
+#include <SDL2/SDL.h>
+#include <SDL2_ttf/SDL_ttf.h>
+#include <SDL2_mixer/SDL_mixer.h>
 #include <math.h>
 
 #include "globals.h"
@@ -15,6 +15,7 @@
 #include "bullet.h"
 #include "powerup.h"
 #include "explosion.h"
+
 
 
 
@@ -102,13 +103,17 @@ void start_screen_game() {
 
 
   //read level
+    char *strLevelFile = LEVEL_FILE;
   if (iLevelCount < 0) {
-	  iLevelCount = read_count_levels("level_00.txt");
+	  iLevelCount = read_count_levels(LEVEL_FILE);
   }
   printf("iLevelCount: %d\n", iLevelCount);
 //  iLevelCount = 2;
   printf("call read_level\n");
-  read_level("level_00.txt", iCurrentLevel);
+//    iCurrentLevel = 1;
+//  read_level(strLevelFile, iCurrentLevel);
+//    iCurrentLevel = 2;
+    read_level(strLevelFile, iCurrentLevel);
 
   printf("finished read_level\n");
   
@@ -572,7 +577,7 @@ void checkLevelComplete() {
 		  iLevelComplete = TRUE;
 		  fKeyPressDelay = 5;
 	  } else {
-		read_level("level_00.txt\n", iCurrentLevel);
+		read_level(LEVEL_FILE, iCurrentLevel);
 	  }
 
 		  

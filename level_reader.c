@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <SDL2/SDL.h>
 
 #include "level_reader.h"
 #include "enemy.h"
@@ -26,15 +27,32 @@ void read_level(char *strFile, int iLevelToRead) {
   int iCols;
 //  iCols = (1280 / 64) + 1;
   iCols = 21;
-  char strLine[iCols];
-  FILE *f = fopen("level_00.txt", "r");
+//  char strLine[iCols];
+    char *strLine;
+    //  FILE *f = fopen(strFile, "r");
   x = 0;
   y = 0;
-  
-  while (fgets(strLine, iCols, f) != NULL) {
 
-    printf("strLine: %s", strLine);
-    for (i = 0; i < strlen(strLine); i++) {
+      printf("Start Reading fileb: %s\n", strFile);
+        SDL_RWops *f;
+        f = SDL_RWFromFile(strFile, "r");
+        Sint64 iFileSize = SDL_RWsize(f);
+        printf("File size: %d\n", iFileSize);
+        char strFileContents[iFileSize];
+            SDL_RWread( f, strFileContents, sizeof(Sint32), iFileSize );
+        printf("*** File Contents: %s\n", strFileContents);
+        
+        SDL_RWclose(f);
+      printf("End Reading file\n");
+    
+    
+    
+    strLine = strFileContents;
+//  while (fgets(strLine, iCols, f) != NULL) {
+    for (i = 0; i < iFileSize; i++) {
+
+        //printf("strLine: %s", strLine);
+//    for (i = 0; i < strlen(strLine); i++) {
 		
 		if (iLevel == iLevelToRead) {
 	
@@ -163,11 +181,13 @@ void read_level(char *strFile, int iLevelToRead) {
 
 			}
 
-  			x = i * 64;
+  			//x = i * 64;
+            x += UNIT_SIZE;
 			
 			if (strLine[i] == '\n') {
-				y += 64;
-                                memset(strLine, 0, sizeof(strLine)); //clear the character array
+                x = 0;
+				y += UNIT_SIZE;
+ //                               memset(strLine, 0, sizeof(strLine)); //clear the character array
                              //   break; //quit reading characters which may be from old character array
 
 			}
@@ -175,10 +195,12 @@ void read_level(char *strFile, int iLevelToRead) {
 
 		} 
 		
-		if (i == 0 && strLine[i] == '=') {
+//		if (i == 0 && strLine[i] == '=') {
+        if (strLine[i] == '=') {
 			iLevel++;
+            x = 0;
 			y = 0;
-			break;  //break to prevent processing any more characters on this line
+			//fsbreak;  //break to prevent processing any more characters on this line
 
 		} 
      
@@ -186,8 +208,8 @@ void read_level(char *strFile, int iLevelToRead) {
 	
 	
     
-  }
-  fclose(f); 
+//  }
+//  fclose(f);
   
   printf("Enemies spawned: %d\n", iEnemyCount);
 
@@ -199,14 +221,36 @@ int read_count_levels(char *strFile) {
 	int iLevelCount;
 	int i;
 	int iCols;
+    
+    SDL_RWops *f;
 
   iLevelCount = 0;  //this is really a count of levels after the first one (index 0)
   iCols = 64; //only need to read the first character on the line
 
-  printf("Start Reading file\n");
-  char strLine[iCols];
-  FILE *f = fopen(strFile, "r");
-  while (fgets(strLine, iCols, f) != NULL) {
+    system("pwd");
+  printf("Start Reading filea: %s\n", strFile);
+    f = SDL_RWFromFile(strFile, "r");
+    char strLine[iCols];
+    Sint64 iFileSize = SDL_RWsize(f);
+    printf("File size: %d\n", iFileSize);
+    char strFileContents[iFileSize];
+//  FILE *f = fopen(strFile, "r");
+
+    
+//    for(i = 0; i < SDL_RWsize(f); i++ ) {
+        SDL_RWread( f, strFileContents, sizeof(Sint32), iFileSize );
+//    }
+    
+    printf("*** File Contents: %s\n", strFileContents);
+
+    for (i = 0; i < iFileSize; i++) {
+        if (strFileContents[i] == '=') {
+            iLevelCount++;
+            
+        }
+    }
+    /*
+    while (fgets(strLine, iCols, f) != NULL) {
   printf("Got a line: %s\n", strLine);
 	  
     for (i = 0; i < iCols; i++) {
@@ -218,8 +262,9 @@ int read_count_levels(char *strFile) {
 	
 	
     
-  }
-  fclose(f); 
+  }*/
+//  fclose(f);
+    SDL_RWclose(f);
   printf("End Reading file\n");
   
   printf("total levels: %d\n", iLevelCount);

@@ -1,6 +1,6 @@
 //2019 Levi D. Smith - levidsmith.com
+#include <SDL2/SDL.h>
 #include <stdio.h>
-#include <SDL.h>
 
 #include "explosion.h"
 #include "globals.h"

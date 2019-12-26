@@ -1,8 +1,8 @@
 //2019 Levi D. Smith
 #include <stdio.h>
-#include <SDL.h>
-#include <SDL_ttf.h>
-#include <SDL_mixer.h>
+#include <SDL2/SDL.h>
+#include <SDL2_ttf/SDL_ttf.h>
+#include <SDL2_mixer/SDL_mixer.h>
 
 #include "globals.h"
 #include "screen_title.h"
@@ -23,8 +23,8 @@ extern SDL_Texture *imgCopyrightText;
 extern Mix_Music *musicTitle;
 
 
-int iBackgroundOffset;
-SDL_Rect pos;
+int iBackgroundOffsetTitle;
+SDL_Rect posTitle;
 
 
 
@@ -51,9 +51,9 @@ void start_screen_title() {
 void update_screen_title() {
 	
   //update background
-  iBackgroundOffset += 1 * UNIT_SIZE * DELTA_TIME;
-  if (iBackgroundOffset > 255) {
-    iBackgroundOffset -= 256;
+  iBackgroundOffsetTitle += 1 * UNIT_SIZE * DELTA_TIME;
+  if (iBackgroundOffsetTitle > 255) {
+    iBackgroundOffsetTitle -= 256;
   }
 
 
@@ -65,30 +65,30 @@ void draw_screen_title() {
   int i, j;
   for (i = -1; i < (SCREEN_HEIGHT / 256) + 1; i++) {
     for (j = 0; j < SCREEN_WIDTH / 256; j++) {
-      pos.x = j * 256;
-      pos.y = i * 256 + iBackgroundOffset;
-	  pos.w = 256;
-	  pos.h = 256;
-      SDL_RenderCopy(renderer, imgBackground, NULL, &pos);
+      posTitle.x = j * 256;
+      posTitle.y = i * 256 + iBackgroundOffsetTitle;
+	  posTitle.w = 256;
+	  posTitle.h = 256;
+      SDL_RenderCopy(renderer, imgBackground, NULL, &posTitle);
 
     }
   }
   
   
   //Draw title text
-    pos.x = 320;
-    pos.y = 300;
+    posTitle.x = 320;
+    posTitle.y = 300;
   
-    SDL_QueryTexture(imgTitleText, NULL, NULL, &(pos.w), &(pos.h)); 
-    SDL_RenderCopy(renderer, imgTitleText, NULL, &pos);
+    SDL_QueryTexture(imgTitleText, NULL, NULL, &(posTitle.w), &(posTitle.h));
+    SDL_RenderCopy(renderer, imgTitleText, NULL, &posTitle);
 
 
   //Draw copyright text
-    pos.x = 320;
-    pos.y = 400;
+    posTitle.x = 320;
+    posTitle.y = 400;
   
-    SDL_QueryTexture(imgCopyrightText, NULL, NULL, &(pos.w), &(pos.h)); 
-    SDL_RenderCopy(renderer, imgCopyrightText, NULL, &pos);
+    SDL_QueryTexture(imgCopyrightText, NULL, NULL, &(posTitle.w), &(posTitle.h));
+    SDL_RenderCopy(renderer, imgCopyrightText, NULL, &posTitle);
 
 
 

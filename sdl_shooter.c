@@ -4,9 +4,9 @@
 #include <string.h>
 #include <time.h>
 
-#include <SDL.h>
-#include <SDL_ttf.h>
-#include <SDL_mixer.h>
+#include <SDL2/SDL.h>
+#include <SDL2_ttf/SDL_ttf.h>
+#include <SDL2_mixer/SDL_mixer.h>
 
 #include "globals.h"
 #include "linked_list.h"
@@ -312,8 +312,8 @@ int main(int argc, char* args[]) {
   if (TTF_Init() == -1) {
     exit(1);
   }
-  fontDefault = TTF_OpenFont("SudburyBasin-Regular.ttf", 20);
-  fontLarge = TTF_OpenFont("SudburyBasin-Regular.ttf", 64);
+  fontDefault = TTF_OpenFont("assets/SudburyBasin-Regular.ttf", 20);
+  fontLarge = TTF_OpenFont("assets/SudburyBasin-Regular.ttf", 64);
   
   if (!fontDefault || !fontLarge) {
 	  printf("Errors loading font\n");

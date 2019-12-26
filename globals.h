@@ -10,3 +10,5 @@
 
 #define UNIT_SIZE 64
 #define PI 3.14159265
+
+#define LEVEL_FILE "assets/level_00.txt"
