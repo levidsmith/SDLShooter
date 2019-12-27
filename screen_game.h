@@ -8,3 +8,4 @@ void shoot();
 void updateScoreText();
 void checkCollisions();
 void checkLevelComplete();
+void updateTimeText();

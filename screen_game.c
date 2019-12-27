@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <time.h>
 
 #include "screen_game.h"
 #include "linked_list.h"
@@ -39,6 +40,7 @@ extern SDL_Texture *imgLevelCompleteText;
 extern SDL_Texture *imgGameOverText;
 extern SDL_Texture *imgLevel;
 extern SDL_Texture *imgWeaponText;
+extern SDL_Texture *imgGameTimeText;
 
 
 extern Mix_Chunk *soundShoot;
@@ -63,6 +65,9 @@ struct Node *listExplosion;
 
 
 extern int iKeepLooping;
+extern int iGameContinue;
+extern int iCanContinue;
+extern int iTitleMenuChoice;
 int iBackgroundOffset;
 int iLevelComplete = FALSE;
 int iGameOver = FALSE;
@@ -74,6 +79,9 @@ int iLevelCount = -1;
 float fKeyPressDelay = 0;
 
 char *strWeaponNames[7] = {"Normal", "Speed Shot", "Tri Shot", "Wave Shot", "Dual Wave Shot", "Blast", "Blast 2" };
+
+time_t timeStartGame;
+time_t timeEndGame;
 
 
 
@@ -131,6 +139,15 @@ void start_screen_game() {
 
   printf("finished updateScoreText\n");
 
+    //initialize game time
+    if (&timeStartGame == NULL || !iGameContinue) {
+        printf("Initialize time\n");
+        time(&timeStartGame);
+    }
+    
+    //enable continue option on title screen
+    iCanContinue = TRUE;
+    
   Mix_VolumeMusic(MIX_MAX_VOLUME * 0.2);
   Mix_PlayMusic(musicGame, -1);
   printf("finished start\n");
@@ -140,7 +157,6 @@ void start_screen_game() {
 
 
 void update_screen_game() {
-  int i;
   struct Node *current = NULL;
   struct Node *deleteNode = NULL;
   
@@ -252,6 +268,9 @@ void update_screen_game() {
 		  fKeyPressDelay = 0;
 	  }
   }
+    
+    //update time display
+    updateTimeText();
 
 }
 
@@ -348,6 +367,13 @@ void draw_screen_game() {
   pos.y = 640 - 64;
   SDL_QueryTexture(imgWeaponText, NULL, NULL, &(pos.w), &(pos.h)); 
   SDL_RenderCopy(renderer, imgWeaponText, NULL, &pos);
+    
+    //draw game time
+    pos.x = 800;
+    pos.y = 64;
+    SDL_QueryTexture(imgGameTimeText, NULL, NULL, &(pos.w), &(pos.h));
+    SDL_RenderCopy(renderer, imgGameTimeText, NULL, &pos);
+
 
 //Draw level complete text
   if (iLevelComplete) {
@@ -612,6 +638,7 @@ void handleInput_screen_game(int iType, int iKey) {
 		}
 	  } else if (iGameOver) {
 		  		if (fKeyPressDelay <= 0) {
+                    iGameContinue = TRUE;
 
 		  start_screen_game();
 				}
@@ -620,6 +647,7 @@ void handleInput_screen_game(int iType, int iKey) {
 	  }
     } else if (iKey == SDLK_q || iKey == SDLK_ESCAPE) {
       //iKeepLooping = FALSE;
+        iTitleMenuChoice = 1;
 	  setCurrentScreen(0);
     } else if (iKey == SDLK_m || iKey == SDLK_ESCAPE) {
       Mix_VolumeMusic(0);
@@ -695,9 +723,7 @@ void updateScoreText() {
   sprintf(strWeapon, "%s", strWeaponNames[ship->iWeaponType]);
   sprText = TTF_RenderText_Solid(fontDefault, strWeapon, colorText);
   imgWeaponText = SDL_CreateTextureFromSurface(renderer, sprText);
-  SDL_FreeSurface(sprText); 
-  
-
+  SDL_FreeSurface(sprText);
 
   //level complete display
   colorText.r = 0;
@@ -713,6 +739,31 @@ void updateScoreText() {
   imgGameOverText = SDL_CreateTextureFromSurface(renderer, sprText);
   SDL_FreeSurface(sprText); 
 	
+}
+
+void updateTimeText() {
+    
+      SDL_Color colorText = {255, 255, 0, 0};
+      SDL_Surface *sprText;
+    
+    
+       //time display
+        time_t timeCurrent = difftime(time(NULL), timeStartGame);
+ //       struct tm *timeinfo = localtime(&timeCurrent);
+         colorText.r = 255;
+         colorText.g = 255;
+         colorText.b = 255;
+
+         char strTime[64];
+    int iSeconds = (int) timeCurrent;
+         sprintf(strTime, "Time %d:%d", iSeconds / 60, iSeconds % 60);
+//         sprintf(strTime, "%s %d:%d:%d", "Time", timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec);
+      //  sprintf(strTime, "%s %d", "Time", timeCurrent);
+
+         sprText = TTF_RenderText_Solid(fontDefault, strTime, colorText);
+         imgGameTimeText = SDL_CreateTextureFromSurface(renderer, sprText);
+         SDL_FreeSurface(sprText);
+    
 }
 
 

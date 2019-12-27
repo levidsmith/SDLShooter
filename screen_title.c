@@ -5,6 +5,7 @@
 #include "globals.h"
 #include "screen_title.h"
 
+#define NUM_MENU_OPTIONS 3
 
 //Function Prototypes
 extern void setCurrentScreen(int iScreen);
@@ -18,11 +19,18 @@ extern TTF_Font *fontLarge;
 extern SDL_Texture *imgBackground;
 extern SDL_Texture *imgTitleText;
 extern SDL_Texture *imgCopyrightText;
+extern SDL_Texture *imgTitleStartText;
+extern SDL_Texture *imgTitleContinueText;
+extern SDL_Texture *imgTitleQuitText;
+
 extern Mix_Music *musicTitle;
 
 
 int iBackgroundOffsetTitle;
 SDL_Rect posTitle;
+int iTitleMenuChoice;
+int iGameContinue;
+int iCanContinue = FALSE;
 
 
 
@@ -39,8 +47,10 @@ void start_screen_title() {
   imgCopyrightText = SDL_CreateTextureFromSurface(renderer, sprText);
   SDL_FreeSurface(sprText); 
 
+    updateText_screen_title();
 
   Mix_PlayMusic(musicTitle, -1);
+    iTitleMenuChoice = 0;
 
 	
 }
@@ -88,6 +98,23 @@ void draw_screen_title() {
     SDL_QueryTexture(imgCopyrightText, NULL, NULL, &(posTitle.w), &(posTitle.h));
     SDL_RenderCopy(renderer, imgCopyrightText, NULL, &posTitle);
 
+    //Draw the menu
+      posTitle.x = 400;
+      posTitle.y = 480;
+      SDL_QueryTexture(imgCopyrightText, NULL, NULL, &(posTitle.w), &(posTitle.h));
+      SDL_RenderCopy(renderer, imgTitleStartText, NULL, &posTitle);
+
+    if (iCanContinue) {
+        posTitle.x = 400;
+        posTitle.y = 480 + 32;
+        SDL_QueryTexture(imgCopyrightText, NULL, NULL, &(posTitle.w), &(posTitle.h));
+        SDL_RenderCopy(renderer, imgTitleContinueText, NULL, &posTitle);
+    }
+    
+    posTitle.x = 400;
+    posTitle.y = 480 + 64;
+    SDL_QueryTexture(imgCopyrightText, NULL, NULL, &(posTitle.w), &(posTitle.h));
+    SDL_RenderCopy(renderer, imgTitleQuitText, NULL, &posTitle);
 
 
 }
@@ -95,7 +122,22 @@ void draw_screen_title() {
 void handleInput_screen_title(int iType, int iKey) {
   if (iType == SDL_KEYDOWN) {
     if (iKey == SDLK_SPACE) {
-		setCurrentScreen(1);
+        if (iTitleMenuChoice == 0) {
+            iGameContinue = FALSE;
+            setCurrentScreen(1);
+        } else if (iTitleMenuChoice == 1) {
+            iGameContinue = TRUE;
+            setCurrentScreen(1);
+        } else if (iTitleMenuChoice == 2) {
+            quit();
+        }
+    } else if (iKey == SDLK_UP) {
+        decreaseSelectedOption_screen_title();
+        updateText_screen_title();
+    } else if (iKey == SDLK_DOWN) {
+        increaseSelectedOption_screen_title();
+        updateText_screen_title();
+
     } else if (iKey == SDLK_q || iKey == SDLK_ESCAPE) {
       quit();
 	}
@@ -110,3 +152,65 @@ void handleInput_screen_title(int iType, int iKey) {
 	
 }
 
+void updateText_screen_title() {
+    SDL_Color colorText;
+    SDL_Color colorHighlighted = { 255, 0, 0 };
+    SDL_Color colorDefault = { 128, 0, 0 };
+    SDL_Surface *sprText;
+    
+    //Start Text
+    if (iTitleMenuChoice == 0) {
+        colorText = colorHighlighted;
+    } else {
+        colorText = colorDefault;
+    }
+    sprText = TTF_RenderText_Solid(fontDefault, "Start", colorText);
+    imgTitleStartText = SDL_CreateTextureFromSurface(renderer, sprText);
+    SDL_FreeSurface(sprText);
+
+    //Continue Text
+    if (iTitleMenuChoice == 1) {
+        colorText = colorHighlighted;
+    } else {
+        colorText = colorDefault;
+    }
+    sprText = TTF_RenderText_Solid(fontDefault, "Continue", colorText);
+    imgTitleContinueText = SDL_CreateTextureFromSurface(renderer, sprText);
+    SDL_FreeSurface(sprText);
+
+    //Quit Text
+    if (iTitleMenuChoice == 2) {
+        colorText = colorHighlighted;
+    } else {
+        colorText = colorDefault;
+    }
+    sprText = TTF_RenderText_Solid(fontDefault, "Quit", colorText);
+    imgTitleQuitText = SDL_CreateTextureFromSurface(renderer, sprText);
+    SDL_FreeSurface(sprText);
+
+}
+
+void increaseSelectedOption_screen_title() {
+    iTitleMenuChoice++;
+    
+    if (iTitleMenuChoice == 1 && !iCanContinue) {
+        iTitleMenuChoice++;
+    }
+    
+    if (iTitleMenuChoice >= NUM_MENU_OPTIONS) {
+        iTitleMenuChoice = 0;
+    }
+}
+
+void decreaseSelectedOption_screen_title() {
+    iTitleMenuChoice--;
+
+    if (iTitleMenuChoice == 1 && !iCanContinue) {
+        iTitleMenuChoice--;
+    }
+
+    
+    if (iTitleMenuChoice < 0) {
+        iTitleMenuChoice = NUM_MENU_OPTIONS - 1;
+    }
+}

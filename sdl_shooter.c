@@ -53,6 +53,10 @@ SDL_Texture *imgWeaponText;
 SDL_Texture *imgPowerupAlpha;
 SDL_Texture *imgTitleText;
 SDL_Texture *imgCopyrightText;
+SDL_Texture *imgGameTimeText;
+SDL_Texture *imgTitleStartText;
+SDL_Texture *imgTitleContinueText;
+SDL_Texture *imgTitleQuitText;
 
 
 TTF_Font *fontDefault;
@@ -452,6 +456,10 @@ int main(int argc, char* args[]) {
   SDL_DestroyTexture(imgLevelCompleteText);
   SDL_DestroyTexture(imgLevel);
   SDL_DestroyTexture(imgWeaponText);
+    SDL_DestroyTexture(imgGameTimeText);
+    SDL_DestroyTexture(imgTitleStartText);
+    SDL_DestroyTexture(imgTitleContinueText);
+    SDL_DestroyTexture(imgTitleQuitText);
 
   SDL_DestroyRenderer(renderer);
 
