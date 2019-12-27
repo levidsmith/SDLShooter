@@ -26,10 +26,14 @@ extern SDL_Texture *imgEnemyAlpha_L1_00;
 extern SDL_Texture *imgEnemyAlpha_L1_01;
 extern SDL_Texture *imgEnemyAlpha_L2_00;
 extern SDL_Texture *imgEnemyAlpha_L2_01;
-extern SDL_Texture *imgEnemyBravo_00;
-extern SDL_Texture *imgEnemyBravo_01;
-extern SDL_Texture *imgEnemyCharlie_00;
-extern SDL_Texture *imgEnemyCharlie_01;
+extern SDL_Texture *imgEnemyBravo_L1_00;
+extern SDL_Texture *imgEnemyBravo_L1_01;
+extern SDL_Texture *imgEnemyBravo_L2_00;
+extern SDL_Texture *imgEnemyBravo_L2_01;
+extern SDL_Texture *imgEnemyCharlie_L1_00;
+extern SDL_Texture *imgEnemyCharlie_L1_01;
+extern SDL_Texture *imgEnemyCharlie_L2_00;
+extern SDL_Texture *imgEnemyCharlie_L2_01;
 extern SDL_Texture *imgEnemyDelta_00;
 extern SDL_Texture *imgEnemyDelta_01;
 extern SDL_Texture *imgEnemyEcho_00;
@@ -58,7 +62,7 @@ extern void updateScoreText();
 
 
 
-void init_enemy(struct Enemy *enemy, int init_x, int init_y, int init_iType) {
+void init_enemy(struct Enemy *enemy, int init_x, int init_y, int init_iType, int init_iLevel) {
   enemy->x = init_x;
   enemy->y = init_y;
   enemy->orig_x = init_x;
@@ -74,7 +78,7 @@ void init_enemy(struct Enemy *enemy, int init_x, int init_y, int init_iType) {
   enemy->fShootDelay = 0;
   enemy->hasDrop = FALSE;
   enemy->iHealth = 1;
-  enemy->iLevel = 1;
+  enemy->iLevel = init_iLevel;
   enemy->fDamagedCountdown = 0;
   enemy->target_x = 0;
   enemy->target_y = 0;
@@ -106,7 +110,12 @@ void update_enemy(struct Enemy *enemy) {
 
 
       case 1:  
-        enemy->vel_x = (1 * UNIT_SIZE);
+		if (enemy->iLevel == 1) {
+			enemy->vel_x = (1 * UNIT_SIZE);
+		} else if (enemy->iLevel == 2) {
+			enemy->vel_x = (2.5 * UNIT_SIZE);
+		}
+		
         enemy->x += (enemy->vel_x * DELTA_TIME);
         if (enemy->x > SCREEN_WIDTH) {
           enemy->x -= SCREEN_WIDTH;
@@ -115,8 +124,14 @@ void update_enemy(struct Enemy *enemy) {
 
 
       case 2:
-	    enemy->x = enemy->orig_x + 250 * sin(enemy->fLifetime * PI);
-		enemy->y += 64 * DELTA_TIME;
+	    if (enemy->iLevel == 1) {
+			enemy->x = enemy->orig_x + 100 * sin(enemy->fLifetime * PI);
+			enemy->y += (UNIT_SIZE / 2) * DELTA_TIME;
+			
+		} else if (enemy->iLevel == 2) {
+			enemy->x = enemy->orig_x + 250 * sin(enemy->fLifetime * PI);
+			enemy->y += UNIT_SIZE * DELTA_TIME;
+		}
 		break;
 	  case 3:
 	    enemy->x = enemy->orig_x + (128 * cos(enemy->fLifetime * PI));
@@ -220,25 +235,38 @@ void draw_enemy(struct Enemy *enemy) {
         case 1:
 		  
           if (iSpriteIndex == 0) {
-//	        SDL_RenderCopy(renderer, imgEnemyBravo_00, NULL, &pos);
-				img = imgEnemyBravo_00;
-
+			  if (enemy->iLevel == 1) {
+				img = imgEnemyBravo_L1_00;
+			  } else if (enemy->iLevel == 2) {
+				img = imgEnemyBravo_L2_00;
+			  }
 		  } else if (iSpriteIndex == 1) {
-//	        SDL_RenderCopy(renderer, imgEnemyBravo_01, NULL, &pos);
-				img = imgEnemyBravo_01;
+			  if (enemy->iLevel == 1) {
+				img = imgEnemyBravo_L1_01;
+
+			  } else if (enemy->iLevel == 2) {
+				img = imgEnemyBravo_L2_01;
+
+			  }
 		  }
 
           break;
         case 2:
 		  
           if (iSpriteIndex == 0) {
-//	        SDL_RenderCopy(renderer, imgEnemyCharlie_00, NULL, &pos);
-				img = imgEnemyCharlie_00;
-
+			  if (enemy->iLevel == 1) {
+				img = imgEnemyCharlie_L1_00;
+			  } else if (enemy->iLevel == 2) {
+				img = imgEnemyCharlie_L2_00;
+			  }
 		  } else if (iSpriteIndex == 1) {
-			  	img = imgEnemyCharlie_01;
+			  if (enemy->iLevel == 1) {
+				img = imgEnemyCharlie_L1_01;
 
-//	        SDL_RenderCopy(renderer, imgEnemyCharlie_01, NULL, &pos);
+			  } else if (enemy->iLevel == 2) {
+				img = imgEnemyCharlie_L2_01;
+
+			  }
 		  }
 
           break;
@@ -338,7 +366,12 @@ void setShootDelay_enemy(struct Enemy *enemy) {
 		enemy->fShootDelay = 1 + ((rand() % 50)  * 0.1);  //between 1 and 6 seconds
 		break;
 	case 1:
-		enemy->fShootDelay = 5 + ((rand() % 50) * 0.1); //between 5 and 10 seconds
+		if (enemy->iLevel == 1) {
+			enemy->fShootDelay = 5 + ((rand() % 50) * 0.1); //between 5 and 10 seconds
+		} else if (enemy->iLevel == 2) {
+			enemy->fShootDelay = 1; //between 2 and 4 seconds
+			
+		}
 		break;
 	case 3:
 		enemy->fShootDelay = 2; //2 seconds

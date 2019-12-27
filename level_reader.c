@@ -44,7 +44,7 @@ void read_level(char *strFile, int iLevelToRead) {
         Sint64 iFileSize = SDL_RWsize(f);
         printf("File size: %d\n", iFileSize);
         char strFileContents[iFileSize];
-            SDL_RWread( f, strFileContents, sizeof(Sint32), iFileSize );
+            SDL_RWread( f, strFileContents, sizeof(char), iFileSize );
         printf("*** File Contents: %s\n", strFileContents);
         
         SDL_RWclose(f);
@@ -66,7 +66,7 @@ void read_level(char *strFile, int iLevelToRead) {
 
 				struct Enemy *e1;
 				e1 = malloc(sizeof(struct Enemy));
-				init_enemy(e1, x, y, 0);
+				init_enemy(e1, x, y, 0, 1);
 				e1->iPoints = 50;
 				if (iDropCountdown <= 0) {
 					e1->hasDrop = TRUE;
@@ -83,7 +83,7 @@ void read_level(char *strFile, int iLevelToRead) {
 
 				struct Enemy *e1;
 				e1 = malloc(sizeof(struct Enemy));
-				init_enemy(e1, x, y, 0);
+				init_enemy(e1, x, y, 0, 2);
 				e1->iPoints = 200;
 				e1->iLevel = 2;
 				e1->iHealth = 3;
@@ -102,7 +102,7 @@ void read_level(char *strFile, int iLevelToRead) {
 
 				struct Enemy *e1;
 				e1 = malloc(sizeof(struct Enemy));
-				init_enemy(e1, x, y, 1);
+				init_enemy(e1, x, y, 1, 1);
 				e1->iPoints = 100;
 
 				if (iDropCountdown <= 0) {
@@ -117,11 +117,33 @@ void read_level(char *strFile, int iLevelToRead) {
 
 				iEnemyCount++;
 
+			} else if (strLine[i] == '3') {
+
+				struct Enemy *e1;
+				e1 = malloc(sizeof(struct Enemy));
+				init_enemy(e1, x, y, 1, 2);
+				e1->iPoints = 200;
+				e1->iLevel = 2;
+				e1->iHealth = 2;
+
+				if (iDropCountdown <= 0) {
+					e1->hasDrop = TRUE;
+					iDropCountdown = 2 + getDropCountdown();
+				} else {
+					iDropCountdown--;
+				}
+
+
+				add_node(&listEnemy, e1);
+
+				iEnemyCount++;
+
+
 			} else if (strLine[i] == '4') {
 
 				struct Enemy *e1;
 				e1 = malloc(sizeof(struct Enemy));
-				init_enemy(e1, x, y, 2);
+				init_enemy(e1, x, y, 2, 1);
 				e1->iPoints = 250;
 				
 				e1->iHealth = 3;
@@ -137,6 +159,27 @@ void read_level(char *strFile, int iLevelToRead) {
 				add_node(&listEnemy, e1);
 				iEnemyCount++;
 
+			} else if (strLine[i] == '5') {
+
+				struct Enemy *e1;
+				e1 = malloc(sizeof(struct Enemy));
+				init_enemy(e1, x, y, 2, 2);
+				e1->iPoints = 500;
+				
+				e1->iHealth = 5;
+
+				if (iDropCountdown <= 0) {
+					e1->hasDrop = TRUE;
+					iDropCountdown = 2 + getDropCountdown();
+				} else {
+					iDropCountdown--;
+				}
+
+
+				add_node(&listEnemy, e1);
+				iEnemyCount++;
+
+
 			} else if (strLine[i] == '6') {
 				
 				int j;
@@ -145,7 +188,7 @@ void read_level(char *strFile, int iLevelToRead) {
 
 					struct Enemy *e1;
 					e1 = malloc(sizeof(struct Enemy));
-					init_enemy(e1, x, y, 3);
+					init_enemy(e1, x, y, 3, 1);
 					e1->iPoints = 500;
 					
 					e1->iHealth = 5;
@@ -168,7 +211,7 @@ void read_level(char *strFile, int iLevelToRead) {
 
 				struct Enemy *e1;
 				e1 = malloc(sizeof(struct Enemy));
-				init_enemy(e1, x, y, 4);
+				init_enemy(e1, x, y, 4, 1);
 				e1->iPoints = 150;
 				e1->iHealth = 3;
 
@@ -243,7 +286,7 @@ int read_count_levels(char *strFile) {
 
     
 //    for(i = 0; i < SDL_RWsize(f); i++ ) {
-        SDL_RWread( f, strFileContents, sizeof(Sint32), iFileSize );
+        SDL_RWread( f, strFileContents, sizeof(char), iFileSize );
 //    }
     
     printf("*** File Contents: %s\n", strFileContents);

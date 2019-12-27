@@ -32,10 +32,14 @@ SDL_Texture *imgEnemyAlpha_L1_00;
 SDL_Texture *imgEnemyAlpha_L1_01;
 SDL_Texture *imgEnemyAlpha_L2_00;
 SDL_Texture *imgEnemyAlpha_L2_01;
-SDL_Texture *imgEnemyBravo_00;
-SDL_Texture *imgEnemyBravo_01;
-SDL_Texture *imgEnemyCharlie_00;
-SDL_Texture *imgEnemyCharlie_01;
+SDL_Texture *imgEnemyBravo_L1_00;
+SDL_Texture *imgEnemyBravo_L1_01;
+SDL_Texture *imgEnemyBravo_L2_00;
+SDL_Texture *imgEnemyBravo_L2_01;
+SDL_Texture *imgEnemyCharlie_L1_00;
+SDL_Texture *imgEnemyCharlie_L1_01;
+SDL_Texture *imgEnemyCharlie_L2_00;
+SDL_Texture *imgEnemyCharlie_L2_01;
 SDL_Texture *imgEnemyDelta_00;
 SDL_Texture *imgEnemyDelta_01;
 SDL_Texture *imgEnemyEcho_00;
@@ -232,25 +236,46 @@ int main(int argc, char* args[]) {
   SDL_FreeSurface(sprEnemy);
 
 
-  sprEnemy = SDL_LoadBMP("assets/images/enemy_bravo1.bmp");
+  sprEnemy = SDL_LoadBMP("assets/images/enemy_bravo_l1_1.bmp");
   SDL_SetColorKey(sprEnemy, SDL_TRUE, SDL_MapRGB(sprEnemy->format, 255, 0, 255));
-  imgEnemyBravo_00 = SDL_CreateTextureFromSurface(renderer, sprEnemy);
+  imgEnemyBravo_L1_00 = SDL_CreateTextureFromSurface(renderer, sprEnemy);
   SDL_FreeSurface(sprEnemy);
 
-  sprEnemy = SDL_LoadBMP("assets/images/enemy_bravo2.bmp");
+  sprEnemy = SDL_LoadBMP("assets/images/enemy_bravo_l1_2.bmp");
   SDL_SetColorKey(sprEnemy, SDL_TRUE, SDL_MapRGB(sprEnemy->format, 255, 0, 255));
-  imgEnemyBravo_01 = SDL_CreateTextureFromSurface(renderer, sprEnemy);
+  imgEnemyBravo_L1_01 = SDL_CreateTextureFromSurface(renderer, sprEnemy);
   SDL_FreeSurface(sprEnemy);
 
-  sprEnemy = SDL_LoadBMP("assets/images/enemy_charlie1.bmp");
+  sprEnemy = SDL_LoadBMP("assets/images/enemy_bravo_l2_1.bmp");
   SDL_SetColorKey(sprEnemy, SDL_TRUE, SDL_MapRGB(sprEnemy->format, 255, 0, 255));
-  imgEnemyCharlie_00 = SDL_CreateTextureFromSurface(renderer, sprEnemy);
+  imgEnemyBravo_L2_00 = SDL_CreateTextureFromSurface(renderer, sprEnemy);
   SDL_FreeSurface(sprEnemy);
 
-  sprEnemy = SDL_LoadBMP("assets/images/enemy_charlie2.bmp");
+  sprEnemy = SDL_LoadBMP("assets/images/enemy_bravo_l2_2.bmp");
   SDL_SetColorKey(sprEnemy, SDL_TRUE, SDL_MapRGB(sprEnemy->format, 255, 0, 255));
-  imgEnemyCharlie_01 = SDL_CreateTextureFromSurface(renderer, sprEnemy);
+  imgEnemyBravo_L2_01 = SDL_CreateTextureFromSurface(renderer, sprEnemy);
   SDL_FreeSurface(sprEnemy);
+
+  sprEnemy = SDL_LoadBMP("assets/images/enemy_charlie_l1_1.bmp");
+  SDL_SetColorKey(sprEnemy, SDL_TRUE, SDL_MapRGB(sprEnemy->format, 255, 0, 255));
+  imgEnemyCharlie_L1_00 = SDL_CreateTextureFromSurface(renderer, sprEnemy);
+  SDL_FreeSurface(sprEnemy);
+
+  sprEnemy = SDL_LoadBMP("assets/images/enemy_charlie_l1_2.bmp");
+  SDL_SetColorKey(sprEnemy, SDL_TRUE, SDL_MapRGB(sprEnemy->format, 255, 0, 255));
+  imgEnemyCharlie_L1_01 = SDL_CreateTextureFromSurface(renderer, sprEnemy);
+  SDL_FreeSurface(sprEnemy);
+
+  sprEnemy = SDL_LoadBMP("assets/images/enemy_charlie_l2_1.bmp");
+  SDL_SetColorKey(sprEnemy, SDL_TRUE, SDL_MapRGB(sprEnemy->format, 255, 0, 255));
+  imgEnemyCharlie_L2_00 = SDL_CreateTextureFromSurface(renderer, sprEnemy);
+  SDL_FreeSurface(sprEnemy);
+
+  sprEnemy = SDL_LoadBMP("assets/images/enemy_charlie_l2_2.bmp");
+  SDL_SetColorKey(sprEnemy, SDL_TRUE, SDL_MapRGB(sprEnemy->format, 255, 0, 255));
+  imgEnemyCharlie_L2_01 = SDL_CreateTextureFromSurface(renderer, sprEnemy);
+  SDL_FreeSurface(sprEnemy);
+
 
   sprEnemy = SDL_LoadBMP("assets/images/enemy_delta1.bmp");
   SDL_SetColorKey(sprEnemy, SDL_TRUE, SDL_MapRGB(sprEnemy->format, 255, 0, 255));
@@ -283,11 +308,11 @@ int main(int argc, char* args[]) {
   SDL_FreeSurface(sprEnemy);
 
 
-  sprBullet = SDL_LoadBMP("assets/images/bullet.bmp");
+  sprBullet = SDL_LoadBMP("assets/images/bullet1.bmp");
   SDL_SetColorKey(sprBullet, SDL_TRUE, SDL_MapRGB(sprBullet->format, 255, 0, 255));
   imgBullet = SDL_CreateTextureFromSurface(renderer, sprBullet);
 
-  sprBullet = SDL_LoadBMP("assets/images/bullet_enemy.bmp");
+  sprBullet = SDL_LoadBMP("assets/images/bullet2.bmp");
   SDL_SetColorKey(sprBullet, SDL_TRUE, SDL_MapRGB(sprBullet->format, 255, 0, 255));
   imgBulletEnemy = SDL_CreateTextureFromSurface(renderer, sprBullet);
 
@@ -414,10 +439,14 @@ int main(int argc, char* args[]) {
   SDL_DestroyTexture(imgEnemyAlpha_L1_01);
   SDL_DestroyTexture(imgEnemyAlpha_L2_00);
   SDL_DestroyTexture(imgEnemyAlpha_L2_01);
-  SDL_DestroyTexture(imgEnemyBravo_00);
-  SDL_DestroyTexture(imgEnemyBravo_01);
-  SDL_DestroyTexture(imgEnemyCharlie_00);
-  SDL_DestroyTexture(imgEnemyCharlie_01);
+  SDL_DestroyTexture(imgEnemyBravo_L1_00);
+  SDL_DestroyTexture(imgEnemyBravo_L1_01);
+  SDL_DestroyTexture(imgEnemyBravo_L2_00);
+  SDL_DestroyTexture(imgEnemyBravo_L2_01);
+  SDL_DestroyTexture(imgEnemyCharlie_L1_00);
+  SDL_DestroyTexture(imgEnemyCharlie_L1_01);
+  SDL_DestroyTexture(imgEnemyCharlie_L2_00);
+  SDL_DestroyTexture(imgEnemyCharlie_L2_01);
   SDL_DestroyTexture(imgEnemyDelta_00);
   SDL_DestroyTexture(imgEnemyDelta_01);
   SDL_DestroyTexture(imgEnemyEcho_00);
