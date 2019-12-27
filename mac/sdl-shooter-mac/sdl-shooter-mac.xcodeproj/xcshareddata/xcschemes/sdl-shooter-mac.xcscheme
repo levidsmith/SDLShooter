@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "7F1508B523B51678003BBB91"
-               BuildableName = "sdl-shooter"
-               BlueprintName = "sdl-shooter"
-               ReferencedContainer = "container:sdl-shooter.xcodeproj">
+               BlueprintIdentifier = "7FE64C6323B68E9B001C2F67"
+               BuildableName = "sdl-shooter-mac"
+               BlueprintName = "sdl-shooter-mac"
+               ReferencedContainer = "container:sdl-shooter-mac.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -45,10 +45,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "7F1508B523B51678003BBB91"
-            BuildableName = "sdl-shooter"
-            BlueprintName = "sdl-shooter"
-            ReferencedContainer = "container:sdl-shooter.xcodeproj">
+            BlueprintIdentifier = "7FE64C6323B68E9B001C2F67"
+            BuildableName = "sdl-shooter-mac"
+            BlueprintName = "sdl-shooter-mac"
+            ReferencedContainer = "container:sdl-shooter-mac.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -62,10 +62,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "7F1508B523B51678003BBB91"
-            BuildableName = "sdl-shooter"
-            BlueprintName = "sdl-shooter"
-            ReferencedContainer = "container:sdl-shooter.xcodeproj">
+            BlueprintIdentifier = "7FE64C6323B68E9B001C2F67"
+            BuildableName = "sdl-shooter-mac"
+            BlueprintName = "sdl-shooter-mac"
+            ReferencedContainer = "container:sdl-shooter-mac.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

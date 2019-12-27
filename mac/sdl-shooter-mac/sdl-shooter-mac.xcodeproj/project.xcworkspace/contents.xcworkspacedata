@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:sdl-shooter.xcodeproj">
+      location = "self:sdl-shooter-mac.xcodeproj">
    </FileRef>
 </Workspace>

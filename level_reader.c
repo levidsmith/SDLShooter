@@ -1,12 +1,10 @@
 //2019 Levi D. Smith - levidsmith.com
+#include "globals.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-//MinGW style
-#include "SDL.h"
-//MacOS - XCode Style
-//#include <SDL2/SDL.h>
 
 
 #include "level_reader.h"

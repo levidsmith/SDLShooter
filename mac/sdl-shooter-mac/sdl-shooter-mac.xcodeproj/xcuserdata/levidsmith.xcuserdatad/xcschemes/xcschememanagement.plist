@@ -4,7 +4,7 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>sdl-shooter.xcscheme_^#shared#^_</key>
+		<key>sdl-shooter-mac.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>0</integer>
@@ -12,7 +12,7 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>7F1508B523B51678003BBB91</key>
+		<key>7FE64C6323B68E9B001C2F67</key>
 		<dict>
 			<key>primary</key>
 			<true/>
