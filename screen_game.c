@@ -108,6 +108,9 @@ void start_screen_game() {
 
 
   //read level
+    if (!iGameContinue) {
+        iCurrentLevel = 0;
+    }
     char *strLevelFile = LEVEL_FILE;
   if (iLevelCount < 0) {
 	  iLevelCount = read_count_levels(LEVEL_FILE);
@@ -649,7 +652,7 @@ void handleInput_screen_game(int iType, int iKey) {
       //iKeepLooping = FALSE;
         iTitleMenuChoice = 1;
 	  setCurrentScreen(0);
-    } else if (iKey == SDLK_m || iKey == SDLK_ESCAPE) {
+    } else if (iKey == SDLK_m) {
       Mix_VolumeMusic(0);
     } else if (iKey == SDLK_TAB) {
 		if (iButtonOptionDown == FALSE) {

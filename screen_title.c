@@ -28,7 +28,7 @@ extern Mix_Music *musicTitle;
 
 int iBackgroundOffsetTitle;
 SDL_Rect posTitle;
-int iTitleMenuChoice;
+int iTitleMenuChoice = 0;
 int iGameContinue;
 int iCanContinue = FALSE;
 
@@ -50,7 +50,7 @@ void start_screen_title() {
     updateText_screen_title();
 
   Mix_PlayMusic(musicTitle, -1);
-    iTitleMenuChoice = 0;
+//    iTitleMenuChoice = 0;
 
 	
 }
