@@ -80,7 +80,7 @@ int iLevelCount = -1;
 
 float fKeyPressDelay = 0;
 
-char *strWeaponNames[7] = {"Normal", "Speed Shot", "Multi Shot", "Wave Shot", "Blast Shot" };
+char *strWeaponNames[7] = {"Normal", "Speed Shot", "Multi Shot", "Wave Shot", "Blast Shot", "Spin Shot" };
 
 time_t timeStartGame;
 time_t timeEndGame;

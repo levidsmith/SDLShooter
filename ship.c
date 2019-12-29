@@ -5,13 +5,16 @@
 #include "linked_list.h"
 #include "ship.h"
 #include "bullet.h"
+#include "enemy.h"
 
-#define NUM_WEAPONS 5
+#define NUM_WEAPONS 6
 
 extern SDL_Renderer *renderer;
 extern SDL_Texture *imgShip;
 extern Mix_Chunk *soundShoot;
 extern Mix_Chunk *soundWeaponSelect;
+
+
 
 
 
@@ -382,10 +385,93 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
 
 		
 		Mix_PlayChannel(-1, soundShoot, 0);
-	}
+    }
 	  
+  } else if (ship->iWeaponType == 5) {
+        switch(iLevel) {
+            case 0:
+                iEnergyRequired = 20;
+                break;
+            case 1:
+                iEnergyRequired = 40;
+                break;
+            case 2:
+                iEnergyRequired = 60;
+                break;
+        }
+    if (ship->fEnergy >= iEnergyRequired) {
+        struct Bullet *bullet;
+
+        //release the current spin bullets
+        struct Node *current = NULL;
+        current = *listBullet;
+        
+        while(current != NULL) {
+          bullet = (struct Bullet *) current->data;
+          update_bullet(bullet);
+          if (bullet->isSpinShot) {
+              bullet->isSpinShot = FALSE;
+ //             bullet->vel_y = -5;
+              float    fDistance    = getDistance(ship->x, ship->y, bullet->x, bullet->y);
+              bullet->vel_x = -5 * (getCenterX_ship(ship) - getCenterX_bullet(bullet)) / fDistance;
+              bullet->vel_y = -5 * (getCenterY_ship(ship) - getCenterY_bullet(bullet)) / fDistance;
+              
+          }
+          current = current->next;
+        }
+        
+        //create the new spin bullets
+        int i;
+        
+        if (iLevel == 0) {
+            for (i = 0; i < 4; i++) {
+                bullet = malloc(sizeof(struct Bullet));
+                init_bullet(bullet, ship->x + ship->width / 2, ship->y);
+                bullet->iHitsEnemy = TRUE;
+                bullet->isSpinShot = TRUE;
+                bullet->fLifetime = i * 2.0 / 4.0;
+                add_node(listBullet, bullet);
+            }
+        } else if (iLevel == 1) {
+            for (i = 0; i < 8; i++) {
+                bullet = malloc(sizeof(struct Bullet));
+                init_bullet(bullet, ship->x + ship->width / 2, ship->y);
+                bullet->iHitsEnemy = TRUE;
+                bullet->isSpinShot = TRUE;
+                bullet->fLifetime = i * 2.0 / 8.0;
+                add_node(listBullet, bullet);
+            }
+
+        } else if (iLevel == 2) {
+            for (i = 0; i < 12; i++) {
+                bullet = malloc(sizeof(struct Bullet));
+                init_bullet(bullet, ship->x + ship->width / 2, ship->y);
+                bullet->iHitsEnemy = TRUE;
+                bullet->isSpinShot = TRUE;
+                bullet->fLifetime = i * 2.0 / 12.0;
+                add_node(listBullet, bullet);
+            }
+
+
+        }
+        
+        
+
+
+
+        ship->fShootDelay = ship->fMaxShootDelay;
+        ship->fEnergy -= iEnergyRequired;
+        
+
+        
+        Mix_PlayChannel(-1, soundShoot, 0);
+
+    }
   }
+        
+    
 }
+    
 
 void increaseFireRate_ship(struct Ship *ship) {
     //changed powerup to give energy instead of increasing shot rate

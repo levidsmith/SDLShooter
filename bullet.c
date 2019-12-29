@@ -3,10 +3,12 @@
 #include <math.h>
 
 #include "bullet.h"
+#include "ship.h"
 
 extern SDL_Renderer *renderer;
 extern SDL_Texture *imgBullet;
 extern SDL_Texture *imgBulletEnemy;
+extern struct Ship *ship;
 
 void init_bullet(struct Bullet *bullet, int init_x, int init_y) {
   bullet->x = (float) init_x;
@@ -23,6 +25,7 @@ void init_bullet(struct Bullet *bullet, int init_x, int init_y) {
   bullet->fLifetime = 0;
   bullet->fWaveAmplitude = 0;
   bullet->fBlastRadius = 0;
+    bullet->isSpinShot = FALSE;
 
 }
 
@@ -30,17 +33,25 @@ void update_bullet(struct Bullet *bullet) {
 	bullet->fLifetime += DELTA_TIME;
 	
   if (bullet->isAlive) {
-	bullet->x += bullet->vel_x * UNIT_SIZE * DELTA_TIME;
-    bullet->y += bullet->vel_y * UNIT_SIZE * DELTA_TIME;
-    if (bullet->y < 0 || bullet->y > SCREEN_HEIGHT) {
-      bullet->isAlive = FALSE;
-    }
+      if (!bullet->isSpinShot) {
+          bullet->x += bullet->vel_x * UNIT_SIZE * DELTA_TIME;
+          bullet->y += bullet->vel_y * UNIT_SIZE * DELTA_TIME;
+          if (bullet->y < 0 || bullet->y > SCREEN_HEIGHT) {
+              bullet->isAlive = FALSE;
+          }
+      }
   }
   
   if (bullet->fWaveAmplitude != 0) {
     bullet->x = bullet->orig_x + (bullet->fWaveAmplitude * UNIT_SIZE * sin(bullet->fLifetime * PI * 2));
 //    bullet->x = bullet->orig_x + (bullet->fWaveAmplitude * UNIT_SIZE);
   }
+    
+    if (bullet->isSpinShot) {
+        bullet->x = ship->x + (ship->width / 2) + 2.0 * UNIT_SIZE * cos(bullet->fLifetime * PI);
+        bullet->y = ship->y + (ship->width / 2) + 2.0 * UNIT_SIZE * sin(bullet->fLifetime * PI);
+        
+    }
 
 }
 
