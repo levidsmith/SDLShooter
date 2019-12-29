@@ -101,19 +101,19 @@ void draw_screen_title() {
     //Draw the menu
       posTitle.x = 400;
       posTitle.y = 480;
-      SDL_QueryTexture(imgCopyrightText, NULL, NULL, &(posTitle.w), &(posTitle.h));
+      SDL_QueryTexture(imgTitleStartText, NULL, NULL, &(posTitle.w), &(posTitle.h));
       SDL_RenderCopy(renderer, imgTitleStartText, NULL, &posTitle);
 
     if (iCanContinue) {
         posTitle.x = 400;
         posTitle.y = 480 + 32;
-        SDL_QueryTexture(imgCopyrightText, NULL, NULL, &(posTitle.w), &(posTitle.h));
+        SDL_QueryTexture(imgTitleContinueText, NULL, NULL, &(posTitle.w), &(posTitle.h));
         SDL_RenderCopy(renderer, imgTitleContinueText, NULL, &posTitle);
     }
     
     posTitle.x = 400;
     posTitle.y = 480 + 64;
-    SDL_QueryTexture(imgCopyrightText, NULL, NULL, &(posTitle.w), &(posTitle.h));
+    SDL_QueryTexture(imgTitleQuitText, NULL, NULL, &(posTitle.w), &(posTitle.h));
     SDL_RenderCopy(renderer, imgTitleQuitText, NULL, &posTitle);
 
 

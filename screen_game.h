@@ -9,3 +9,4 @@ void updateScoreText();
 void checkCollisions();
 void checkLevelComplete();
 void updateTimeText();
+void getWeaponColor(int iWeaponType, SDL_Color *c);

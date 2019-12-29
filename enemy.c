@@ -132,7 +132,8 @@ void update_enemy(struct Enemy *enemy) {
 			enemy->fWaitCountdown -= DELTA_TIME;
 			if (enemy->fWaitCountdown <= 0) {
 				enemy->fWaitCountdown = 0;
-	  setTargetPosition_enemy(enemy, (1 + (rand() % ((SCREEN_WIDTH / 64) - 2))) * 64, (1 + (rand() % ((SCREEN_HEIGHT / 64) - 2))) * 64);
+				setTargetPosition_enemy(enemy, (1 + (rand() % ((SCREEN_WIDTH / 64) - 2))) * 64, (1 + (rand() % ((SCREEN_HEIGHT / 64) - 2))) * 64);
+				//setTargetPosition_enemy(enemy, 5 * 64, 5 * 64);
 
 			}
 		} else if (enemy->iMoveToTarget) {
@@ -460,6 +461,8 @@ void setTargetPosition_enemy(struct Enemy *enemy, float x, float y) {
 
 			} else {
 				printf("*** Distance was zero");
+				//should okay, enemy will just have another wake cycle at same location
+				enemy->iMoveToTarget = TRUE;
 			}
 			
 	

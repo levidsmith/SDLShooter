@@ -15,6 +15,7 @@ struct Bullet {
   float fLifetime;
   float fBlastRadius;
     int isSpinShot;
+	int iWeaponType;
 };
 
 void init_bullet(struct Bullet *, int, int);

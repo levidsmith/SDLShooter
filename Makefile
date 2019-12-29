@@ -4,6 +4,11 @@ EXE=sdl_shooter
 $(EXE): sdl_shooter.c enemy.c level_reader.c ship.c bullet.c linked_list.c powerup.c screen_game.c screen_title.c explosion.c 
 	$(CC) -o $(EXE) sdl_shooter.c enemy.c level_reader.c ship.c bullet.c linked_list.c powerup.c screen_game.c screen_title.c explosion.c `sdl2-config --cflags --libs` -lSDL2_ttf -lSDL2_mixer -lm -mconsole
 
+release:
+	cp sdl_shooter.exe build/SDLShooterWindows
+	cp assets/images/*.bmp build/SDLShooterWindows/assets/images
+	cp assets/level*.txt build/SDLShooterWindows/assets
+
 clean:
 	rm sdl_shooter.exe
 	rm *.o

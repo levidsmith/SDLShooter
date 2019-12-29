@@ -10,7 +10,7 @@
 #define NUM_WEAPONS 6
 
 extern SDL_Renderer *renderer;
-extern SDL_Texture *imgShip;
+extern SDL_Texture *imgShip[6];
 extern Mix_Chunk *soundShoot;
 extern Mix_Chunk *soundWeaponSelect;
 
@@ -81,7 +81,7 @@ void draw_ship(struct Ship *ship) {
 	pos.y = ship->y;
 	pos.w = ship->width;
 	pos.h = ship->height;
-    SDL_RenderCopy(renderer, imgShip, NULL, &pos);
+    SDL_RenderCopy(renderer, imgShip[ship->iWeaponType], NULL, &pos);
   }
 
 	
@@ -101,6 +101,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
 		init_bullet(bullet, ship->x + ship->width / 2, ship->y);
 		bullet->vel_y = -5;
 		bullet->iHitsEnemy = TRUE;
+		bullet->iWeaponType = ship->iWeaponType;
 
 
 		
@@ -137,6 +138,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
 		init_bullet(bullet, ship->x + ship->width / 2, ship->y);
 		bullet->vel_y = -5;
 		bullet->iHitsEnemy = TRUE;
+		bullet->iWeaponType = ship->iWeaponType;
 
 
 		
@@ -178,6 +180,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
             bullet->vel_x = 5.0 * fVelX;
             bullet->vel_y = -5.0 * fVelY;
             bullet->iHitsEnemy = TRUE;
+			bullet->iWeaponType = ship->iWeaponType;
             add_node(listBullet, bullet);
 
             bullet = malloc(sizeof(struct Bullet));
@@ -185,6 +188,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
             bullet->vel_x = -5.0 * fVelX;
             bullet->vel_y = -5.0 * fVelY;
             bullet->iHitsEnemy = TRUE;
+			bullet->iWeaponType = ship->iWeaponType;
             add_node(listBullet, bullet);
 
             
@@ -196,6 +200,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
 		init_bullet(bullet, ship->x + ship->width / 2, ship->y);
 		bullet->vel_y = -5;
 		bullet->iHitsEnemy = TRUE;
+		bullet->iWeaponType = ship->iWeaponType;
 		add_node(listBullet, bullet);
 
 		bullet = malloc(sizeof(struct Bullet));
@@ -203,6 +208,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
 		bullet->vel_x = 5.0 * fVelX;
 		bullet->vel_y = -5.0 * fVelY;
 		bullet->iHitsEnemy = TRUE;
+		bullet->iWeaponType = ship->iWeaponType;
 		add_node(listBullet, bullet);
 
 		bullet = malloc(sizeof(struct Bullet));
@@ -210,6 +216,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
 		bullet->vel_x = 5.0 * -fVelX;
 		bullet->vel_y = -5.0 * fVelY;
 		bullet->iHitsEnemy = TRUE;
+		bullet->iWeaponType = ship->iWeaponType;
 		add_node(listBullet, bullet);
         } else if (iLevel == 2) {
             
@@ -221,6 +228,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
             bullet->vel_x = 5.0 * fVelX;
             bullet->vel_y = -5.0 * fVelY;
             bullet->iHitsEnemy = TRUE;
+		bullet->iWeaponType = ship->iWeaponType;
             add_node(listBullet, bullet);
 
             bullet = malloc(sizeof(struct Bullet));
@@ -228,6 +236,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
             bullet->vel_x = -5.0 * fVelX;
             bullet->vel_y = -5.0 * fVelY;
             bullet->iHitsEnemy = TRUE;
+		bullet->iWeaponType = ship->iWeaponType;
             add_node(listBullet, bullet);
 
             fVelX = 0.7071; //sin(45)
@@ -238,6 +247,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
             bullet->vel_x = 5.0 * fVelX;
             bullet->vel_y = -5.0 * fVelY;
             bullet->iHitsEnemy = TRUE;
+		bullet->iWeaponType = ship->iWeaponType;
             add_node(listBullet, bullet);
 
             bullet = malloc(sizeof(struct Bullet));
@@ -245,6 +255,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
             bullet->vel_x = -5.0 * fVelX;
             bullet->vel_y = -5.0 * fVelY;
             bullet->iHitsEnemy = TRUE;
+		bullet->iWeaponType = ship->iWeaponType;
             add_node(listBullet, bullet);
 
         }
@@ -279,6 +290,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
             bullet->vel_y = -5;
             bullet->iHitsEnemy = TRUE;
             bullet->fWaveAmplitude = 2;
+		bullet->iWeaponType = ship->iWeaponType;
             add_node(listBullet, bullet);
 
         } else if (iLevel == 1) {
@@ -287,6 +299,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
             bullet->vel_y = -5;
             bullet->iHitsEnemy = TRUE;
             bullet->fWaveAmplitude = 2;
+		bullet->iWeaponType = ship->iWeaponType;
             add_node(listBullet, bullet);
 
 
@@ -295,6 +308,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
             bullet->vel_y = -5;
             bullet->iHitsEnemy = TRUE;
             bullet->fWaveAmplitude = -2;
+		bullet->iWeaponType = ship->iWeaponType;
             add_node(listBullet, bullet);
             
         } else if (iLevel == 2) {
@@ -303,6 +317,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
             bullet->vel_y = -5;
             bullet->iHitsEnemy = TRUE;
             bullet->fWaveAmplitude = 2;
+		bullet->iWeaponType = ship->iWeaponType;
             add_node(listBullet, bullet);
 
             bullet = malloc(sizeof(struct Bullet));
@@ -310,6 +325,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
             bullet->vel_y = -5;
             bullet->iHitsEnemy = TRUE;
             bullet->fWaveAmplitude = -2;
+		bullet->iWeaponType = ship->iWeaponType;
             add_node(listBullet, bullet);
 
             bullet = malloc(sizeof(struct Bullet));
@@ -317,6 +333,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
             bullet->vel_y = -5;
             bullet->iHitsEnemy = TRUE;
             bullet->fWaveAmplitude = 4;
+		bullet->iWeaponType = ship->iWeaponType;
             add_node(listBullet, bullet);
 
 
@@ -325,6 +342,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
             bullet->vel_y = -5;
             bullet->iHitsEnemy = TRUE;
             bullet->fWaveAmplitude = -4;
+		bullet->iWeaponType = ship->iWeaponType;
             add_node(listBullet, bullet);
         }
 
@@ -359,6 +377,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
             bullet->vel_y = -5;
             bullet->iHitsEnemy = TRUE;
             bullet->fBlastRadius = 2;
+		bullet->iWeaponType = ship->iWeaponType;
             add_node(listBullet, bullet);
         } else if (iLevel == 1) {
             bullet = malloc(sizeof(struct Bullet));
@@ -366,6 +385,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
             bullet->vel_y = -5;
             bullet->iHitsEnemy = TRUE;
             bullet->fBlastRadius = 3;
+		bullet->iWeaponType = ship->iWeaponType;
             add_node(listBullet, bullet);
 
         } else if (iLevel == 2) {
@@ -374,6 +394,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
             bullet->vel_y = -5;
             bullet->iHitsEnemy = TRUE;
             bullet->fBlastRadius = 4;
+		bullet->iWeaponType = ship->iWeaponType;
             add_node(listBullet, bullet);
 
         }
@@ -430,6 +451,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
                 bullet->iHitsEnemy = TRUE;
                 bullet->isSpinShot = TRUE;
                 bullet->fLifetime = i * 2.0 / 4.0;
+		bullet->iWeaponType = ship->iWeaponType;
                 add_node(listBullet, bullet);
             }
         } else if (iLevel == 1) {
@@ -439,6 +461,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
                 bullet->iHitsEnemy = TRUE;
                 bullet->isSpinShot = TRUE;
                 bullet->fLifetime = i * 2.0 / 8.0;
+		bullet->iWeaponType = ship->iWeaponType;
                 add_node(listBullet, bullet);
             }
 
@@ -449,6 +472,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
                 bullet->iHitsEnemy = TRUE;
                 bullet->isSpinShot = TRUE;
                 bullet->fLifetime = i * 2.0 / 12.0;
+		bullet->iWeaponType = ship->iWeaponType;
                 add_node(listBullet, bullet);
             }
 

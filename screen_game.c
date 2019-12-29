@@ -26,6 +26,8 @@ extern void remove_node(struct Node **head, struct Node *node);
 extern SDL_Renderer* renderer;
 extern void setCurrentScreen(int iScreen);
 extern void damage_enemy(struct Enemy *enemy, int iDamageAmount);
+extern SDL_Texture *imgFireButton[16];
+extern SDL_Texture *imgFireButtonText[3];
 
 
 //VARIABLES
@@ -313,24 +315,109 @@ void draw_screen_game() {
     }
 
     
-  //draw the ship
-  draw_ship(ship);
 
 
   
 //Draw energy meter
   SDL_Rect rectMeter;
+  SDL_Color colorMeter;
   SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+  getWeaponColor(ship->iWeaponType, &colorMeter);
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 128);
-  rectMeter.x = 100;
-  rectMeter.y = 640 - 32;
+  rectMeter.x = 1000;
+  rectMeter.y = 32 + 100;
   rectMeter.w = ship->fMaxEnergy;
-  rectMeter.h =  32;
+  rectMeter.h =  16;
   SDL_RenderFillRect(renderer, &rectMeter);
 
-  SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+//  SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+  SDL_SetRenderDrawColor(renderer, colorMeter.r, colorMeter.g, colorMeter.b, 255);
+
   rectMeter.w = ship->fEnergy;
   SDL_RenderFillRect(renderer, &rectMeter);
+
+
+//Draw the score text
+  pos.x = 100;
+  pos.y = 32 + 32;
+  
+  SDL_QueryTexture(imgScoreText, NULL, NULL, &(pos.w), &(pos.h)); 
+  SDL_RenderCopy(renderer, imgScoreText, NULL, &pos);
+
+//Draw level number
+  pos.x = 100;
+  pos.y = 32;
+  
+  SDL_QueryTexture(imgLevel, NULL, NULL, &(pos.w), &(pos.h)); 
+  SDL_RenderCopy(renderer, imgLevel, NULL, &pos);
+
+//draw weapon text
+  pos.x = 1000;
+  pos.y = 32;
+  SDL_QueryTexture(imgWeaponText, NULL, NULL, &(pos.w), &(pos.h)); 
+  SDL_RenderCopy(renderer, imgWeaponText, NULL, &pos);
+    
+    //draw game time
+    pos.x = 800;
+    pos.y = 64;
+    SDL_QueryTexture(imgGameTimeText, NULL, NULL, &(pos.w), &(pos.h));
+    SDL_RenderCopy(renderer, imgGameTimeText, NULL, &pos);
+
+//draw the fire buttons
+	SDL_Texture *imgFireButton1;
+	SDL_Texture *imgFireButton2;
+	SDL_Texture *imgFireButton3;
+	
+	if (ship->iWeaponType == 0) {
+		imgFireButton1 = imgFireButton[0];
+		imgFireButton2 = imgFireButton[0];
+		imgFireButton3 = imgFireButton[0];
+	} else {
+		imgFireButton1 = imgFireButton[((ship->iWeaponType - 1) * 3) + 1];
+		imgFireButton2 = imgFireButton[((ship->iWeaponType - 1) * 3) + 2];
+		imgFireButton3 = imgFireButton[((ship->iWeaponType - 1) * 3) + 3];
+		
+	}
+	
+	
+    pos.x = 1000 + 0 * (64 + 8);
+    pos.y = 64;
+    SDL_QueryTexture(imgFireButton1, NULL, NULL, &(pos.w), &(pos.h));
+    SDL_RenderCopy(renderer, imgFireButton1, NULL, &pos);
+
+	pos.x += 4;
+	pos.y += 34;
+    SDL_QueryTexture(imgFireButtonText[0], NULL, NULL, &(pos.w), &(pos.h));
+    SDL_RenderCopy(renderer, imgFireButtonText[0], NULL, &pos);
+
+
+    pos.x = 1000 + 1 * (64 + 8);
+    pos.y = 64;
+    SDL_QueryTexture(imgFireButton2, NULL, NULL, &(pos.w), &(pos.h));
+    SDL_RenderCopy(renderer, imgFireButton2, NULL, &pos);
+
+	pos.x += 4;
+	pos.y += 34;
+    SDL_QueryTexture(imgFireButtonText[1], NULL, NULL, &(pos.w), &(pos.h));
+    SDL_RenderCopy(renderer, imgFireButtonText[1], NULL, &pos);
+
+
+    pos.x = 1000 + 2 * (64 + 8);
+    pos.y = 64;
+    SDL_QueryTexture(imgFireButton3, NULL, NULL, &(pos.w), &(pos.h));
+    SDL_RenderCopy(renderer, imgFireButton3, NULL, &pos);
+	
+	pos.x += 4;
+	pos.y += 34;
+    SDL_QueryTexture(imgFireButtonText[2], NULL, NULL, &(pos.w), &(pos.h));
+    SDL_RenderCopy(renderer, imgFireButtonText[2], NULL, &pos);
+
+ 
+
+//END HUD DRAW 
+
+//draw the ship
+  draw_ship(ship);
 
  
 //Draw the enemies
@@ -363,31 +450,7 @@ void draw_screen_game() {
   }
 
 
-//Draw the score text
-  pos.x = 100;
-  pos.y = 100;
-  
-  SDL_QueryTexture(imgScoreText, NULL, NULL, &(pos.w), &(pos.h)); 
-  SDL_RenderCopy(renderer, imgScoreText, NULL, &pos);
-
-//Draw level number
-  pos.x = 100;
-  pos.y = 640;
-  
-  SDL_QueryTexture(imgLevel, NULL, NULL, &(pos.w), &(pos.h)); 
-  SDL_RenderCopy(renderer, imgLevel, NULL, &pos);
-
-//draw weapon text
-  pos.x = 100;
-  pos.y = 640 - 64;
-  SDL_QueryTexture(imgWeaponText, NULL, NULL, &(pos.w), &(pos.h)); 
-  SDL_RenderCopy(renderer, imgWeaponText, NULL, &pos);
-    
-    //draw game time
-    pos.x = 800;
-    pos.y = 64;
-    SDL_QueryTexture(imgGameTimeText, NULL, NULL, &(pos.w), &(pos.h));
-    SDL_RenderCopy(renderer, imgGameTimeText, NULL, &pos);
+	
 
 
 //Draw level complete text
@@ -737,9 +800,10 @@ void updateScoreText() {
   SDL_FreeSurface(sprText); 
 
   //weapon display
-  colorText.r = 255;
-  colorText.g = 0;
-  colorText.b = 0;
+//  colorText.r = 255;
+//  colorText.g = 0;
+//  colorText.b = 0;
+  getWeaponColor(ship->iWeaponType, &colorText);
 
   char strWeapon[64];
   sprintf(strWeapon, "%s", strWeaponNames[ship->iWeaponType]);
@@ -760,6 +824,25 @@ void updateScoreText() {
   sprText = TTF_RenderText_Solid(fontLarge, "GAME OVER", colorText);
   imgGameOverText = SDL_CreateTextureFromSurface(renderer, sprText);
   SDL_FreeSurface(sprText); 
+
+
+  //fire button text
+  colorText.r = 255;
+  colorText.g = 255;
+  colorText.b = 255;
+  
+  sprText = TTF_RenderText_Solid(fontDefault, "Z", colorText);
+  imgFireButtonText[0] = SDL_CreateTextureFromSurface(renderer, sprText);
+  SDL_FreeSurface(sprText); 
+
+  sprText = TTF_RenderText_Solid(fontDefault, "X", colorText);
+  imgFireButtonText[1] = SDL_CreateTextureFromSurface(renderer, sprText);
+  SDL_FreeSurface(sprText); 
+
+  sprText = TTF_RenderText_Solid(fontDefault, "C", colorText);
+  imgFireButtonText[2] = SDL_CreateTextureFromSurface(renderer, sprText);
+  SDL_FreeSurface(sprText); 
+
 	
 }
 
@@ -800,5 +883,38 @@ void shoot(int iLevel) {
   }
 }
 
-
+void getWeaponColor(int iWeaponType, SDL_Color *c) {
+	switch(iWeaponType) {
+		case 0:
+			c->r = 0x41;
+			c->g = 0x92;
+			c->b = 0xc3;
+			break;
+		case 1:
+			c->r = 0xdb;
+			c->g = 0x41;
+			c->b = 0xc3;
+			break;
+		case 2:
+			c->r = 0xeb;
+			c->g = 0xd3;
+			c->b = 0x20;
+			break;
+		case 3:
+			c->r = 0x41;
+			c->g = 0x41;
+			c->b = 0xff;
+			break;
+		case 4:
+			c->r = 0x92;
+			c->g = 0x41;
+			c->b = 0xf3;
+			break;
+		case 5:
+			c->r = 0x49;
+			c->g = 0xa2;
+			c->b = 0x69;
+			break;
+	}
+}
 

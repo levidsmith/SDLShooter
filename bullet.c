@@ -2,11 +2,12 @@
 #include "globals.h"
 #include <math.h>
 
+#include "linked_list.h"
 #include "bullet.h"
 #include "ship.h"
 
 extern SDL_Renderer *renderer;
-extern SDL_Texture *imgBullet;
+extern SDL_Texture *imgBullet[6];
 extern SDL_Texture *imgBulletEnemy;
 extern struct Ship *ship;
 
@@ -25,7 +26,9 @@ void init_bullet(struct Bullet *bullet, int init_x, int init_y) {
   bullet->fLifetime = 0;
   bullet->fWaveAmplitude = 0;
   bullet->fBlastRadius = 0;
-    bullet->isSpinShot = FALSE;
+  bullet->isSpinShot = FALSE;
+  bullet->iWeaponType = 0;
+  
 
 }
 
@@ -65,11 +68,11 @@ void draw_bullet(struct Bullet *bullet) {
 	pos.h = bullet->height;
 	
 	if (bullet->iHitsEnemy) {
-		SDL_RenderCopy(renderer, imgBullet, NULL, &pos);
+		SDL_RenderCopy(renderer, imgBullet[bullet->iWeaponType], NULL, &pos);
 	} else if (bullet->iHitsPlayer) {
 		SDL_RenderCopy(renderer, imgBulletEnemy, NULL, &pos);
 	} else {
-		SDL_RenderCopy(renderer, imgBullet, NULL, &pos);
+		SDL_RenderCopy(renderer, imgBullet[bullet->iWeaponType], NULL, &pos);
 		
 	}
 		

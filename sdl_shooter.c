@@ -18,7 +18,7 @@ SDL_Renderer* renderer = NULL;
 
 SDL_Surface* screenSurface = NULL;
 
-SDL_Texture *imgShip;
+SDL_Texture *imgShip[6];
 SDL_Texture *imgEnemyAlpha_L1_00;
 SDL_Texture *imgEnemyAlpha_L1_01;
 SDL_Texture *imgEnemyAlpha_L2_00;
@@ -39,11 +39,13 @@ SDL_Texture *imgEnemyEcho_02;
 SDL_Texture *imgEnemyEcho_03;
 SDL_Texture *imgExplosion_L2_00;
 SDL_Texture *imgExplosion_L2_01;
+SDL_Texture *imgFireButton[16];
+SDL_Texture *imgFireButtonText[3];
 
 
 
 SDL_Texture *imgBackground;
-SDL_Texture *imgBullet;
+SDL_Texture *imgBullet[6];
 SDL_Texture *imgBulletEnemy;
 SDL_Texture *imgScoreText;
 SDL_Texture *imgLevelCompleteText;
@@ -201,11 +203,39 @@ int main(int argc, char* args[]) {
   SDL_Surface* sprBullet;
   SDL_Surface  *sprPowerup;
   SDL_Surface *sprExplosion;
+  SDL_Surface *sprFireButton;
 
   
-  sprShip = SDL_LoadBMP("assets/images/ship.bmp");
+  sprShip = SDL_LoadBMP("assets/images/ship1.bmp");
   SDL_SetColorKey(sprShip, SDL_TRUE, SDL_MapRGB(sprShip->format, 255, 0, 255));
-  imgShip = SDL_CreateTextureFromSurface(renderer, sprShip);
+  imgShip[0] = SDL_CreateTextureFromSurface(renderer, sprShip);
+  SDL_FreeSurface(sprShip);
+
+  sprShip = SDL_LoadBMP("assets/images/ship2.bmp");
+  SDL_SetColorKey(sprShip, SDL_TRUE, SDL_MapRGB(sprShip->format, 255, 0, 255));
+  imgShip[1] = SDL_CreateTextureFromSurface(renderer, sprShip);
+  SDL_FreeSurface(sprShip);
+  
+  sprShip = SDL_LoadBMP("assets/images/ship3.bmp");
+  SDL_SetColorKey(sprShip, SDL_TRUE, SDL_MapRGB(sprShip->format, 255, 0, 255));
+  imgShip[2] = SDL_CreateTextureFromSurface(renderer, sprShip);
+  SDL_FreeSurface(sprShip);
+  
+  sprShip = SDL_LoadBMP("assets/images/ship4.bmp");
+  SDL_SetColorKey(sprShip, SDL_TRUE, SDL_MapRGB(sprShip->format, 255, 0, 255));
+  imgShip[3] = SDL_CreateTextureFromSurface(renderer, sprShip);
+  SDL_FreeSurface(sprShip);
+  
+  sprShip = SDL_LoadBMP("assets/images/ship5.bmp");
+  SDL_SetColorKey(sprShip, SDL_TRUE, SDL_MapRGB(sprShip->format, 255, 0, 255));
+  imgShip[4] = SDL_CreateTextureFromSurface(renderer, sprShip);
+  SDL_FreeSurface(sprShip);
+  
+  sprShip = SDL_LoadBMP("assets/images/ship6.bmp");
+  SDL_SetColorKey(sprShip, SDL_TRUE, SDL_MapRGB(sprShip->format, 255, 0, 255));
+  imgShip[5] = SDL_CreateTextureFromSurface(renderer, sprShip);
+  SDL_FreeSurface(sprShip);
+  
   
   sprBackground = SDL_LoadBMP("assets/images/background.bmp");
   imgBackground = SDL_CreateTextureFromSurface(renderer, sprBackground);
@@ -305,9 +335,35 @@ int main(int argc, char* args[]) {
 
   sprBullet = SDL_LoadBMP("assets/images/bullet1.bmp");
   SDL_SetColorKey(sprBullet, SDL_TRUE, SDL_MapRGB(sprBullet->format, 255, 0, 255));
-  imgBullet = SDL_CreateTextureFromSurface(renderer, sprBullet);
+  imgBullet[0] = SDL_CreateTextureFromSurface(renderer, sprBullet);
+  SDL_FreeSurface(sprBullet);
 
   sprBullet = SDL_LoadBMP("assets/images/bullet2.bmp");
+  SDL_SetColorKey(sprBullet, SDL_TRUE, SDL_MapRGB(sprBullet->format, 255, 0, 255));
+  imgBullet[1] = SDL_CreateTextureFromSurface(renderer, sprBullet);
+  SDL_FreeSurface(sprBullet);
+
+  sprBullet = SDL_LoadBMP("assets/images/bullet3.bmp");
+  SDL_SetColorKey(sprBullet, SDL_TRUE, SDL_MapRGB(sprBullet->format, 255, 0, 255));
+  imgBullet[2] = SDL_CreateTextureFromSurface(renderer, sprBullet);
+  SDL_FreeSurface(sprBullet);
+
+  sprBullet = SDL_LoadBMP("assets/images/bullet4.bmp");
+  SDL_SetColorKey(sprBullet, SDL_TRUE, SDL_MapRGB(sprBullet->format, 255, 0, 255));
+  imgBullet[3] = SDL_CreateTextureFromSurface(renderer, sprBullet);
+  SDL_FreeSurface(sprBullet);
+
+  sprBullet = SDL_LoadBMP("assets/images/bullet5.bmp");
+  SDL_SetColorKey(sprBullet, SDL_TRUE, SDL_MapRGB(sprBullet->format, 255, 0, 255));
+  imgBullet[4] = SDL_CreateTextureFromSurface(renderer, sprBullet);
+  SDL_FreeSurface(sprBullet);
+
+  sprBullet = SDL_LoadBMP("assets/images/bullet6.bmp");
+  SDL_SetColorKey(sprBullet, SDL_TRUE, SDL_MapRGB(sprBullet->format, 255, 0, 255));
+  imgBullet[5] = SDL_CreateTextureFromSurface(renderer, sprBullet);
+  SDL_FreeSurface(sprBullet);
+
+  sprBullet = SDL_LoadBMP("assets/images/bullet7.bmp");
   SDL_SetColorKey(sprBullet, SDL_TRUE, SDL_MapRGB(sprBullet->format, 255, 0, 255));
   imgBulletEnemy = SDL_CreateTextureFromSurface(renderer, sprBullet);
 
@@ -322,14 +378,24 @@ int main(int argc, char* args[]) {
   sprExplosion = SDL_LoadBMP("assets/images/explosion_l2_2.bmp");
   SDL_SetColorKey(sprExplosion, SDL_TRUE, SDL_MapRGB(sprExplosion->format, 255, 0, 255));
   imgExplosion_L2_01 = SDL_CreateTextureFromSurface(renderer, sprExplosion);
+  
+int i;
+char strFile[32];
+
+for (i = 0; i < 16; i++) {
+	sprintf(strFile, "assets/images/button_fire%d.bmp", (i + 1));
+  sprFireButton = SDL_LoadBMP(strFile);
+  SDL_SetColorKey(sprFireButton, SDL_TRUE, SDL_MapRGB(sprFireButton->format, 255, 0, 255));
+  imgFireButton[i] = SDL_CreateTextureFromSurface(renderer, sprFireButton);
+  SDL_FreeSurface(sprFireButton);
+	
+}
 
   
   printf("created textures\n");
 
 
-  SDL_FreeSurface(sprShip);
   SDL_FreeSurface(sprBackground);
-  SDL_FreeSurface(sprBullet);
   SDL_FreeSurface(sprPowerup);
 
 
@@ -428,7 +494,11 @@ int main(int argc, char* args[]) {
   Mix_CloseAudio();
 
   
-  SDL_DestroyTexture(imgShip);
+  SDL_DestroyTexture(imgShip[0]);
+  SDL_DestroyTexture(imgShip[1]);
+  SDL_DestroyTexture(imgShip[2]);
+  SDL_DestroyTexture(imgShip[3]);
+  SDL_DestroyTexture(imgShip[4]);
   SDL_DestroyTexture(imgBackground);
   SDL_DestroyTexture(imgEnemyAlpha_L1_00);
   SDL_DestroyTexture(imgEnemyAlpha_L1_01);
@@ -451,7 +521,12 @@ int main(int argc, char* args[]) {
   SDL_DestroyTexture(imgExplosion_L2_00);
   SDL_DestroyTexture(imgExplosion_L2_01);
   
-  SDL_DestroyTexture(imgBullet);
+  SDL_DestroyTexture(imgBullet[0]);
+  SDL_DestroyTexture(imgBullet[1]);
+  SDL_DestroyTexture(imgBullet[2]);
+  SDL_DestroyTexture(imgBullet[3]);
+  SDL_DestroyTexture(imgBullet[4]);
+  SDL_DestroyTexture(imgBullet[5]);
   SDL_DestroyTexture(imgScoreText);
   SDL_DestroyTexture(imgLevelCompleteText);
   SDL_DestroyTexture(imgLevel);
@@ -460,6 +535,14 @@ int main(int argc, char* args[]) {
     SDL_DestroyTexture(imgTitleStartText);
     SDL_DestroyTexture(imgTitleContinueText);
     SDL_DestroyTexture(imgTitleQuitText);
+	
+for (i = 0; i < 16; i++) {
+	SDL_DestroyTexture(imgFireButton[i]);
+}
+
+for (i = 0; i < 3; i++) {
+	SDL_DestroyTexture(imgFireButtonText[i]);
+}
 
   SDL_DestroyRenderer(renderer);
 
