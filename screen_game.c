@@ -54,7 +54,9 @@ extern Mix_Chunk *soundPowerup;
 SDL_Rect pos;
 SDL_Rect posText;
 
-int iButtonFireDown = FALSE;
+int iButtonFire1Down = FALSE;
+int iButtonFire2Down = FALSE;
+int iButtonFire3Down = FALSE;
 int iButtonOptionDown = FALSE;
 
 struct Ship *ship;
@@ -78,7 +80,7 @@ int iLevelCount = -1;
 
 float fKeyPressDelay = 0;
 
-char *strWeaponNames[7] = {"Normal", "Speed Shot", "Tri Shot", "Wave Shot", "Dual Wave Shot", "Blast", "Blast 2" };
+char *strWeaponNames[7] = {"Normal", "Speed Shot", "Multi Shot", "Wave Shot", "Blast Shot" };
 
 time_t timeStartGame;
 time_t timeEndGame;
@@ -164,8 +166,12 @@ void update_screen_game() {
   struct Node *deleteNode = NULL;
   
   //Handle the input
-  if (iButtonFireDown) {
-	  shoot();
+  if (iButtonFire1Down) {
+	  shoot(0);
+  } else if (iButtonFire2Down) {
+      shoot(1);
+  } else if (iButtonFire3Down) {
+      shoot(2);
   }
   
   //Update the ship
@@ -278,6 +284,10 @@ void update_screen_game() {
 }
 
 void draw_screen_game() {
+    
+      struct Node *current;
+    
+    
 	  //Draw the background
   int i, j;
   for (i = -1; i < (SCREEN_HEIGHT / 256) + 1; i++) {
@@ -292,10 +302,21 @@ void draw_screen_game() {
   }
 
 
+    //Draw explosions
+    current = listExplosion;
+    struct Explosion *explosion;
+    while(current != NULL) {
+        explosion = (struct Explosion *) current->data;
+        draw_explosion(explosion);
+        current = current->next;
+        
+    }
+
+    
   //draw the ship
   draw_ship(ship);
 
-  struct Node *current;
+
   
 //Draw energy meter
   SDL_Rect rectMeter;
@@ -330,15 +351,6 @@ void draw_screen_game() {
     current = current->next;
   }  
   
-//Draw explosions
-  current = listExplosion;
-  struct Explosion *explosion;
-  while(current != NULL) {
-	  explosion = (struct Explosion *) current->data;
-	  draw_explosion(explosion);
-	  current = current->next;
-	  
-  }
 
 
 //Draw the bullets
@@ -419,6 +431,7 @@ void checkCollisions() {
   currentBullet = listBullet;
   while (currentBullet != NULL) {
 	  bullet = (struct Bullet *) currentBullet->data;
+      struct Enemy *collidedEnemy = NULL;
 
 		//bullet collision with enemy
 			currentEnemy = listEnemy;
@@ -432,14 +445,9 @@ void checkCollisions() {
 			  ((bullet->x + bullet->width / 2) >= enemy->x && (bullet->x + bullet->width / 2) < enemy->x + enemy->width) &&
 			  ((bullet->y + bullet->height / 2) >= enemy->y && (bullet->y + bullet->height / 2) < enemy->y + enemy->height) ) {
 		    bullet->isAlive = FALSE;
-//		    enemy->isAlive = FALSE;
+
 			damage_enemy(enemy, 1);
-//			enemy->iHealth--;
-/*
-			if (!enemy->isAlive) {
-				destroyEnemy(enemy);
-			}
-*/			
+              collidedEnemy = enemy;  //used to prevent the enemy from being hit twice from a blast shot
 
 
 
@@ -472,7 +480,7 @@ void checkCollisions() {
 			while (currentEnemy != NULL) {
 				enemy = (struct Enemy *) currentEnemy->data;
 				
-				if (enemy->isAlive) {
+				if (enemy->isAlive && enemy != collidedEnemy) {
 					//were just checking to see if the center of the enemy is in the radius of the explosion
 					if (getDistance(fExplosionX + (explosion->fRadius), fExplosionY + (explosion->fRadius), 
 									enemy->x + (enemy->width / 2), enemy->y + (enemy->height / 2))
@@ -629,6 +637,13 @@ void handleInput_screen_game(int iType, int iKey) {
       ship->vel_x = -fSpeed;
     } else if (iKey == SDLK_RIGHT || iKey == SDLK_d) {
       ship->vel_x = fSpeed;
+    } else if (iKey == SDLK_z) {
+        iButtonFire1Down = TRUE;
+    } else if (iKey == SDLK_x) {
+        iButtonFire2Down = TRUE;
+    } else if (iKey == SDLK_c) {
+        iButtonFire3Down = TRUE;
+
     } else if (iKey == SDLK_SPACE) {
       //shoot(); 
 	  if (iLevelComplete) {
@@ -645,8 +660,7 @@ void handleInput_screen_game(int iType, int iKey) {
 
 		  start_screen_game();
 				}
-	  } else {
-		iButtonFireDown = TRUE;
+
 	  }
     } else if (iKey == SDLK_q || iKey == SDLK_ESCAPE) {
       //iKeepLooping = FALSE;
@@ -674,8 +688,13 @@ void handleInput_screen_game(int iType, int iKey) {
       ship->vel_x = 0;
     } else if ((iKey == SDLK_RIGHT || iKey == SDLK_d) && ship->vel_x > 0) {
       ship->vel_x = 0;
-    } else if (iKey == SDLK_SPACE) {
-	  iButtonFireDown = FALSE;
+
+    } else if (iKey == SDLK_z) {
+            iButtonFire1Down = FALSE;
+    } else if (iKey == SDLK_x) {
+            iButtonFire2Down = FALSE;
+    } else if (iKey == SDLK_c) {
+            iButtonFire3Down = FALSE;
     } else if (iKey == SDLK_TAB) {
 	  iButtonOptionDown = FALSE;
     }  
@@ -770,25 +789,12 @@ void updateTimeText() {
 }
 
 
-void shoot() {
+void shoot(int iLevel) {
   struct Bullet *bullet;
 	
   if (ship != NULL && (ship->fShootDelay <= 0) && ship->isAlive) {
-	  /*
-	bullet = malloc(sizeof(struct Bullet));
 
-	printf("ship at x: %d y: %d\n", ship->x, ship->y);
-
-	init_bullet(bullet, ship->x + ship->width / 2, ship->y);
-
-		bullet->vel_y = 5;
-	bullet->iHitsEnemy = TRUE;
-
-	printf("added bullet at x: %d y: %d\n", bullet->x, bullet->y);
-	add_node(&listBullet, bullet);
-	*/
-
-	shoot_ship(ship, &listBullet);
+	shoot_ship(ship, iLevel, &listBullet);
 	
 //    Mix_PlayChannel(-1, soundShoot, 0);
   }

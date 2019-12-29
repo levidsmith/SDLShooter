@@ -6,6 +6,8 @@
 #include "ship.h"
 #include "bullet.h"
 
+#define NUM_WEAPONS 5
+
 extern SDL_Renderer *renderer;
 extern SDL_Texture *imgShip;
 extern Mix_Chunk *soundShoot;
@@ -82,12 +84,14 @@ void draw_ship(struct Ship *ship) {
 	
 }
 
-void shoot_ship(struct Ship *ship, struct Node **listBullet) {
+void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
 //	ship->fShootDelay = 0.5;
+    int iEnergyRequired = 5;
 
   if (ship->iWeaponType == 0) {
 
-	if (ship->fEnergy >= 5) {
+      iEnergyRequired = 5;
+	if (ship->fEnergy >= iEnergyRequired) {
 		struct Bullet *bullet;
 		
 		bullet = malloc(sizeof(struct Bullet));
@@ -98,7 +102,7 @@ void shoot_ship(struct Ship *ship, struct Node **listBullet) {
 
 		
 		ship->fShootDelay = ship->fMaxShootDelay;
-		ship->fEnergy -= 5;
+		ship->fEnergy -= iEnergyRequired;
 		
 		add_node(listBullet, bullet);
 
@@ -106,8 +110,24 @@ void shoot_ship(struct Ship *ship, struct Node **listBullet) {
 		Mix_PlayChannel(-1, soundShoot, 0);
 	}
   } else if (ship->iWeaponType == 1) {
+      float fShootDelay = 0.5;
+      switch(iLevel) {
+          case 0:
+              iEnergyRequired = 8;
+              fShootDelay = 0.4;
+              break;
+          case 1:
+              iEnergyRequired = 12;
+              fShootDelay = 0.2;
+              break;
+          case 2:
+              iEnergyRequired = 16;
+              fShootDelay = 0.1;
+              break;
+              
+      }
 
-	if (ship->fEnergy >= 8) {
+	if (ship->fEnergy >= iEnergyRequired) {
 		struct Bullet *bullet;
 		
 		bullet = malloc(sizeof(struct Bullet));
@@ -117,8 +137,8 @@ void shoot_ship(struct Ship *ship, struct Node **listBullet) {
 
 
 		
-		ship->fShootDelay = ship->fMaxShootDelay * 0.5;
-		ship->fEnergy -= 5;
+		ship->fShootDelay = fShootDelay;
+		ship->fEnergy -= iEnergyRequired;
 		
 		add_node(listBullet, bullet);
 
@@ -128,10 +148,46 @@ void shoot_ship(struct Ship *ship, struct Node **listBullet) {
 	
 	
   } else if (ship->iWeaponType == 2) {
-	if (ship->fEnergy >= 15) {
+      switch(iLevel) {
+          case 0:
+              iEnergyRequired = 10;
+              break;
+          case 1:
+              iEnergyRequired = 20;
+              break;
+          case 2:
+              iEnergyRequired = 30;
+              break;
+      }
+      
+      
+	if (ship->fEnergy >= iEnergyRequired) {
 		struct Bullet *bullet;
-		float fVelX = 0.7071;
-		float fVelY = 0.7071;
+        float fVelX;
+        float fVelY;
+        
+        if (iLevel == 0) {
+            fVelX = 0.5; //sin(30)
+            fVelY = 0.8660; //cos(30)
+
+            bullet = malloc(sizeof(struct Bullet));
+            init_bullet(bullet, ship->x + ship->width / 2, ship->y);
+            bullet->vel_x = 5.0 * fVelX;
+            bullet->vel_y = -5.0 * fVelY;
+            bullet->iHitsEnemy = TRUE;
+            add_node(listBullet, bullet);
+
+            bullet = malloc(sizeof(struct Bullet));
+            init_bullet(bullet, ship->x + ship->width / 2, ship->y);
+            bullet->vel_x = -5.0 * fVelX;
+            bullet->vel_y = -5.0 * fVelY;
+            bullet->iHitsEnemy = TRUE;
+            add_node(listBullet, bullet);
+
+            
+        } else if (iLevel == 1) {
+            fVelX = 0.7071; //sin(45)
+            fVelY = 0.7071; //cos(45)
 		
 		bullet = malloc(sizeof(struct Bullet));
 		init_bullet(bullet, ship->x + ship->width / 2, ship->y);
@@ -152,95 +208,176 @@ void shoot_ship(struct Ship *ship, struct Node **listBullet) {
 		bullet->vel_y = -5.0 * fVelY;
 		bullet->iHitsEnemy = TRUE;
 		add_node(listBullet, bullet);
+        } else if (iLevel == 2) {
+            
+            fVelX = 0.2588; //sin(15)
+            fVelY = 0.9659; //cos(15)
+
+            bullet = malloc(sizeof(struct Bullet));
+            init_bullet(bullet, ship->x + ship->width / 2, ship->y);
+            bullet->vel_x = 5.0 * fVelX;
+            bullet->vel_y = -5.0 * fVelY;
+            bullet->iHitsEnemy = TRUE;
+            add_node(listBullet, bullet);
+
+            bullet = malloc(sizeof(struct Bullet));
+            init_bullet(bullet, ship->x + ship->width / 2, ship->y);
+            bullet->vel_x = -5.0 * fVelX;
+            bullet->vel_y = -5.0 * fVelY;
+            bullet->iHitsEnemy = TRUE;
+            add_node(listBullet, bullet);
+
+            fVelX = 0.7071; //sin(45)
+            fVelY = 0.7071; //cos(45)
+
+            bullet = malloc(sizeof(struct Bullet));
+            init_bullet(bullet, ship->x + ship->width / 2, ship->y);
+            bullet->vel_x = 5.0 * fVelX;
+            bullet->vel_y = -5.0 * fVelY;
+            bullet->iHitsEnemy = TRUE;
+            add_node(listBullet, bullet);
+
+            bullet = malloc(sizeof(struct Bullet));
+            init_bullet(bullet, ship->x + ship->width / 2, ship->y);
+            bullet->vel_x = -5.0 * fVelX;
+            bullet->vel_y = -5.0 * fVelY;
+            bullet->iHitsEnemy = TRUE;
+            add_node(listBullet, bullet);
+
+        }
 
 		
 		ship->fShootDelay = ship->fMaxShootDelay;
-		ship->fEnergy -= 15;
+		ship->fEnergy -= iEnergyRequired;
 		
 
 		
 		Mix_PlayChannel(-1, soundShoot, 0);
 	}
   } else if (ship->iWeaponType == 3) {
-	if (ship->fEnergy >= 8) {
+      switch (iLevel) {
+          case 0:
+              iEnergyRequired = 7;
+              break;
+          case 1:
+              iEnergyRequired = 14;
+              break;
+          case 2:
+              iEnergyRequired = 28;
+              break;
+      }
+      
+	if (ship->fEnergy >= iEnergyRequired) {
 		struct Bullet *bullet;
 		
-		bullet = malloc(sizeof(struct Bullet));
-		init_bullet(bullet, ship->x + ship->width / 2, ship->y);
-		bullet->vel_y = -5;
-		bullet->iHitsEnemy = TRUE;
-		bullet->fWaveAmplitude = 2;
+        if (iLevel == 0) {
+            bullet = malloc(sizeof(struct Bullet));
+            init_bullet(bullet, ship->x + ship->width / 2, ship->y);
+            bullet->vel_y = -5;
+            bullet->iHitsEnemy = TRUE;
+            bullet->fWaveAmplitude = 2;
+            add_node(listBullet, bullet);
 
+        } else if (iLevel == 1) {
+            bullet = malloc(sizeof(struct Bullet));
+            init_bullet(bullet, ship->x + ship->width / 2, ship->y);
+            bullet->vel_y = -5;
+            bullet->iHitsEnemy = TRUE;
+            bullet->fWaveAmplitude = 2;
+            add_node(listBullet, bullet);
+
+
+            bullet = malloc(sizeof(struct Bullet));
+            init_bullet(bullet, ship->x + ship->width / 2, ship->y);
+            bullet->vel_y = -5;
+            bullet->iHitsEnemy = TRUE;
+            bullet->fWaveAmplitude = -2;
+            add_node(listBullet, bullet);
+            
+        } else if (iLevel == 2) {
+            bullet = malloc(sizeof(struct Bullet));
+            init_bullet(bullet, ship->x + ship->width / 2, ship->y);
+            bullet->vel_y = -5;
+            bullet->iHitsEnemy = TRUE;
+            bullet->fWaveAmplitude = 2;
+            add_node(listBullet, bullet);
+
+            bullet = malloc(sizeof(struct Bullet));
+            init_bullet(bullet, ship->x + ship->width / 2, ship->y);
+            bullet->vel_y = -5;
+            bullet->iHitsEnemy = TRUE;
+            bullet->fWaveAmplitude = -2;
+            add_node(listBullet, bullet);
+
+            bullet = malloc(sizeof(struct Bullet));
+            init_bullet(bullet, ship->x + ship->width / 2, ship->y);
+            bullet->vel_y = -5;
+            bullet->iHitsEnemy = TRUE;
+            bullet->fWaveAmplitude = 4;
+            add_node(listBullet, bullet);
+
+
+            bullet = malloc(sizeof(struct Bullet));
+            init_bullet(bullet, ship->x + ship->width / 2, ship->y);
+            bullet->vel_y = -5;
+            bullet->iHitsEnemy = TRUE;
+            bullet->fWaveAmplitude = -4;
+            add_node(listBullet, bullet);
+        }
 
 		
 		ship->fShootDelay = ship->fMaxShootDelay;
-		ship->fEnergy -= 8;
+		ship->fEnergy -= iEnergyRequired;
 		
-		add_node(listBullet, bullet);
 
 		
 		Mix_PlayChannel(-1, soundShoot, 0);
 	}
+		
   } else if (ship->iWeaponType == 4) {
-	if (ship->fEnergy >= 16) {
+      switch(iLevel) {
+          case 0:
+              iEnergyRequired = 12;
+              break;
+          case 1:
+              iEnergyRequired = 24;
+              break;
+          case 2:
+              iEnergyRequired = 48;
+              break;
+      }
+      
+	if (ship->fEnergy >= iEnergyRequired) {
 		struct Bullet *bullet;
 		
-		bullet = malloc(sizeof(struct Bullet));
-		init_bullet(bullet, ship->x + ship->width / 2, ship->y);
-		bullet->vel_y = -5;
-		bullet->iHitsEnemy = TRUE;
-		bullet->fWaveAmplitude = 2;
-		add_node(listBullet, bullet);
+        if (iLevel == 0) {
+            bullet = malloc(sizeof(struct Bullet));
+            init_bullet(bullet, ship->x + ship->width / 2, ship->y);
+            bullet->vel_y = -5;
+            bullet->iHitsEnemy = TRUE;
+            bullet->fBlastRadius = 2;
+            add_node(listBullet, bullet);
+        } else if (iLevel == 1) {
+            bullet = malloc(sizeof(struct Bullet));
+            init_bullet(bullet, ship->x + ship->width / 2, ship->y);
+            bullet->vel_y = -5;
+            bullet->iHitsEnemy = TRUE;
+            bullet->fBlastRadius = 3;
+            add_node(listBullet, bullet);
 
+        } else if (iLevel == 2) {
+            bullet = malloc(sizeof(struct Bullet));
+            init_bullet(bullet, ship->x + ship->width / 2, ship->y);
+            bullet->vel_y = -5;
+            bullet->iHitsEnemy = TRUE;
+            bullet->fBlastRadius = 4;
+            add_node(listBullet, bullet);
 
-		bullet = malloc(sizeof(struct Bullet));
-		init_bullet(bullet, ship->x + ship->width / 2, ship->y);
-		bullet->vel_y = -5;
-		bullet->iHitsEnemy = TRUE;
-		bullet->fWaveAmplitude = -2;
-		add_node(listBullet, bullet);
-
-		
-		ship->fShootDelay = ship->fMaxShootDelay;
-		ship->fEnergy -= 16;
-		
-
-		
-		Mix_PlayChannel(-1, soundShoot, 0);
-	}
-  } else if (ship->iWeaponType == 5) {
-	if (ship->fEnergy >= 12) {
-		struct Bullet *bullet;
-		
-		bullet = malloc(sizeof(struct Bullet));
-		init_bullet(bullet, ship->x + ship->width / 2, ship->y);
-		bullet->vel_y = -5;
-		bullet->iHitsEnemy = TRUE;
-		bullet->fBlastRadius = 2;
-		add_node(listBullet, bullet);
-
-
-		ship->fShootDelay = ship->fMaxShootDelay;
-		ship->fEnergy -= 12;
-		
-
-		
-		Mix_PlayChannel(-1, soundShoot, 0);
-	}
-  } else if (ship->iWeaponType == 6) {
-	if (ship->fEnergy >= 24) {
-		struct Bullet *bullet;
-		
-		bullet = malloc(sizeof(struct Bullet));
-		init_bullet(bullet, ship->x + ship->width / 2, ship->y);
-		bullet->vel_y = -5;
-		bullet->iHitsEnemy = TRUE;
-		bullet->fBlastRadius = 4;
-		add_node(listBullet, bullet);
+        }
 
 
 		ship->fShootDelay = ship->fMaxShootDelay;
-		ship->fEnergy -= 12;
+		ship->fEnergy -= iEnergyRequired;
 		
 
 		
@@ -251,12 +388,7 @@ void shoot_ship(struct Ship *ship, struct Node **listBullet) {
 }
 
 void increaseFireRate_ship(struct Ship *ship) {
-	/*
-	ship->fMaxShootDelay -= 0.1;
-	if (ship->fMaxShootDelay < 0.2) {
-		ship->fMaxShootDelay = 0.2;
-	}
-	*/
+    //changed powerup to give energy instead of increasing shot rate
 	ship->fEnergy += 50;
 	if (ship->fEnergy > ship->fMaxEnergy) {
 		ship->fEnergy = ship->fMaxEnergy;
@@ -266,7 +398,7 @@ void increaseFireRate_ship(struct Ship *ship) {
 
 void selectWeaponUp_ship(struct Ship *ship) {
 	ship->iWeaponType++;
-	if (ship->iWeaponType > 6) {
+	if (ship->iWeaponType >= NUM_WEAPONS) {
 		ship->iWeaponType = 0;
 	}
 	Mix_PlayChannel(-1, soundWeaponSelect, 0);
