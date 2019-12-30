@@ -505,12 +505,14 @@ void checkCollisions() {
 
 		  if ( (bullet->iHitsEnemy) &&
 			(enemy->isAlive) && (bullet != NULL) && (bullet->isAlive) && 
-			  ((bullet->x + bullet->width / 2) >= enemy->x && (bullet->x + bullet->width / 2) < enemy->x + enemy->width) &&
-			  ((bullet->y + bullet->height / 2) >= enemy->y && (bullet->y + bullet->height / 2) < enemy->y + enemy->height) ) {
+			collidedRectRect(bullet->x, bullet->y, bullet->width, bullet->height, enemy->x, enemy->y, enemy->width, enemy->height)) {
+//			  ((bullet->x + bullet->width / 2) >= enemy->x && (bullet->x + bullet->width / 2) < enemy->x + enemy->width) &&
+//			  ((bullet->y + bullet->height / 2) >= enemy->y && (bullet->y + bullet->height / 2) < enemy->y + enemy->height) ) {
 		    bullet->isAlive = FALSE;
 
 			damage_enemy(enemy, 1);
               collidedEnemy = enemy;  //used to prevent the enemy from being hit twice from a blast shot
+			  printf("set collided enemy\n");
 
 
 
@@ -526,18 +528,38 @@ void checkCollisions() {
 //exploding bullet			
 		if (!bullet->isAlive && bullet->fBlastRadius > 0) {
 			printf("Bullet blast: %f\n", bullet->fBlastRadius);
-			float fExplosionX = bullet->x - ((bullet->width + UNIT_SIZE * bullet->fBlastRadius) / 2);
-			float fExplosionY = bullet->y - ((bullet->width + UNIT_SIZE * bullet->fBlastRadius) / 2);
+//			float fExplosionX = bullet->x - ((bullet->width + UNIT_SIZE * bullet->fBlastRadius) / 2);
+//			float fExplosionY = bullet->y - ((bullet->width + UNIT_SIZE * bullet->fBlastRadius) / 2);
+
+			float fExplosionX;
+			float fExplosionY;
+
+			if (collidedEnemy != NULL) {
+						printf("collidedEnemy is NULL\n");
+				fExplosionX = collidedEnemy->x + (collidedEnemy->width / 2);
+				fExplosionY = collidedEnemy->y + (collidedEnemy->height / 2);
+			} else {
+				fExplosionX = bullet->x + (bullet->width / 2);
+				fExplosionX = bullet->y + (bullet->height / 2);
+			}
+
+						printf("explosion x and y calculated\n");
+
 			
 			struct Explosion *explosion = malloc(sizeof(struct Explosion));
 			explosion->c.r = 0;
 			explosion->c.g = 255;
 			explosion->c.b = 255;
+						printf("init_explosion\n");
+
 			init_explosion(explosion, fExplosionX, fExplosionY,
 									  UNIT_SIZE * bullet->fBlastRadius);
+			printf("add_node to listExplosion\n");
+
 			add_node(&listExplosion, explosion);
 
 			
+			printf("check damaged enemies\n");
 
 			currentEnemy = listEnemy;
 			while (currentEnemy != NULL) {
@@ -545,9 +567,12 @@ void checkCollisions() {
 				
 				if (enemy->isAlive && enemy != collidedEnemy) {
 					//were just checking to see if the center of the enemy is in the radius of the explosion
-					if (getDistance(fExplosionX + (explosion->fRadius), fExplosionY + (explosion->fRadius), 
-									enemy->x + (enemy->width / 2), enemy->y + (enemy->height / 2))
-									< UNIT_SIZE * bullet->fBlastRadius) {
+//					if (getDistance(fExplosionX + (explosion->fRadius), fExplosionY + (explosion->fRadius), 
+	//								enemy->x + (enemy->width / 2), enemy->y + (enemy->height / 2))
+//									< UNIT_SIZE * bullet->fBlastRadius) {
+	
+					//better circle / rectangle collision
+					if (collidedCircleRect(explosion->x, explosion->y, explosion->fRadius, enemy->x, enemy->y, enemy->width, enemy->height)) {
 						damage_enemy(enemy, 1);
 
 						
@@ -558,6 +583,8 @@ void checkCollisions() {
 
 				currentEnemy = currentEnemy->next;
 			}
+			
+			printf("After circle collision\n");
 
 
 			/*
@@ -581,8 +608,10 @@ void checkCollisions() {
 		//bullet collision with ship
 		if ( (bullet->iHitsPlayer) &&
 			(bullet->isAlive) &&  (ship->isAlive) &&
-			  ((bullet->x + bullet->width / 2) >= ship->x && (bullet->x + bullet->width / 2) < ship->x + ship->width) &&
-			  ((bullet->y + bullet->height / 2) >= ship->y && (bullet->y + bullet->height / 2) < ship->y + ship->height) ) {
+			collidedRectRect(bullet->x, bullet->y, bullet->width, bullet->height, ship->x, ship->y, ship->width, ship->height)) {
+
+//			  ((bullet->x + bullet->width / 2) >= ship->x && (bullet->x + bullet->width / 2) < ship->x + ship->width) &&
+//			  ((bullet->y + bullet->height / 2) >= ship->y && (bullet->y + bullet->height / 2) < ship->y + ship->height) ) {
 			ship->isAlive = FALSE;
 			iGameOver = TRUE;
 		    Mix_PlayChannel(-1, soundShipDead, 0);
@@ -607,8 +636,9 @@ void checkCollisions() {
 	  
 		//check collision with ship	  
 		if ( (enemy->isAlive) &&  (ship->isAlive) &&
-			(ship->x >= enemy->x && ship->x < enemy->x + enemy->width) &&
-			(ship->y >= enemy->y && ship->y < enemy->y + enemy->height) ) {
+			collidedRectRect(ship->x, ship->y, ship->width, ship->height, enemy->x, enemy->y, enemy->width, enemy->height)) {
+//			(ship->x >= enemy->x && ship->x < enemy->x + enemy->width) &&
+//			(ship->y >= enemy->y && ship->y < enemy->y + enemy->height) ) {
 		ship->isAlive = FALSE;
 		iGameOver = TRUE;
 		fKeyPressDelay = 5;
@@ -631,10 +661,12 @@ void checkCollisions() {
 	  
 		//check collision with ship	  
 		if ( (ship->isAlive) &&  (powerup->isAlive) &&
+			collidedRectRect(powerup->x, powerup->y, powerup->width, powerup->height, ship->x, ship->y, ship->width, ship->height)) {
+		
 //			(ship->x >= powerup->x && ship->x < powerup->x + powerup->width) &&
 //			(ship->y >= powerup->y && ship->y < powerup->y + powerup->height) ) {
-			(powerup->x + (powerup->width / 2) >= ship->x && powerup->x + (powerup->width / 2) < ship->x + ship->width) &&
-			(powerup->y + (powerup->height / 2) >= ship->y && powerup->y + (powerup->height / 2) < ship->y + ship->height) ) {
+//			(powerup->x + (powerup->width / 2) >= ship->x && powerup->x + (powerup->width / 2) < ship->x + ship->width) &&
+//			(powerup->y + (powerup->height / 2) >= ship->y && powerup->y + (powerup->height / 2) < ship->y + ship->height) ) {
 				increaseFireRate_ship(ship);
 				powerup->isAlive = FALSE;
 				Mix_PlayChannel(-1, soundPowerup, 0);
@@ -648,6 +680,72 @@ void checkCollisions() {
 	
 	
 
+}
+
+int collidedRectRect(float r1_x, float r1_y, float r1_w, float r1_h, float r2_x, float r2_y, float r2_w, float r2_h) {
+	int iCollided = TRUE;
+	
+	float r1_left, r2_left;
+	float r1_right, r2_right;
+	float r1_top, r2_top;
+	float r1_bottom, r2_bottom;
+	
+	r1_left = r1_x;
+	r1_right = r1_x + r1_w;
+	r1_top = r1_y;
+	r1_bottom = r1_y + r1_h;
+
+	r2_left = r2_x;
+	r2_right = r2_x + r2_w;
+	r2_top = r2_y;
+	r2_bottom = r2_y + r2_h;
+	
+	
+	if (r1_bottom <= r2_top) {
+		iCollided = FALSE;
+	}
+	
+	if (r1_top >= r2_bottom) {
+		return FALSE;
+	}
+	
+	if (r1_right <= r2_left) {
+		return FALSE;
+	}
+	
+	if (r1_left >= r2_right) {
+		return FALSE;
+	}
+
+	return iCollided;
+	
+}
+
+int collidedCircleRect(float c1_x, float c1_y, float c1_r, float r1_x, float r1_y, float r1_w, float r1_h) {
+	int iCollided = FALSE;
+	float closest_x, closest_y;
+	
+	if (c1_x < r1_x) {
+		closest_x = r1_x;
+	} else if (c1_x > r1_x + r1_w) {
+		closest_x = r1_x + r1_w;
+	} else { 
+		closest_x = c1_x;
+	}
+	
+	if (c1_y < r1_y) {
+		closest_y = r1_y;
+	} else if (c1_y > r1_y + r1_h) {
+		closest_y = r1_y + r1_h;
+	} else {
+		closest_y = c1_y;
+	}
+	
+	if ( pow( (closest_x - c1_x), 2) + pow( (closest_y - c1_y), 2) < pow(c1_r, 2) ) {
+		iCollided = TRUE;
+	}
+	
+	return iCollided;
 }
 
 

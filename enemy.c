@@ -421,7 +421,7 @@ void destroy_enemy(struct Enemy *enemy) {
 				}
 				
 				struct Explosion *explosion = malloc(sizeof(struct Explosion));
-				init_explosion(explosion, enemy->x, enemy->y, enemy->width / 2);
+				init_explosion(explosion, enemy->x + (enemy->width / 2), enemy->y + (enemy->height / 2), enemy->width / 2);
 				explosion->c.r = 255;
 				explosion->c.g = 128;
 				explosion->c.b = 128;

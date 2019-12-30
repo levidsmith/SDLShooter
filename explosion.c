@@ -41,8 +41,8 @@ void draw_explosion(struct Explosion *explosion) {
 	
 	
 	if (explosion->isAlive) {
-		rect.x = explosion->x;
-		rect.y = explosion->y;
+		rect.x = explosion->x - explosion->fRadius;
+		rect.y = explosion->y - explosion->fRadius;
 		rect.w = explosion->fRadius * 2;
 		rect.h = explosion->fRadius * 2;
 	
