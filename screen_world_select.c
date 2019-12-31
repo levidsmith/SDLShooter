@@ -4,7 +4,6 @@
 
 #include "screen_world_select.h"
 
-#define NUM_MENU_OPTIONS 2
 
 //Function Prototypes
 extern void setCurrentScreen(int iScreen);
@@ -19,10 +18,15 @@ extern SDL_Renderer* renderer;
 extern TTF_Font *fontDefault;
 extern TTF_Font *fontLarge;
 
-extern SDL_Texture *imgBackground[4];
+extern SDL_Texture *imgBackground[NUM_WORLDS * 2];
+extern SDL_Texture *imgWorldSelectWorldText[NUM_WORLDS];
+extern int iCurrentWorld;
 
 int iWorldSelectChoice = 0;
-extern int iCurrentWorld;
+char *strWorldNames[NUM_WORLDS] = { "Celeritas", "Multa", "Fluctus", "Crepitus", "Gelida", "Torqueo", "Quaerere", "?" };
+int iBackgroundOffsetWorldSelect;
+
+
 
 
 void start_screen_world_select() {
@@ -33,6 +37,10 @@ void start_screen_world_select() {
   sprText = TTF_RenderText_Solid(fontLarge, "World Select", colorText);
   imgWorldSelectText = SDL_CreateTextureFromSurface(renderer, sprText);
   SDL_FreeSurface(sprText); 
+  
+  iBackgroundOffsetWorldSelect = 0;
+
+	
 
 
   updateText_screen_world_select();
@@ -41,8 +49,29 @@ void start_screen_world_select() {
 
 
 void update_screen_world_select() {
+  SDL_Surface *sprText;
+  SDL_Color colorText;
+  SDL_Color colorHighlight = { 0xFF, 0x00, 0x00, 0xFF };
+  SDL_Color colorDefault = { 0x00, 0x00, 0xFF, 0xFF };
   
-  
+	int i;
+	for (i = 0; i < NUM_WORLDS; i++) {
+		if (i == iWorldSelectChoice) {
+			colorText = colorHighlight;
+		} else {
+			colorText = colorDefault;
+		}
+		sprText = TTF_RenderText_Solid(fontDefault, strWorldNames[i], colorText);
+		imgWorldSelectWorldText[i] = SDL_CreateTextureFromSurface(renderer, sprText);
+		SDL_FreeSurface(sprText); 
+
+	}
+	
+  iBackgroundOffsetWorldSelect += 1 * UNIT_SIZE * DELTA_TIME;
+  if (iBackgroundOffsetWorldSelect > 255) {
+    iBackgroundOffsetWorldSelect -= 256;
+  }
+
 	
 
 }
@@ -55,10 +84,10 @@ void draw_screen_world_select() {
   for (i = -1; i < (SCREEN_HEIGHT / 256) + 1; i++) {
     for (j = 0; j < SCREEN_WIDTH / 256; j++) {
       posTitle.x = j * 256;
-      posTitle.y = i * 256;
+      posTitle.y = i * 256 + iBackgroundOffsetWorldSelect;
 	  posTitle.w = 256;
 	  posTitle.h = 256;
-      SDL_RenderCopy(renderer, imgBackground[0], NULL, &posTitle);
+      SDL_RenderCopy(renderer, imgBackground[iWorldSelectChoice * 2], NULL, &posTitle);
 
     }
   }
@@ -66,16 +95,17 @@ void draw_screen_world_select() {
   //Draw the text
     posTitle.x = 320;
     posTitle.y = 100;
-  
     SDL_QueryTexture(imgWorldSelectText, NULL, NULL, &(posTitle.w), &(posTitle.h));
     SDL_RenderCopy(renderer, imgWorldSelectText, NULL, &posTitle);
 
 
-    posTitle.x = 320;
-    posTitle.y = 300;
+	for (i = 0; i < NUM_WORLDS; i++) {
+		posTitle.x = 320;
+		posTitle.y = 300 + (32 * i);
   
-    SDL_QueryTexture(imgWorldSelectSelectedText, NULL, NULL, &(posTitle.w), &(posTitle.h));
-    SDL_RenderCopy(renderer, imgWorldSelectSelectedText, NULL, &posTitle);
+		SDL_QueryTexture(imgWorldSelectWorldText[i], NULL, NULL, &(posTitle.w), &(posTitle.h));
+		SDL_RenderCopy(renderer, imgWorldSelectWorldText[i], NULL, &posTitle);
+	}
 
 
 }
@@ -126,7 +156,7 @@ void updateText_screen_world_select() {
 void increaseSelectedOption_screen_world_select() {
     iWorldSelectChoice++;
     
-    if (iWorldSelectChoice >= 2) {
+    if (iWorldSelectChoice >= NUM_WORLDS) {
         iWorldSelectChoice = 0;
     }
 	
@@ -140,7 +170,7 @@ void decreaseSelectedOption_screen_world_select() {
 
     
     if (iWorldSelectChoice < 0) {
-        iWorldSelectChoice = 1;
+        iWorldSelectChoice = NUM_WORLDS - 1;
     }
 	updateText_screen_world_select();
 

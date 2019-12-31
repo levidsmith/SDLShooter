@@ -29,6 +29,7 @@ void init_bullet(struct Bullet *bullet, int init_x, int init_y) {
   bullet->isSpinShot = FALSE;
   bullet->iWeaponType = 0;
   
+  bullet->x -= bullet->width / 2;
 
 }
 

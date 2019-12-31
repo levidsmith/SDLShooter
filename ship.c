@@ -90,6 +90,7 @@ void draw_ship(struct Ship *ship) {
 void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
 //	ship->fShootDelay = 0.5;
     int iEnergyRequired = 5;
+	float bullet_x, bullet_y;
 
   if (ship->iWeaponType == 0) {
 

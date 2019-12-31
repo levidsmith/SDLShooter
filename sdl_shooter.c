@@ -45,7 +45,7 @@ SDL_Texture *imgFireButtonText[3];
 
 
 
-SDL_Texture *imgBackground[4];
+SDL_Texture *imgBackground[NUM_WORLDS * 2];
 SDL_Texture *imgBullet[6];
 SDL_Texture *imgBulletEnemy;
 SDL_Texture *imgScoreText;
@@ -63,6 +63,7 @@ SDL_Texture *imgTitleQuitText;
 
 SDL_Texture *imgWorldSelectText;
 SDL_Texture *imgWorldSelectSelectedText;
+SDL_Texture *imgWorldSelectWorldText[NUM_WORLDS];
 
 
 TTF_Font *fontDefault;
@@ -262,7 +263,7 @@ char strFile[32];
   SDL_FreeSurface(sprShip);
   
 
-for (i = 0; i < 4; i++) {
+for (i = 0; i < NUM_WORLDS * 2; i++) {
 	sprintf(strFile, "assets/images/background%d.bmp", (i + 1));
   
   sprBackground = SDL_LoadBMP(strFile);
@@ -530,7 +531,7 @@ for (i = 0; i < 16; i++) {
   SDL_DestroyTexture(imgShip[4]);
   
   
-for (i = 0; i < 4; i++) {
+for (i = 0; i < NUM_WORLDS * 2; i++) {
   SDL_DestroyTexture(imgBackground[i]);
 }  
   
@@ -577,6 +578,11 @@ for (i = 0; i < 16; i++) {
 for (i = 0; i < 3; i++) {
 	SDL_DestroyTexture(imgFireButtonText[i]);
 }
+
+for (i = 0; i < NUM_WORLDS; i++) {
+	SDL_DestroyTexture(imgWorldSelectWorldText[i]);
+}
+
 
   SDL_DestroyRenderer(renderer);
 

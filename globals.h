@@ -19,6 +19,8 @@
 #define LEVEL_FILE_PREFIX "assets/level_"
 #define LEVEL_FILE_SUFFIX ".txt"
 
+#define NUM_WORLDS 8
+
 //MinGW style
 #include "SDL.h"
 #include "SDL_ttf.h"
