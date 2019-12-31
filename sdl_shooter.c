@@ -7,6 +7,7 @@
 
 #include "linked_list.h"
 #include "screen_game.h"
+#include "screen_world_select.h"
 
 
 int iKeepLooping = TRUE;
@@ -44,7 +45,7 @@ SDL_Texture *imgFireButtonText[3];
 
 
 
-SDL_Texture *imgBackground;
+SDL_Texture *imgBackground[4];
 SDL_Texture *imgBullet[6];
 SDL_Texture *imgBulletEnemy;
 SDL_Texture *imgScoreText;
@@ -59,6 +60,9 @@ SDL_Texture *imgGameTimeText;
 SDL_Texture *imgTitleStartText;
 SDL_Texture *imgTitleContinueText;
 SDL_Texture *imgTitleQuitText;
+
+SDL_Texture *imgWorldSelectText;
+SDL_Texture *imgWorldSelectSelectedText;
 
 
 TTF_Font *fontDefault;
@@ -110,6 +114,9 @@ void start() {
 		case 1:
 			start_screen_game();
 			break;
+		case 2:
+			start_screen_world_select();
+			break;
 	}
   
 }
@@ -121,6 +128,9 @@ void update() {
 			break;
 		case 1:
 			update_screen_game();
+			break;
+		case 2:
+			update_screen_world_select();
 			break;
 	}
 }
@@ -135,6 +145,9 @@ void draw() {
 		case 1:
 			draw_screen_game();
 			break;
+		case 2:
+			draw_screen_world_select();
+			break;
 	}
 	
 
@@ -148,6 +161,10 @@ void handleInput(int iType, int iKey) {
 		case 1:
 			handleInput_screen_game(iType, iKey);
 			break;
+		case 2:
+			handleInput_screen_world_select(iType, iKey);
+			break;
+		
 	}
 
 	
@@ -162,6 +179,9 @@ void setCurrentScreen(int iScreen) {
 			break;
 		case 1:
 			start_screen_game();
+			break;
+		case 2:
+			start_screen_world_select();
 			break;
 	}
 
@@ -205,6 +225,11 @@ int main(int argc, char* args[]) {
   SDL_Surface *sprExplosion;
   SDL_Surface *sprFireButton;
 
+
+int i;
+char strFile[32];
+
+
   
   sprShip = SDL_LoadBMP("assets/images/ship1.bmp");
   SDL_SetColorKey(sprShip, SDL_TRUE, SDL_MapRGB(sprShip->format, 255, 0, 255));
@@ -236,10 +261,14 @@ int main(int argc, char* args[]) {
   imgShip[5] = SDL_CreateTextureFromSurface(renderer, sprShip);
   SDL_FreeSurface(sprShip);
   
-  
-  sprBackground = SDL_LoadBMP("assets/images/background.bmp");
-  imgBackground = SDL_CreateTextureFromSurface(renderer, sprBackground);
 
+for (i = 0; i < 4; i++) {
+	sprintf(strFile, "assets/images/background%d.bmp", (i + 1));
+  
+  sprBackground = SDL_LoadBMP(strFile);
+  imgBackground[i] = SDL_CreateTextureFromSurface(renderer, sprBackground);
+
+}
   sprEnemy = SDL_LoadBMP("assets/images/enemy_alpha1.bmp");
   SDL_SetColorKey(sprEnemy, SDL_TRUE, SDL_MapRGB(sprEnemy->format, 255, 0, 255));
   imgEnemyAlpha_L1_00 = SDL_CreateTextureFromSurface(renderer, sprEnemy);
@@ -379,8 +408,8 @@ int main(int argc, char* args[]) {
   SDL_SetColorKey(sprExplosion, SDL_TRUE, SDL_MapRGB(sprExplosion->format, 255, 0, 255));
   imgExplosion_L2_01 = SDL_CreateTextureFromSurface(renderer, sprExplosion);
   
-int i;
-char strFile[32];
+//int i;
+//char strFile[32];
 
 for (i = 0; i < 16; i++) {
 	sprintf(strFile, "assets/images/button_fire%d.bmp", (i + 1));
@@ -499,7 +528,12 @@ for (i = 0; i < 16; i++) {
   SDL_DestroyTexture(imgShip[2]);
   SDL_DestroyTexture(imgShip[3]);
   SDL_DestroyTexture(imgShip[4]);
-  SDL_DestroyTexture(imgBackground);
+  
+  
+for (i = 0; i < 4; i++) {
+  SDL_DestroyTexture(imgBackground[i]);
+}  
+  
   SDL_DestroyTexture(imgEnemyAlpha_L1_00);
   SDL_DestroyTexture(imgEnemyAlpha_L1_01);
   SDL_DestroyTexture(imgEnemyAlpha_L2_00);

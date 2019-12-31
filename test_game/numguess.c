@@ -8,6 +8,7 @@ int main(void) {
   int iGuess;
   int iGuesses;
 
+  srand(time(NULL));
   
 
   printf("rand: %d\n", rand() % 5);
@@ -17,9 +18,8 @@ int main(void) {
   printf("rand: %d\n", rand() % 5);
   printf("rand: %d\n", rand() % 5);
   printf("rand: %d\n", rand() % 5);
-//  exit(0);
+  exit(0);
 
-  srand(time(NULL));
   iHiddenNumber = rand();
   iHiddenNumber = 1 + (iHiddenNumber % 100);
 

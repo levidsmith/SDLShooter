@@ -12,4 +12,7 @@ void updateTimeText();
 void getWeaponColor(int iWeaponType, SDL_Color *c);
 int collidedRectRect(float r1_x, float r1_y, float r1_w, float r1_h, float r2_x, float r2_y, float r2_w, float r2_h);
 int collidedCircleRect(float c1_x, float c1_y, float c1_r, float r1_x, float r1_y, float r1_w, float r1_h);
+void updateBackgroundPattern(int iRows);
+void loadWorld();
+
 

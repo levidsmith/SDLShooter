@@ -14,7 +14,8 @@
 #include "powerup.h"
 #include "explosion.h"
 
-
+#define BACKGROUND_ROWS 4
+#define BACKGROUND_COLS 5
 
 
 
@@ -36,7 +37,7 @@ extern TTF_Font *fontLarge;
 
 
 extern Mix_Music *musicGame; 
-extern SDL_Texture *imgBackground;
+extern SDL_Texture *imgBackground[2];
 extern SDL_Texture *imgScoreText;
 extern SDL_Texture *imgLevelCompleteText;
 extern SDL_Texture *imgGameOverText;
@@ -78,11 +79,14 @@ int iGameOver = FALSE;
 
 int iScore;
 int iCurrentLevel = 0;
+int iCurrentWorld = 1;
 int iLevelCount = -1;
 
 float fKeyPressDelay = 0;
 
+
 char *strWeaponNames[7] = {"Normal", "Speed Shot", "Multi Shot", "Wave Shot", "Blast Shot", "Spin Shot" };
+int iBackgroundPattern[BACKGROUND_ROWS][BACKGROUND_COLS];
 
 time_t timeStartGame;
 time_t timeEndGame;
@@ -97,54 +101,23 @@ void start_screen_game() {
   clear_list(&listPowerup);
   clear_list(&listExplosion);
 
-/*
-			struct Explosion *explosion = malloc(sizeof(struct Explosion));
-			init_explosion(explosion, 0, 0,
-									  64 / 2);
-			add_node(&listExplosion, explosion);
-*/			
-
 	
   ship = malloc(sizeof(struct Ship));
   init_ship(ship);
   
   printf("ship values x: %d y: %d width: %d height %d\n", ship->x, ship->y, ship->width, ship->height);
 
-
-  //read level
-    if (!iGameContinue) {
-        iCurrentLevel = 0;
-    }
-    char *strLevelFile = LEVEL_FILE;
-  if (iLevelCount < 0) {
-	  iLevelCount = read_count_levels(LEVEL_FILE);
-  }
-  printf("iLevelCount: %d\n", iLevelCount);
-//  iLevelCount = 2;
-  printf("call read_level\n");
-//    iCurrentLevel = 1;
-//  read_level(strLevelFile, iCurrentLevel);
-//    iCurrentLevel = 2;
-    read_level(strLevelFile, iCurrentLevel);
-
-  printf("finished read_level\n");
+  loadWorld();
   
-//  struct Powerup *powerup = malloc(sizeof(struct Powerup));
-//  init_powerup(powerup, 50, 50, 0);
-//  add_node(&listPowerup, powerup);
-  
-
-
-
   iScore = 0;
   updateScoreText();
+  updateBackgroundPattern(4);
   
 
   iLevelComplete = FALSE;
   iGameOver = FALSE;
 
 
-  printf("finished updateScoreText\n");
 
     //initialize game time
     if (&timeStartGame == NULL || !iGameContinue) {
@@ -157,9 +130,36 @@ void start_screen_game() {
     
   Mix_VolumeMusic(MIX_MAX_VOLUME * 0.2);
   Mix_PlayMusic(musicGame, -1);
-  printf("finished start\n");
-  
 
+}
+
+void loadWorld() {
+	char strLevelFile[32];
+	
+	sprintf(strLevelFile, "%s0%d%s", LEVEL_FILE_PREFIX, iCurrentWorld, LEVEL_FILE_SUFFIX);
+	
+  //read level
+    if (!iGameContinue) {
+        iCurrentLevel = 0;
+    }
+//    char *strLevelFile = LEVEL_FILE;
+//  if (iLevelCount < 0) {
+	  iLevelCount = read_count_levels(strLevelFile);
+//  }
+  printf("iLevelCount: %d\n", iLevelCount);
+  printf("call read_level\n");
+    read_level(strLevelFile, iCurrentLevel);
+
+  printf("finished read_level\n");
+	
+}
+
+void loadLevel() {
+	char strLevelFile[32];
+	
+	sprintf(strLevelFile, "%s0%d%s", LEVEL_FILE_PREFIX, iCurrentWorld, LEVEL_FILE_SUFFIX);
+    read_level(strLevelFile, iCurrentLevel);
+	
 }
 
 
@@ -269,6 +269,7 @@ void update_screen_game() {
   iBackgroundOffset += 10 * UNIT_SIZE * DELTA_TIME;
   if (iBackgroundOffset > 255) {
     iBackgroundOffset -= 256;
+	updateBackgroundPattern(1);
   }
 
   checkCollisions();
@@ -292,13 +293,17 @@ void draw_screen_game() {
     
 	  //Draw the background
   int i, j;
-  for (i = -1; i < (SCREEN_HEIGHT / 256) + 1; i++) {
-    for (j = 0; j < SCREEN_WIDTH / 256; j++) {
+//  int iBackgroundCols = SCREEN_WIDTH / 256;
+//  int iBackgroundRows = SCREEN_HEIGHT / 256;
+  int iBackgroundCols = BACKGROUND_COLS;
+  int iBackgroundRows = BACKGROUND_ROWS;
+  for (i = 0; i < iBackgroundRows; i++) {
+    for (j = 0; j < iBackgroundCols; j++) {
       pos.x = j * 256;
-      pos.y = i * 256 + iBackgroundOffset;
+      pos.y = (i - 1) * 256 + iBackgroundOffset;
 	  pos.w = 256;
 	  pos.h = 256;
-      SDL_RenderCopy(renderer, imgBackground, NULL, &pos);
+		SDL_RenderCopy(renderer, imgBackground[(iCurrentWorld * 2) + iBackgroundPattern[i][j]], NULL, &pos);
 
     }
   }
@@ -772,7 +777,9 @@ void checkLevelComplete() {
 		  iLevelComplete = TRUE;
 		  fKeyPressDelay = 5;
 	  } else {
-		read_level(LEVEL_FILE, iCurrentLevel);
+//		read_level(LEVEL_FILE, iCurrentLevel);
+		loadLevel();
+		
 	  }
 
 		  
@@ -806,14 +813,11 @@ void handleInput_screen_game(int iType, int iKey) {
         iButtonFire3Down = TRUE;
 
     } else if (iKey == SDLK_SPACE) {
-      //shoot(); 
-	  if (iLevelComplete) {
-//		  iCurrentLevel = 0;
-//		  start_screen_game();
-		if (fKeyPressDelay <= 0) {
 
-    	  iCurrentLevel = 0;
-			setCurrentScreen(0);
+	  if (iLevelComplete) {
+		if (fKeyPressDelay <= 0) {
+			iCurrentLevel = 0;
+			setCurrentScreen(2);
 		}
 	  } else if (iGameOver) {
 		  		if (fKeyPressDelay <= 0) {
@@ -1014,5 +1018,26 @@ void getWeaponColor(int iWeaponType, SDL_Color *c) {
 			c->b = 0x69;
 			break;
 	}
+}
+
+void updateBackgroundPattern(int iRowsToGenerate) {
+	int i, j;
+	for (i = BACKGROUND_ROWS - 1; i >= 0; i--) {
+		for (j = 0; j < BACKGROUND_COLS; j++) {
+			if (i >= iRowsToGenerate) {
+				iBackgroundPattern[i][j] = iBackgroundPattern[i - 1][j];
+			} else {
+				if (rand() % 10 == 0) {
+					iBackgroundPattern[i][j] = 1;
+				} else {
+					iBackgroundPattern[i][j] = 0;
+				}
+				//iBackgroundPattern[i][j] = 0;
+			}
+			
+			
+		}
+	}
+	
 }
 

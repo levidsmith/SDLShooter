@@ -16,7 +16,7 @@ extern SDL_Renderer* renderer;
 extern TTF_Font *fontDefault;
 extern TTF_Font *fontLarge;
 
-extern SDL_Texture *imgBackground;
+extern SDL_Texture *imgBackground[4];
 extern SDL_Texture *imgTitleText;
 extern SDL_Texture *imgCopyrightText;
 extern SDL_Texture *imgTitleStartText;
@@ -77,7 +77,7 @@ void draw_screen_title() {
       posTitle.y = i * 256 + iBackgroundOffsetTitle;
 	  posTitle.w = 256;
 	  posTitle.h = 256;
-      SDL_RenderCopy(renderer, imgBackground, NULL, &posTitle);
+      SDL_RenderCopy(renderer, imgBackground[0], NULL, &posTitle);
 
     }
   }
@@ -124,7 +124,7 @@ void handleInput_screen_title(int iType, int iKey) {
     if (iKey == SDLK_SPACE) {
         if (iTitleMenuChoice == 0) {
             iGameContinue = FALSE;
-            setCurrentScreen(1);
+            setCurrentScreen(2);
         } else if (iTitleMenuChoice == 1) {
             iGameContinue = TRUE;
             setCurrentScreen(1);
