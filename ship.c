@@ -94,7 +94,8 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
 
   if (ship->iWeaponType == 0) {
 
-      iEnergyRequired = 5;
+//      iEnergyRequired = 5;
+	iEnergyRequired = getEnergyRequired(ship->iWeaponType, iLevel);
 	if (ship->fEnergy >= iEnergyRequired) {
 		struct Bullet *bullet;
 		
@@ -116,17 +117,19 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
 	}
   } else if (ship->iWeaponType == 1) {
       float fShootDelay = 0.5;
+		iEnergyRequired = getEnergyRequired(ship->iWeaponType, iLevel);
+
       switch(iLevel) {
           case 0:
-              iEnergyRequired = 8;
+//              iEnergyRequired = 8;
               fShootDelay = 0.4;
               break;
           case 1:
-              iEnergyRequired = 12;
+  //            iEnergyRequired = 12;
               fShootDelay = 0.2;
               break;
           case 2:
-              iEnergyRequired = 16;
+//              iEnergyRequired = 16;
               fShootDelay = 0.1;
               break;
               
@@ -154,6 +157,10 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
 	
 	
   } else if (ship->iWeaponType == 2) {
+	  
+	  	iEnergyRequired = getEnergyRequired(ship->iWeaponType, iLevel);
+
+	  /*
       switch(iLevel) {
           case 0:
               iEnergyRequired = 10;
@@ -165,6 +172,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
               iEnergyRequired = 30;
               break;
       }
+	  */
       
       
 	if (ship->fEnergy >= iEnergyRequired) {
@@ -270,6 +278,10 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
 		Mix_PlayChannel(-1, soundShoot, 0);
 	}
   } else if (ship->iWeaponType == 3) {
+	  
+	  	iEnergyRequired = getEnergyRequired(ship->iWeaponType, iLevel);
+
+	  /*
       switch (iLevel) {
           case 0:
               iEnergyRequired = 7;
@@ -281,6 +293,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
               iEnergyRequired = 28;
               break;
       }
+	  */
       
 	if (ship->fEnergy >= iEnergyRequired) {
 		struct Bullet *bullet;
@@ -357,6 +370,10 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
 	}
 		
   } else if (ship->iWeaponType == 4) {
+	  
+	  	iEnergyRequired = getEnergyRequired(ship->iWeaponType, iLevel);
+
+	  /*
       switch(iLevel) {
           case 0:
               iEnergyRequired = 12;
@@ -368,6 +385,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
               iEnergyRequired = 48;
               break;
       }
+	  */
       
 	if (ship->fEnergy >= iEnergyRequired) {
 		struct Bullet *bullet;
@@ -410,6 +428,9 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
     }
 	  
   } else if (ship->iWeaponType == 5) {
+	  	iEnergyRequired = getEnergyRequired(ship->iWeaponType, iLevel);
+
+	  /*
         switch(iLevel) {
             case 0:
                 iEnergyRequired = 20;
@@ -421,6 +442,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
                 iEnergyRequired = 60;
                 break;
         }
+		*/
     if (ship->fEnergy >= iEnergyRequired) {
         struct Bullet *bullet;
 
@@ -522,4 +544,90 @@ float getCenterX_ship(struct Ship *ship) {
 
 float getCenterY_ship(struct Ship *ship) {
 	return ship->y + (ship->height / 2);
+}
+
+int getEnergyRequired(int iWeapon, int iLevel) {
+	int iEnergy = -1;
+	switch(iWeapon) {
+		case 0:
+			switch(iLevel) {
+				case 0:
+				case 1:
+				case 2:
+					iEnergy = 5;
+					break;
+			}
+			break;
+		
+		case 1:
+			switch(iLevel) {
+				case 0:
+					iEnergy = 8;
+					break;
+				case 1:
+					iEnergy = 12;
+					break;
+				case 2:
+					iEnergy = 16;
+					break;
+			}
+			break;
+		case 2:
+			switch(iLevel) {
+				case 0:
+					iEnergy = 10;
+					break;
+				case 1:
+					iEnergy = 20;
+					break;
+				case 2:
+					iEnergy = 30;
+					break;
+			}
+			break;
+		case 3:
+			switch(iLevel) {
+				case 0:
+					iEnergy = 7;
+					break;
+				case 1:
+					iEnergy = 14;
+					break;
+				case 2:
+					iEnergy = 28;
+					break;
+			}
+			break;
+		case 4:
+			switch(iLevel) {
+				case 0:
+					iEnergy = 12;
+					break;
+				case 1:
+					iEnergy = 24;
+					break;
+				case 2:
+					iEnergy = 48;
+					break;
+			}
+			break;
+		case 5:
+			switch(iLevel) {
+				case 0:
+					iEnergy = 20;
+					break;
+				case 1:
+					iEnergy = 40;
+					break;
+				case 2:
+					iEnergy = 60;
+					break;
+			}
+			break;
+				
+		
+		
+		
+	}
+	return iEnergy;
 }

@@ -324,12 +324,13 @@ void draw_screen_game() {
 
   
 //Draw energy meter
+  int x_offset = 1000;
   SDL_Rect rectMeter;
   SDL_Color colorMeter;
   SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
   getWeaponColor(ship->iWeaponType, &colorMeter);
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 128);
-  rectMeter.x = 1000;
+  rectMeter.x = x_offset;
   rectMeter.y = 32 + 100;
   rectMeter.w = ship->fMaxEnergy;
   rectMeter.h =  16;
@@ -340,6 +341,47 @@ void draw_screen_game() {
 
   rectMeter.w = ship->fEnergy;
   SDL_RenderFillRect(renderer, &rectMeter);
+
+  
+  //draw level 1 usage
+  int iLength1 = getEnergyRequired(ship->iWeaponType, 0);
+  if (ship->fEnergy < iLength1) {
+	  iLength1 = ship->fEnergy;
+  }
+  SDL_SetRenderDrawColor(renderer, 0xff, 0xff, 0xff, 0x80);
+  rectMeter.x = x_offset + ship->fEnergy - iLength1;
+  rectMeter.y = 32 + 100 + 4;
+  rectMeter.w = iLength1;
+  rectMeter.h =  4;
+  SDL_RenderFillRect(renderer, &rectMeter);
+  
+  //draw level 2 usage
+  int iLength2 = getEnergyRequired(ship->iWeaponType, 1);
+  if (ship->fEnergy < iLength2) {
+	  iLength2 = ship->fEnergy;
+  }
+  SDL_SetRenderDrawColor(renderer, 0xc0, 0xc0, 0xc0, 0x80);
+  rectMeter.x = x_offset + ship->fEnergy - iLength2;
+  rectMeter.y = 32 + 100 + 8;
+//  rectMeter.w = iLength2 - iLength1;
+  rectMeter.w = iLength2;
+  rectMeter.h =  4;
+  SDL_RenderFillRect(renderer, &rectMeter);
+  
+  //draw level 3 usage
+  int iLength3 = getEnergyRequired(ship->iWeaponType, 2);
+  if (ship->fEnergy < iLength3) {
+	  iLength3 = ship->fEnergy;
+  }
+  SDL_SetRenderDrawColor(renderer, 0x80, 0x80, 0x80, 0x80);
+  rectMeter.x = x_offset + ship->fEnergy - iLength3;
+  rectMeter.y = 32 + 100 + 12;
+//  rectMeter.w = iLength3 - iLength2;
+  rectMeter.w = iLength3;
+  rectMeter.h =  4;
+  SDL_RenderFillRect(renderer, &rectMeter);
+
+
 
 
 //Draw the score text
@@ -388,6 +430,11 @@ void draw_screen_game() {
     pos.x = 1000 + 0 * (64 + 8);
     pos.y = 64;
     SDL_QueryTexture(imgFireButton1, NULL, NULL, &(pos.w), &(pos.h));
+	if (ship->fEnergy >= getEnergyRequired(ship->iWeaponType, 0)) {
+		SDL_SetTextureColorMod(imgFireButton1, 255, 255, 255);
+	} else {
+		SDL_SetTextureColorMod(imgFireButton1, 128, 128, 128);
+	}
     SDL_RenderCopy(renderer, imgFireButton1, NULL, &pos);
 
 	pos.x += 4;
@@ -399,6 +446,11 @@ void draw_screen_game() {
     pos.x = 1000 + 1 * (64 + 8);
     pos.y = 64;
     SDL_QueryTexture(imgFireButton2, NULL, NULL, &(pos.w), &(pos.h));
+	if (ship->fEnergy >= getEnergyRequired(ship->iWeaponType, 1)) {
+		SDL_SetTextureColorMod(imgFireButton2, 255, 255, 255);
+	} else {
+		SDL_SetTextureColorMod(imgFireButton2, 128, 128, 128);
+	}
     SDL_RenderCopy(renderer, imgFireButton2, NULL, &pos);
 
 	pos.x += 4;
@@ -410,6 +462,11 @@ void draw_screen_game() {
     pos.x = 1000 + 2 * (64 + 8);
     pos.y = 64;
     SDL_QueryTexture(imgFireButton3, NULL, NULL, &(pos.w), &(pos.h));
+	if (ship->fEnergy >= getEnergyRequired(ship->iWeaponType, 2)) {
+		SDL_SetTextureColorMod(imgFireButton3, 255, 255, 255);
+	} else {
+		SDL_SetTextureColorMod(imgFireButton3, 128, 128, 128);
+	}
     SDL_RenderCopy(renderer, imgFireButton3, NULL, &pos);
 	
 	pos.x += 4;
