@@ -594,7 +594,8 @@ void checkCollisions() {
 //			  ((bullet->y + bullet->height / 2) >= enemy->y && (bullet->y + bullet->height / 2) < enemy->y + enemy->height) ) {
 		    bullet->isAlive = FALSE;
 
-			damage_enemy(enemy, 1);
+
+			damage_enemy(enemy, bullet->iDamage);
               collidedEnemy = enemy;  //used to prevent the enemy from being hit twice from a blast shot
 			  printf("set collided enemy\n");
 

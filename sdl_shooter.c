@@ -19,7 +19,7 @@ SDL_Renderer* renderer = NULL;
 
 SDL_Surface* screenSurface = NULL;
 
-SDL_Texture *imgShip[6];
+SDL_Texture *imgShip[NUM_WEAPONS];
 SDL_Texture *imgEnemyAlpha_L1_00;
 SDL_Texture *imgEnemyAlpha_L1_01;
 SDL_Texture *imgEnemyAlpha_L2_00;
@@ -72,6 +72,7 @@ TTF_Font *fontDefault;
 TTF_Font *fontLarge;
 
 Mix_Chunk *soundShoot;
+Mix_Chunk *soundShipHit;
 Mix_Chunk *soundShipDead;
 Mix_Chunk *soundEnemyDead;
 Mix_Chunk *soundEnemyShoot;
@@ -234,7 +235,18 @@ int i;
 char strFile[32];
 
 
+for (i = 0; i < NUM_WEAPONS; i++) {
+	sprintf(strFile, "assets/images/ship%d.bmp", (i + 1));
+  spr = SDL_LoadBMP(strFile);
+  SDL_SetColorKey(spr, SDL_TRUE, SDL_MapRGB(spr->format, 255, 0, 255));
+  imgShip[i] = SDL_CreateTextureFromSurface(renderer, spr);
+  SDL_FreeSurface(spr);
+	
+}
+
+
   
+/*
   sprShip = SDL_LoadBMP("assets/images/ship1.bmp");
   SDL_SetColorKey(sprShip, SDL_TRUE, SDL_MapRGB(sprShip->format, 255, 0, 255));
   imgShip[0] = SDL_CreateTextureFromSurface(renderer, sprShip);
@@ -264,7 +276,7 @@ char strFile[32];
   SDL_SetColorKey(sprShip, SDL_TRUE, SDL_MapRGB(sprShip->format, 255, 0, 255));
   imgShip[5] = SDL_CreateTextureFromSurface(renderer, sprShip);
   SDL_FreeSurface(sprShip);
-  
+  */
 
 for (i = 0; i < NUM_WORLDS * 2; i++) {
 	sprintf(strFile, "assets/images/background%d.bmp", (i + 1));
@@ -480,6 +492,7 @@ for (i = 0; i < 5; i++) {
   soundEnemyShoot = Mix_LoadWAV("assets/audio/enemy_shoot.wav");
   soundEnemyHit = Mix_LoadWAV("assets/audio/enemy_hit.wav");
   soundEnemyShield = Mix_LoadWAV("assets/audio/enemy_shield.wav");
+  soundShipHit = Mix_LoadWAV("assets/audio/ship_hit.wav");
   soundShipDead = Mix_LoadWAV("assets/audio/ship_dead.wav");
   soundPowerup = Mix_LoadWAV("assets/audio/powerup.wav");
   soundWeaponSelect = Mix_LoadWAV("assets/audio/weapon_select.wav");
@@ -545,6 +558,7 @@ for (i = 0; i < 5; i++) {
   Mix_FreeChunk(soundEnemyShoot);
   Mix_FreeChunk(soundEnemyHit);
   Mix_FreeChunk(soundEnemyShield);
+  Mix_FreeChunk(soundShipHit);
   Mix_FreeChunk(soundShipDead);
   Mix_FreeChunk(soundPowerup);
   Mix_FreeChunk(soundWeaponSelect);
@@ -555,12 +569,18 @@ for (i = 0; i < 5; i++) {
 
   Mix_CloseAudio();
 
-  
+
+for (i = 0; i < NUM_WEAPONS; i++) {
+  SDL_DestroyTexture(imgShip[i]);
+}  
+
+/*  
   SDL_DestroyTexture(imgShip[0]);
   SDL_DestroyTexture(imgShip[1]);
   SDL_DestroyTexture(imgShip[2]);
   SDL_DestroyTexture(imgShip[3]);
   SDL_DestroyTexture(imgShip[4]);
+  */
   
   
 for (i = 0; i < NUM_WORLDS * 2; i++) {

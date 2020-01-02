@@ -19,6 +19,7 @@ extern SDL_Texture *imgShipPowerup[NUM_SHIP_POWERUPS];
 extern Mix_Chunk *soundShoot;
 extern Mix_Chunk *soundWeaponSelect;
 extern Mix_Chunk *soundShipDead;
+extern Mix_Chunk *soundShipHit;
 
 
 
@@ -42,6 +43,7 @@ void init_ship(struct Ship *ship) {
   ship->iHealth = ship->iMaxHealth;
   ship->fInvincibleDelay = 0;
   ship->fDefensePowerupDelay = 0;
+  ship->fAttackPowerupDelay = 0;
 
 printf("*** init ship complete\n");
 
@@ -103,6 +105,15 @@ void update_ship(struct Ship *ship) {
 		  ship->fDefensePowerupDelay = 0;
 	  }
   }
+
+
+  if (ship->fAttackPowerupDelay > 0) {
+	  ship->fAttackPowerupDelay -= DELTA_TIME;
+	  if (ship->fAttackPowerupDelay < 0) {
+		  ship->fAttackPowerupDelay = 0;
+	  }
+  }
+
 	
 }
 
@@ -141,6 +152,14 @@ void draw_ship(struct Ship *ship) {
 		
 	}
 
+	if (ship->fAttackPowerupDelay > 0) {
+		img = imgShipPowerup[1];
+		float fFade = 128 + ( (ship->fAttackPowerupDelay - floor(ship->fAttackPowerupDelay)) * 128); 
+		SDL_SetTextureAlphaMod(img, fFade);
+
+		SDL_RenderCopy(renderer, img, NULL, &pos);
+		
+	}
 	
   }
 
@@ -595,6 +614,9 @@ void damage_ship(struct Ship *ship, int iDamage) {
 		if (ship->iHealth <= 0) {
 			ship->isAlive = FALSE;
 		    Mix_PlayChannel(-1, soundShipDead, 0);
+		} else {
+		    Mix_PlayChannel(-1, soundShipHit, 0);
+
 
 
 		}
@@ -619,8 +641,11 @@ void applyPowerup_ship(struct Ship *ship, int iType) {
 		case 2:
 			ship->iHealth += 4;
 			if (ship->iHealth > ship->iMaxHealth) {
-				ship->iHealth += ship->iMaxHealth;
+				ship->iHealth = ship->iMaxHealth;
 			}
+			break;
+		case 3:
+			ship->fAttackPowerupDelay = 10;
 			break;
 	}
 	
@@ -672,13 +697,13 @@ int getEnergyRequired(int iWeapon, int iLevel) {
 		case 2:
 			switch(iLevel) {
 				case 0:
-					iEnergy = 10;
+					iEnergy = 8;
 					break;
 				case 1:
-					iEnergy = 20;
+					iEnergy = 12;
 					break;
 				case 2:
-					iEnergy = 30;
+					iEnergy = 16;
 					break;
 			}
 			break;

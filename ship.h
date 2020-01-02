@@ -16,6 +16,7 @@ struct Ship {
   int iMaxHealth;
   float fInvincibleDelay;
   float fDefensePowerupDelay;
+  float fAttackPowerupDelay;
 };
 
 void init_ship(struct Ship *);

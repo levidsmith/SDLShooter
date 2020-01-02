@@ -30,6 +30,11 @@ void init_bullet(struct Bullet *bullet, int init_x, int init_y) {
   bullet->iWeaponType = 0;
   
   bullet->x -= bullet->width / 2;
+  bullet->iDamage = 1;
+  
+  if (ship->fAttackPowerupDelay > 0) {
+	  bullet->iDamage *= 2;
+  }
 
 }
 
