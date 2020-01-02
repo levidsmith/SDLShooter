@@ -1,6 +1,9 @@
 //2019 Levi D. Smith - levidsmith.com
 #include "globals.h"
+#include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
+
 
 #include "linked_list.h"
 #include "ship.h"
@@ -8,17 +11,21 @@
 #include "enemy.h"
 
 #define NUM_WEAPONS 6
+#define NUM_HEALTH_UNITS 3
 
 extern SDL_Renderer *renderer;
 extern SDL_Texture *imgShip[6];
+extern SDL_Texture *imgShipPowerup[NUM_SHIP_POWERUPS];
 extern Mix_Chunk *soundShoot;
 extern Mix_Chunk *soundWeaponSelect;
+extern Mix_Chunk *soundShipDead;
 
 
 
 
 
 void init_ship(struct Ship *ship) {
+//printf("*** init ship started\n");
   ship->width = 64;
   ship->height = 64;
   ship->vel_x = 0;
@@ -31,11 +38,20 @@ void init_ship(struct Ship *ship) {
   ship->fMaxEnergy = 200;
   ship->fEnergy = ship->fMaxEnergy;
   ship->iWeaponType = 0;
+  ship->iMaxHealth = NUM_HEALTH_UNITS * 4;
+  ship->iHealth = ship->iMaxHealth;
+  ship->fInvincibleDelay = 0;
+  ship->fDefensePowerupDelay = 0;
+
+printf("*** init ship complete\n");
 
 }
 
 
 void update_ship(struct Ship *ship) {
+//printf("*** update ship\n");
+	
+	
 	  //update ship
   if (ship->isAlive) {
     ship->x += ship->vel_x * DELTA_TIME;
@@ -70,18 +86,62 @@ void update_ship(struct Ship *ship) {
   if (ship->fEnergy > ship->fMaxEnergy) {
 	  ship->fEnergy = ship->fMaxEnergy;
   }
+  
+  //invincible delay
+  if (ship->fInvincibleDelay > 0) {
+	ship->fInvincibleDelay -= DELTA_TIME;
+	if (ship->fInvincibleDelay < 0) {
+		ship->fInvincibleDelay = 0;
+	}
+	
+  }
+  
+  //powerup delay
+  if (ship->fDefensePowerupDelay > 0) {
+	  ship->fDefensePowerupDelay -= DELTA_TIME;
+	  if (ship->fDefensePowerupDelay < 0) {
+		  ship->fDefensePowerupDelay = 0;
+	  }
+  }
 	
 }
 
 void draw_ship(struct Ship *ship) {
+//printf("*** draw_ship\n");
+	
+	
 	SDL_Rect pos;
+	SDL_Texture *img;
   //Draw the ship
   if (ship->isAlive) {
 	pos.x = ship->x;
 	pos.y = ship->y;
 	pos.w = ship->width;
 	pos.h = ship->height;
-    SDL_RenderCopy(renderer, imgShip[ship->iWeaponType], NULL, &pos);
+	
+	
+	img = imgShip[ship->iWeaponType];
+	
+	if (ship->fInvincibleDelay > 0) {
+		SDL_SetTextureAlphaMod(img, 0x40);
+	} else {
+		SDL_SetTextureAlphaMod(img, 0xFF);
+		
+	}
+	
+    SDL_RenderCopy(renderer, img, NULL, &pos);
+	
+	
+	if (ship->fDefensePowerupDelay > 0) {
+		img = imgShipPowerup[0];
+		float fFade = 128 + ( (ship->fDefensePowerupDelay - floor(ship->fDefensePowerupDelay)) * 128); 
+		SDL_SetTextureAlphaMod(img, fFade);
+
+		SDL_RenderCopy(renderer, img, NULL, &pos);
+		
+	}
+
+	
   }
 
 	
@@ -518,13 +578,50 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
         
     
 }
+
+
+void damage_ship(struct Ship *ship, int iDamage) {
+	
+	if (ship->fInvincibleDelay <= 0) {
+
+		if (ship->fDefensePowerupDelay > 0) {
+			ship->iHealth -= iDamage / 2;
+		} else {
+			ship->iHealth -= iDamage;
+		}
+	
+		ship->fInvincibleDelay = 1;
+	
+		if (ship->iHealth <= 0) {
+			ship->isAlive = FALSE;
+		    Mix_PlayChannel(-1, soundShipDead, 0);
+
+
+		}
+	}
+}
+
     
 
-void increaseFireRate_ship(struct Ship *ship) {
-    //changed powerup to give energy instead of increasing shot rate
-	ship->fEnergy += 50;
-	if (ship->fEnergy > ship->fMaxEnergy) {
-		ship->fEnergy = ship->fMaxEnergy;
+void applyPowerup_ship(struct Ship *ship, int iType) {
+	
+	switch(iType) {
+		case 0:
+			//changed powerup to give energy instead of increasing shot rate
+			ship->fEnergy += 50;
+			if (ship->fEnergy > ship->fMaxEnergy) {
+				ship->fEnergy = ship->fMaxEnergy;
+			}
+			break;
+		case 1:
+			ship->fDefensePowerupDelay = 10;
+			break;
+		case 2:
+			ship->iHealth += 4;
+			if (ship->iHealth > ship->iMaxHealth) {
+				ship->iHealth += ship->iMaxHealth;
+			}
+			break;
 	}
 	
 }

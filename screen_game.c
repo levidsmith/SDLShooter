@@ -44,6 +44,7 @@ extern SDL_Texture *imgGameOverText;
 extern SDL_Texture *imgLevel;
 extern SDL_Texture *imgWeaponText;
 extern SDL_Texture *imgGameTimeText;
+extern SDL_Texture *imgHealthUnit[5];
 
 
 extern Mix_Chunk *soundShoot;
@@ -130,6 +131,8 @@ void start_screen_game() {
     
   Mix_VolumeMusic(MIX_MAX_VOLUME * 0.2);
   Mix_PlayMusic(musicGame, -1);
+  
+  printf("Finished start_screen_game\n");
 
 }
 
@@ -319,12 +322,31 @@ void draw_screen_game() {
         
     }
 
-    
+//Draw health meter    
+  int x_offset = 640;
+  SDL_Texture *img;
+  for (i = 0; i < ship->iMaxHealth / 4; i++) {
+	  if (ship->iHealth >= (i + 1) * 4) {
+		  img = imgHealthUnit[4];
+	  } else if (ship->iHealth < (i * 4)) {
+		  img = imgHealthUnit[0];
+	  } else {
+		int iNumerator = ship->iHealth - (i * 4);
+		  img = imgHealthUnit[iNumerator];
+	  }
+
+		pos.x = x_offset + (i * 40);
+		pos.y = 64;
+      SDL_QueryTexture(img, NULL, NULL, &(pos.w), &(pos.h));
+	  SDL_RenderCopy(renderer, img, NULL, &pos);
+
+  }
+  
 
 
   
 //Draw energy meter
-  int x_offset = 1000;
+  x_offset = 1000;
   SDL_Rect rectMeter;
   SDL_Color colorMeter;
   SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
@@ -674,10 +696,21 @@ void checkCollisions() {
 
 //			  ((bullet->x + bullet->width / 2) >= ship->x && (bullet->x + bullet->width / 2) < ship->x + ship->width) &&
 //			  ((bullet->y + bullet->height / 2) >= ship->y && (bullet->y + bullet->height / 2) < ship->y + ship->height) ) {
-			ship->isAlive = FALSE;
-			iGameOver = TRUE;
-		    Mix_PlayChannel(-1, soundShipDead, 0);
-			fKeyPressDelay = 5;
+	
+	
+	
+//			ship->isAlive = FALSE;
+//			iGameOver = TRUE;
+//		    Mix_PlayChannel(-1, soundShipDead, 0);
+//			fKeyPressDelay = 5;
+
+			damage_ship(ship, 4);
+			if (!ship->isAlive) {
+				iGameOver = TRUE;
+				fKeyPressDelay = 5;
+				
+			}
+
 
 	  
 		} 
@@ -701,9 +734,15 @@ void checkCollisions() {
 			collidedRectRect(ship->x, ship->y, ship->width, ship->height, enemy->x, enemy->y, enemy->width, enemy->height)) {
 //			(ship->x >= enemy->x && ship->x < enemy->x + enemy->width) &&
 //			(ship->y >= enemy->y && ship->y < enemy->y + enemy->height) ) {
-		ship->isAlive = FALSE;
-		iGameOver = TRUE;
-		fKeyPressDelay = 5;
+		//ship->isAlive = FALSE;
+		//iGameOver = TRUE;
+		//fKeyPressDelay = 5;
+			damage_ship(ship, 8);
+			if (!ship->isAlive) {
+				iGameOver = TRUE;
+				fKeyPressDelay = 5;
+				
+			}
 	  
 		} 
 
@@ -729,7 +768,8 @@ void checkCollisions() {
 //			(ship->y >= powerup->y && ship->y < powerup->y + powerup->height) ) {
 //			(powerup->x + (powerup->width / 2) >= ship->x && powerup->x + (powerup->width / 2) < ship->x + ship->width) &&
 //			(powerup->y + (powerup->height / 2) >= ship->y && powerup->y + (powerup->height / 2) < ship->y + ship->height) ) {
-				increaseFireRate_ship(ship);
+				//increaseFireRate_ship(ship);
+				applyPowerup_ship(ship, powerup->iType);
 				powerup->isAlive = FALSE;
 				Mix_PlayChannel(-1, soundPowerup, 0);
 	  
@@ -1002,6 +1042,7 @@ void updateScoreText() {
   imgFireButtonText[2] = SDL_CreateTextureFromSurface(renderer, sprText);
   SDL_FreeSurface(sprText); 
 
+	printf("Finished update score text\n");
 	
 }
 

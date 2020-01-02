@@ -415,8 +415,11 @@ void destroy_enemy(struct Enemy *enemy) {
 				
 			
 				if (enemy->hasDrop) {
+					int iType;
+					iType = rand() % 3;
+					
 					struct Powerup *powerup = malloc(sizeof(struct Powerup));
-					init_powerup(powerup, enemy->x, enemy->y, 0);
+					init_powerup(powerup, enemy->x, enemy->y, iType);
 					add_node(&listPowerup, powerup);
 				}
 				

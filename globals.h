@@ -20,6 +20,8 @@
 #define LEVEL_FILE_SUFFIX ".txt"
 
 #define NUM_WORLDS 8
+#define NUM_POWERUPS 3
+#define NUM_SHIP_POWERUPS 2
 
 //MinGW style
 #include "SDL.h"

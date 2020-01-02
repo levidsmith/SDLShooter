@@ -6,6 +6,7 @@ struct Powerup {
   int height;
   int iType;
   int isAlive;
+  float fLifetime;
 };
 
 void init_powerup(struct Powerup *powerup, int init_x, int init_y, int init_iType);

@@ -42,6 +42,7 @@ SDL_Texture *imgExplosion_L2_00;
 SDL_Texture *imgExplosion_L2_01;
 SDL_Texture *imgFireButton[16];
 SDL_Texture *imgFireButtonText[3];
+SDL_Texture *imgHealthUnit[5];
 
 
 
@@ -53,7 +54,8 @@ SDL_Texture *imgLevelCompleteText;
 SDL_Texture *imgGameOverText;
 SDL_Texture *imgLevel;
 SDL_Texture *imgWeaponText;
-SDL_Texture *imgPowerupAlpha;
+SDL_Texture *imgPowerup[NUM_POWERUPS * 2];
+SDL_Texture *imgShipPowerup[NUM_SHIP_POWERUPS];
 SDL_Texture *imgTitleText;
 SDL_Texture *imgCopyrightText;
 SDL_Texture *imgGameTimeText;
@@ -225,6 +227,7 @@ int main(int argc, char* args[]) {
   SDL_Surface  *sprPowerup;
   SDL_Surface *sprExplosion;
   SDL_Surface *sprFireButton;
+  SDL_Surface *spr;
 
 
 int i;
@@ -397,9 +400,29 @@ for (i = 0; i < NUM_WORLDS * 2; i++) {
   SDL_SetColorKey(sprBullet, SDL_TRUE, SDL_MapRGB(sprBullet->format, 255, 0, 255));
   imgBulletEnemy = SDL_CreateTextureFromSurface(renderer, sprBullet);
 
+/*
   sprPowerup = SDL_LoadBMP("assets/images/powerup_alpha.bmp");
   SDL_SetColorKey(sprPowerup, SDL_TRUE, SDL_MapRGB(sprPowerup->format, 255, 0, 255));
   imgPowerupAlpha = SDL_CreateTextureFromSurface(renderer, sprPowerup);
+*/
+
+for (i = 0; i < NUM_POWERUPS * 2; i++) {
+	sprintf(strFile, "assets/images/powerup%d.bmp", (i + 1));
+  spr = SDL_LoadBMP(strFile);
+  SDL_SetColorKey(spr, SDL_TRUE, SDL_MapRGB(spr->format, 255, 0, 255));
+  imgPowerup[i] = SDL_CreateTextureFromSurface(renderer, spr);
+  SDL_FreeSurface(spr);
+	
+}
+
+for (i = 0; i < NUM_SHIP_POWERUPS; i++) {
+	sprintf(strFile, "assets/images/ship_powerup%d.bmp", (i + 1));
+  spr = SDL_LoadBMP(strFile);
+  SDL_SetColorKey(spr, SDL_TRUE, SDL_MapRGB(spr->format, 255, 0, 255));
+  imgShipPowerup[i] = SDL_CreateTextureFromSurface(renderer, spr);
+  SDL_FreeSurface(spr);
+	
+}
 
   sprExplosion = SDL_LoadBMP("assets/images/explosion_l2_1.bmp");
   SDL_SetColorKey(sprExplosion, SDL_TRUE, SDL_MapRGB(sprExplosion->format, 255, 0, 255));
@@ -421,12 +444,21 @@ for (i = 0; i < 16; i++) {
 	
 }
 
+for (i = 0; i < 5; i++) {
+	sprintf(strFile, "assets/images/health_unit%d.bmp", (i + 1));
+  spr = SDL_LoadBMP(strFile);
+  SDL_SetColorKey(spr, SDL_TRUE, SDL_MapRGB(spr->format, 255, 0, 255));
+  imgHealthUnit[i] = SDL_CreateTextureFromSurface(renderer, spr);
+  SDL_FreeSurface(spr);
+	
+}
+
   
   printf("created textures\n");
 
 
   SDL_FreeSurface(sprBackground);
-  SDL_FreeSurface(sprPowerup);
+//  SDL_FreeSurface(sprPowerup);
 
 
 //handle loading fonts
@@ -583,6 +615,17 @@ for (i = 0; i < NUM_WORLDS; i++) {
 	SDL_DestroyTexture(imgWorldSelectWorldText[i]);
 }
 
+for (i = 0; i < 5; i++) {
+	SDL_DestroyTexture(imgHealthUnit[i]);
+}
+
+for (i = 0; i < NUM_POWERUPS * 2; i++) {
+	SDL_DestroyTexture(imgPowerup[i]);
+}
+
+for (i = 0; i < NUM_SHIP_POWERUPS; i++) {
+	SDL_DestroyTexture(imgShipPowerup[i]);
+}
 
   SDL_DestroyRenderer(renderer);
 
