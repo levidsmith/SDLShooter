@@ -24,13 +24,23 @@
 #define NUM_SHIP_POWERUPS 2
 #define NUM_WEAPONS 6
 
+
+#endif
+
+
+#ifdef MAC
+
+//MacOS - XCode Style
+#include <SDL2/SDL.h>
+#include <SDL2_ttf/SDL_ttf.h>
+#include <SDL2_mixer/SDL_mixer.h>
+
+#else
+
 //MinGW style
 #include "SDL.h"
 #include "SDL_ttf.h"
 #include "SDL_mixer.h"
-//MacOS - XCode Style
-//#include <SDL2/SDL.h>
-//#include <SDL2_ttf/SDL_ttf.h>
-//#include <SDL2_mixer/SDL_mixer.h>
 
 #endif
+

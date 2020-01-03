@@ -80,9 +80,25 @@ void init_enemy(struct Enemy *enemy, int init_x, int init_y, int init_iType, int
   enemy->iPoints = 50;
   
   setShootDelay_enemy(enemy);
-  if (enemy->iType == 4) {
-	  setTargetPosition_enemy(enemy, (1 + (rand() % ((SCREEN_WIDTH / 64) - 2))) * 64, (1 + (rand() % ((SCREEN_HEIGHT / 64) - 2))) * 64);
-  }
+    
+    switch(enemy->iType) {
+        case 2:
+            //Charlie
+            if (enemy->iLevel == 1) {
+                enemy->vel_y = (UNIT_SIZE / 2);
+            } else if (enemy->iLevel == 2) {
+                enemy->fChangeMovementCountdown = getRandomInt(1, 3);
+                enemy->vel_y = UNIT_SIZE;
+                //enemy->fWaitCountdown = 2;
+            
+            }
+            break;
+        case 4:
+            //Echo
+            setTargetPosition_enemy(enemy, (1 + (rand() % ((SCREEN_WIDTH / 64) - 2))) * 64, (1 + (rand() % ((SCREEN_HEIGHT / 64) - 2))) * 64);
+            break;
+            
+    }
 
 }
 
@@ -91,6 +107,7 @@ void update_enemy(struct Enemy *enemy) {
 
     switch(enemy->iType) {
       case 0:
+            //Alpha
         enemy->fChangeMovementCountdown = enemy->fChangeMovementCountdown - (1 * DELTA_TIME);
         if (enemy->fChangeMovementCountdown <= 0) {
           enemy->vel_x *= -1;
@@ -103,7 +120,8 @@ void update_enemy(struct Enemy *enemy) {
 
 
 
-      case 1:  
+      case 1:
+            //Bravo
 		if (enemy->iLevel == 1) {
 			enemy->vel_x = (1 * UNIT_SIZE);
 		} else if (enemy->iLevel == 2) {
@@ -118,20 +136,48 @@ void update_enemy(struct Enemy *enemy) {
 
 
       case 2:
+            //Charlie
 	    if (enemy->iLevel == 1) {
 			enemy->x = enemy->orig_x + 100 * sin(enemy->fLifetime * PI);
-			enemy->y += (UNIT_SIZE / 2) * DELTA_TIME;
+			enemy->y += enemy->vel_y * DELTA_TIME;
 			
 		} else if (enemy->iLevel == 2) {
 			enemy->x = enemy->orig_x + 250 * sin(enemy->fLifetime * PI);
-			enemy->y += UNIT_SIZE * DELTA_TIME;
+            
+            if (enemy->fChangeMovementCountdown > 0) {
+                enemy->fChangeMovementCountdown -= DELTA_TIME;
+
+                if (enemy->fChangeMovementCountdown <= 0) {
+                    enemy->fChangeMovementCountdown = 0;
+                    enemy->fWaitCountdown = getRandomInt(2, 4);
+                }
+                
+                enemy->y += enemy->vel_y * DELTA_TIME;
+                
+            } else if (enemy->fWaitCountdown > 0) {
+                enemy->fWaitCountdown -= DELTA_TIME;
+                if (enemy->fWaitCountdown <= 0) {
+                    enemy->fWaitCountdown = 0;
+                    enemy->fChangeMovementCountdown = getRandomInt(2, 8);
+                    
+                    int iVel = rand() % 2;
+                    if (iVel == 0) {
+                        enemy->vel_y *= -1;
+                    }
+                    
+                }
+            }
 		}
 		break;
-	  case 3:
+
+    case 3:
+            //Delta
 	    enemy->x = enemy->orig_x + (128 * cos(enemy->fLifetime * PI));
 		enemy->y = enemy->orig_y + (128 * sin(enemy->fLifetime * PI));
 		break;
-	  case 4:
+
+      case 4:
+            //Echo
 	    if (enemy->fWaitCountdown > 0) {
 			enemy->fWaitCountdown -= DELTA_TIME;
 			if (enemy->fWaitCountdown <= 0) {
@@ -183,9 +229,12 @@ void update_enemy(struct Enemy *enemy) {
 		
 	}
 	
-
+    //wrap enemy around top/bottom of screen
     if (enemy->y > SCREEN_HEIGHT) {
       enemy->y -= SCREEN_HEIGHT + enemy->height;
+    } else if (enemy->y + enemy->height < 0) {
+        enemy->y += SCREEN_HEIGHT;
+        
     }
 }
 

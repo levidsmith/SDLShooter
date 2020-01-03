@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7F5E3A5123BFDF7600E7011E /* stats.c in Sources */ = {isa = PBXBuildFile; fileRef = 7F5E3A4E23BFDF7400E7011E /* stats.c */; };
+		7F5E3A5223BFDF7600E7011E /* screen_world_select.c in Sources */ = {isa = PBXBuildFile; fileRef = 7F5E3A4F23BFDF7500E7011E /* screen_world_select.c */; };
 		7FE64C8423B68EF3001C2F67 /* sdl_shooter.c in Sources */ = {isa = PBXBuildFile; fileRef = 7FE64C7023B68EF3001C2F67 /* sdl_shooter.c */; };
 		7FE64C8523B68EF3001C2F67 /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 7FE64C7423B68EF3001C2F67 /* Makefile */; };
 		7FE64C8623B68EF3001C2F67 /* explosion.c in Sources */ = {isa = PBXBuildFile; fileRef = 7FE64C7623B68EF3001C2F67 /* explosion.c */; };
@@ -38,6 +40,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		7F5E3A4D23BFDF7300E7011E /* screen_world_select.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = screen_world_select.h; path = ../../screen_world_select.h; sourceTree = "<group>"; };
+		7F5E3A4E23BFDF7400E7011E /* stats.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = stats.c; path = ../../stats.c; sourceTree = "<group>"; };
+		7F5E3A4F23BFDF7500E7011E /* screen_world_select.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = screen_world_select.c; path = ../../screen_world_select.c; sourceTree = "<group>"; };
+		7F5E3A5023BFDF7600E7011E /* stats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = stats.h; path = ../../stats.h; sourceTree = "<group>"; };
 		7FE64C6423B68E9B001C2F67 /* sdl-shooter-mac */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "sdl-shooter-mac"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7FE64C6E23B68EF3001C2F67 /* notes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = notes.txt; path = ../../../notes.txt; sourceTree = "<group>"; };
 		7FE64C6F23B68EF3001C2F67 /* linked_list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = linked_list.h; path = ../../../linked_list.h; sourceTree = "<group>"; };
@@ -85,6 +91,10 @@
 		7FE64C5B23B68E9B001C2F67 = {
 			isa = PBXGroup;
 			children = (
+				7F5E3A4F23BFDF7500E7011E /* screen_world_select.c */,
+				7F5E3A4D23BFDF7300E7011E /* screen_world_select.h */,
+				7F5E3A4E23BFDF7400E7011E /* stats.c */,
+				7F5E3A5023BFDF7600E7011E /* stats.h */,
 				7FE64C6623B68E9B001C2F67 /* sdl-shooter-mac */,
 				7FE64C6523B68E9B001C2F67 /* Products */,
 				7FE64C9023B69089001C2F67 /* Frameworks */,
@@ -200,7 +210,9 @@
 				7FE64C8523B68EF3001C2F67 /* Makefile in Sources */,
 				7FE64C8A23B68EF3001C2F67 /* bullet.c in Sources */,
 				7FE64C8B23B68EF3001C2F67 /* screen_title.c in Sources */,
+				7F5E3A5123BFDF7600E7011E /* stats.c in Sources */,
 				7FE64C8623B68EF3001C2F67 /* explosion.c in Sources */,
+				7F5E3A5223BFDF7600E7011E /* screen_world_select.c in Sources */,
 				7FE64C8923B68EF3001C2F67 /* ship.c in Sources */,
 				7FE64C8D23B68EF3001C2F67 /* level_reader.c in Sources */,
 				7FE64C8E23B68EF3001C2F67 /* enemy.c in Sources */,
@@ -310,6 +322,7 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
+				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = "MAC=1";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;

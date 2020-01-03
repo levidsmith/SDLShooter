@@ -43,6 +43,8 @@ SDL_Texture *imgExplosion_L2_01;
 SDL_Texture *imgFireButton[16];
 SDL_Texture *imgFireButtonText[3];
 SDL_Texture *imgHealthUnit[5];
+SDL_Texture *imgButtonWeaponSwitch;
+SDL_Texture *imgButtonWeaponSwitchText;
 
 
 
@@ -467,6 +469,11 @@ for (i = 0; i < 5; i++) {
 	
 }
 
+    
+    spr = SDL_LoadBMP("assets/images/button_weapon_switch.bmp");
+    SDL_SetColorKey(spr, SDL_TRUE, SDL_MapRGB(spr->format, 255, 0, 255));
+    imgButtonWeaponSwitch = SDL_CreateTextureFromSurface(renderer, spr);
+
   
   printf("created textures\n");
 
@@ -655,6 +662,9 @@ for (i = 0; i < NUM_SHIP_POWERUPS; i++) {
 for (i = 0; i < 3; i++) {
 	SDL_DestroyTexture(imgBonusText[i]);
 }
+    
+    SDL_DestroyTexture(imgButtonWeaponSwitch);
+    SDL_DestroyTexture(imgButtonWeaponSwitchText);
 
 
   SDL_DestroyRenderer(renderer);

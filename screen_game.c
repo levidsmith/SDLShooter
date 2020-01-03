@@ -30,6 +30,8 @@ extern void setCurrentScreen(int iScreen);
 extern void damage_enemy(struct Enemy *enemy, int iDamageAmount);
 extern SDL_Texture *imgFireButton[16];
 extern SDL_Texture *imgFireButtonText[3];
+extern SDL_Texture *imgButtonWeaponSwitch;
+extern SDL_Texture *imgButtonWeaponSwitchText;
 
 
 //VARIABLES
@@ -533,7 +535,17 @@ void draw_screen_game() {
     SDL_QueryTexture(imgFireButtonText[2], NULL, NULL, &(pos.w), &(pos.h));
     SDL_RenderCopy(renderer, imgFireButtonText[2], NULL, &pos);
 
- 
+     //draw weapon switch button
+    pos.x = 1000 + 192;
+    pos.y = 32 - 4;
+    SDL_QueryTexture(imgButtonWeaponSwitch, NULL, NULL, &(pos.w), &(pos.h));
+    SDL_RenderCopy(renderer, imgButtonWeaponSwitch, NULL, &pos);
+   
+    pos.x = 1000 + 192 + 4;
+    pos.y = 32;
+    SDL_QueryTexture(imgButtonWeaponSwitchText, NULL, NULL, &(pos.w), &(pos.h));
+    SDL_RenderCopy(renderer, imgButtonWeaponSwitchText, NULL, &pos);
+
 
 //END HUD DRAW 
 
@@ -1127,6 +1139,8 @@ void updateDisplayText() {
 //  imgFireButtonText[2] = SDL_CreateTextureFromSurface(renderer, sprText);
 //  SDL_FreeSurface(sprText); 
 	generateTextTexture(&imgFireButtonText[2], "C", colorText, fontDefault);
+    
+    generateTextTexture(&imgButtonWeaponSwitchText, "tab", colorText, fontDefault);
 
 
 
@@ -1285,5 +1299,10 @@ void generateTextTexture(SDL_Texture **imgText, char *strText, SDL_Color colorTe
 	*imgText = SDL_CreateTextureFromSurface(renderer, sprText);
     SDL_FreeSurface(sprText); 
 
+}
+
+int getRandomInt(int iMin, int iMax) {
+    return iMin + (rand() % (iMax - iMin));
+    
 }
 
