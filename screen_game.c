@@ -47,6 +47,7 @@ extern SDL_Texture *imgWeaponText;
 extern SDL_Texture *imgGameTimeText;
 extern SDL_Texture *imgHealthUnit[5];
 extern SDL_Texture *imgStatsText;
+extern SDL_Texture *imgBonusText[3];
 
 
 extern Mix_Chunk *soundShoot;
@@ -448,6 +449,25 @@ void draw_screen_game() {
     SDL_QueryTexture(imgStatsText, NULL, NULL, &(pos.w), &(pos.h));
     SDL_RenderCopy(renderer, imgStatsText, NULL, &pos);
 
+//draw bonus text
+	int y_offset = SCREEN_HEIGHT - 32;
+	if (ship->fDefensePowerupDelay > 0) {
+		pos.x = 1000;
+		pos.y = y_offset;
+		y_offset -= 32;
+		SDL_QueryTexture(imgBonusText[0], NULL, NULL, &(pos.w), &(pos.h));
+		SDL_RenderCopy(renderer, imgBonusText[0], NULL, &pos);
+	}
+
+	if (ship->fAttackPowerupDelay > 0) {
+		pos.x = 1000;
+		pos.y = y_offset;
+		y_offset -= 32;
+		SDL_QueryTexture(imgBonusText[1], NULL, NULL, &(pos.w), &(pos.h));
+		SDL_RenderCopy(renderer, imgBonusText[1], NULL, &pos);
+	}
+
+
 
 //draw the fire buttons
 	SDL_Texture *imgFireButton1;
@@ -792,6 +812,7 @@ void checkCollisions() {
 				applyPowerup_ship(ship, powerup->iType);
 				powerup->isAlive = FALSE;
 				Mix_PlayChannel(-1, soundPowerup, 0);
+				updateDisplayText();
 	  
 		} 
 
@@ -1028,10 +1049,15 @@ void updateDisplayText() {
   printf("before sprText\n");
   
   SDL_Surface *sprText;
-  sprText = TTF_RenderText_Solid(fontDefault, strScore, colorText);
+//  sprText = TTF_RenderText_Solid(fontDefault, strScore, colorText);
   printf("TTF_GetError: %s\n", TTF_GetError());
-  imgScoreText = SDL_CreateTextureFromSurface(renderer, sprText);
-  SDL_FreeSurface(sprText); 
+//  if (imgScoreText != NULL) {
+//	  SDL_DestroyTexture(imgScoreText);
+//  }
+//  imgScoreText = SDL_CreateTextureFromSurface(renderer, sprText);
+//  SDL_FreeSurface(sprText); 
+	generateTextTexture(&imgScoreText, strScore, colorText, fontDefault);
+
   
   
   //level display
@@ -1041,9 +1067,11 @@ void updateDisplayText() {
 
   char strLevel[20];
   sprintf(strLevel, "Area %d", iCurrentLevel + 1);
-  sprText = TTF_RenderText_Solid(fontDefault, strLevel, colorText);
-  imgLevel = SDL_CreateTextureFromSurface(renderer, sprText);
-  SDL_FreeSurface(sprText); 
+//  sprText = TTF_RenderText_Solid(fontDefault, strLevel, colorText);
+//  imgLevel = SDL_CreateTextureFromSurface(renderer, sprText);
+//  SDL_FreeSurface(sprText); 
+	generateTextTexture(&imgLevel, strLevel, colorText, fontDefault);
+
 
   //weapon display
 //  colorText.r = 255;
@@ -1053,23 +1081,30 @@ void updateDisplayText() {
 
   char strWeapon[64];
   sprintf(strWeapon, "%s", strWeaponNames[ship->iWeaponType]);
-  sprText = TTF_RenderText_Solid(fontDefault, strWeapon, colorText);
-  imgWeaponText = SDL_CreateTextureFromSurface(renderer, sprText);
-  SDL_FreeSurface(sprText);
+//  sprText = TTF_RenderText_Solid(fontDefault, strWeapon, colorText);
+//  imgWeaponText = SDL_CreateTextureFromSurface(renderer, sprText);
+//  SDL_FreeSurface(sprText);
+	generateTextTexture(&imgWeaponText, strWeapon, colorText, fontDefault);
+
 
   //level complete display
   colorText.r = 0;
   colorText.g = 0;
   colorText.b = 255;
 
-  sprText = TTF_RenderText_Solid(fontLarge, "LEVEL COMPLETE", colorText);
-  imgLevelCompleteText = SDL_CreateTextureFromSurface(renderer, sprText);
-  SDL_FreeSurface(sprText); 
+//  sprText = TTF_RenderText_Solid(fontLarge, "LEVEL COMPLETE", colorText);
+//  imgLevelCompleteText = SDL_CreateTextureFromSurface(renderer, sprText);
+//  SDL_FreeSurface(sprText); 
+	generateTextTexture(&imgLevelCompleteText, "LEVEL COMPLETE", colorText, fontLarge);
+
 
   //game over display
-  sprText = TTF_RenderText_Solid(fontLarge, "GAME OVER", colorText);
-  imgGameOverText = SDL_CreateTextureFromSurface(renderer, sprText);
-  SDL_FreeSurface(sprText); 
+//  sprText = TTF_RenderText_Solid(fontLarge, "GAME OVER", colorText);
+//  imgGameOverText = SDL_CreateTextureFromSurface(renderer, sprText);
+//  SDL_FreeSurface(sprText); 
+	generateTextTexture(&imgGameOverText, "GAME OVER", colorText, fontLarge);
+
+
 
 
   //fire button text
@@ -1077,17 +1112,21 @@ void updateDisplayText() {
   colorText.g = 255;
   colorText.b = 255;
   
-  sprText = TTF_RenderText_Solid(fontDefault, "Z", colorText);
-  imgFireButtonText[0] = SDL_CreateTextureFromSurface(renderer, sprText);
-  SDL_FreeSurface(sprText); 
+//  sprText = TTF_RenderText_Solid(fontDefault, "Z", colorText);
+//  imgFireButtonText[0] = SDL_CreateTextureFromSurface(renderer, sprText);
+//  SDL_FreeSurface(sprText); 
+	generateTextTexture(&imgFireButtonText[0], "Z", colorText, fontDefault);
 
-  sprText = TTF_RenderText_Solid(fontDefault, "X", colorText);
-  imgFireButtonText[1] = SDL_CreateTextureFromSurface(renderer, sprText);
-  SDL_FreeSurface(sprText); 
 
-  sprText = TTF_RenderText_Solid(fontDefault, "C", colorText);
-  imgFireButtonText[2] = SDL_CreateTextureFromSurface(renderer, sprText);
-  SDL_FreeSurface(sprText); 
+//  sprText = TTF_RenderText_Solid(fontDefault, "X", colorText);
+//  imgFireButtonText[1] = SDL_CreateTextureFromSurface(renderer, sprText);
+//  SDL_FreeSurface(sprText); 
+	generateTextTexture(&imgFireButtonText[1], "X", colorText, fontDefault);
+
+//  sprText = TTF_RenderText_Solid(fontDefault, "C", colorText);
+//  imgFireButtonText[2] = SDL_CreateTextureFromSurface(renderer, sprText);
+//  SDL_FreeSurface(sprText); 
+	generateTextTexture(&imgFireButtonText[2], "C", colorText, fontDefault);
 
 
 
@@ -1097,9 +1136,43 @@ void updateDisplayText() {
   colorText.b = 255;
   char strStats[128];
   sprintf(strStats, "Shots Fired %d   Shots Landed %d   Hit Rate %d%%", getShotsFired_stats(stats), stats->iShotsLanded, getHitRate(stats));
-  sprText = TTF_RenderText_Solid(fontDefault, strStats, colorText);
-  imgStatsText = SDL_CreateTextureFromSurface(renderer, sprText);
-  SDL_FreeSurface(sprText);
+//  sprText = TTF_RenderText_Solid(fontDefault, strStats, colorText);
+//  imgStatsText = SDL_CreateTextureFromSurface(renderer, sprText);
+//  SDL_FreeSurface(sprText);
+	generateTextTexture(&imgStatsText, strStats, colorText, fontDefault);
+
+	
+	
+  //bonus display
+  if (ship->fDefensePowerupDelay > 0) {
+	colorText.r = 0;
+	colorText.g = 255;
+	colorText.b = 0;
+	char strStats[128];
+	sprintf(strStats, "Defense Up");
+//	sprText = TTF_RenderText_Solid(fontDefault, strStats, colorText);
+//	imgBonusText[0] = SDL_CreateTextureFromSurface(renderer, sprText);
+//	SDL_FreeSurface(sprText);
+	generateTextTexture(&imgBonusText[0], strStats, colorText, fontDefault);
+
+	  
+  }
+
+  if (ship->fAttackPowerupDelay > 0) {
+	colorText.r = 255;
+	colorText.g = 0;
+	colorText.b = 0;
+	char strStats[128];
+	sprintf(strStats, "Attack Up");
+//	sprText = TTF_RenderText_Solid(fontDefault, strStats, colorText);
+//	imgBonusText[1] = SDL_CreateTextureFromSurface(renderer, sprText);
+//	SDL_FreeSurface(sprText);
+	generateTextTexture(&imgBonusText[1], strStats, colorText, fontDefault);
+
+	  
+  }
+
+
 	printf("Finished update score text\n");
 	
 }
@@ -1195,5 +1268,22 @@ void updateBackgroundPattern(int iRowsToGenerate) {
 		}
 	}
 	
+}
+
+void generateTextTexture(SDL_Texture **imgText, char *strText, SDL_Color colorText, TTF_Font *font) {
+	SDL_Surface *sprText;
+	
+	if (font == NULL) {
+		font = fontDefault;
+	}
+
+	sprText = TTF_RenderText_Solid(font, strText, colorText);
+
+	if (*imgText != NULL) {
+	  SDL_DestroyTexture(*imgText);
+	}
+	*imgText = SDL_CreateTextureFromSurface(renderer, sprText);
+    SDL_FreeSurface(sprText); 
+
 }
 

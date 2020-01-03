@@ -112,7 +112,7 @@ void update_enemy(struct Enemy *enemy) {
 		
         enemy->x += (enemy->vel_x * DELTA_TIME);
         if (enemy->x > SCREEN_WIDTH) {
-          enemy->x -= SCREEN_WIDTH;
+          enemy->x -= SCREEN_WIDTH + enemy->width;
         }
         break;
 
@@ -185,7 +185,7 @@ void update_enemy(struct Enemy *enemy) {
 	
 
     if (enemy->y > SCREEN_HEIGHT) {
-      enemy->y -= SCREEN_HEIGHT;
+      enemy->y -= SCREEN_HEIGHT + enemy->height;
     }
 }
 

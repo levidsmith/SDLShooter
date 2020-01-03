@@ -14,5 +14,6 @@ int collidedRectRect(float r1_x, float r1_y, float r1_w, float r1_h, float r2_x,
 int collidedCircleRect(float c1_x, float c1_y, float c1_r, float r1_x, float r1_y, float r1_w, float r1_h);
 void updateBackgroundPattern(int iRows);
 void loadWorld();
+void generateTextTexture(SDL_Texture **imgText, char *strText, SDL_Color colorText, TTF_Font *font);
 
 

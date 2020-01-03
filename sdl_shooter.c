@@ -63,6 +63,7 @@ SDL_Texture *imgTitleStartText;
 SDL_Texture *imgTitleContinueText;
 SDL_Texture *imgTitleQuitText;
 SDL_Texture *imgStatsText;
+SDL_Texture *imgBonusText[3];
 
 SDL_Texture *imgWorldSelectText;
 SDL_Texture *imgWorldSelectSelectedText;
@@ -650,6 +651,11 @@ for (i = 0; i < NUM_POWERUPS * 2; i++) {
 for (i = 0; i < NUM_SHIP_POWERUPS; i++) {
 	SDL_DestroyTexture(imgShipPowerup[i]);
 }
+
+for (i = 0; i < 3; i++) {
+	SDL_DestroyTexture(imgBonusText[i]);
+}
+
 
   SDL_DestroyRenderer(renderer);
 
