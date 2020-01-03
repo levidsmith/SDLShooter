@@ -17,6 +17,7 @@ struct Ship {
   float fInvincibleDelay;
   float fDefensePowerupDelay;
   float fAttackPowerupDelay;
+  float fMaxSpeed;
 };
 
 void init_ship(struct Ship *);
@@ -29,5 +30,11 @@ float getCenterX_ship(struct Ship *ship);
 float getCenterY_ship(struct Ship *ship);
 int getEnergyRequired(int iWeapon, int iLevel);
 void damage_ship(struct Ship *, int iDamage);
+/*
+void setAccelerationX(struct Ship *ship, float fAccel);
+void setAccelerationY(struct Ship *ship, float fAccel);
+*/
+void setVelocity_ship(struct Ship *ship, float fMagnitudeX, float fMagnitudeY);
+
 
 

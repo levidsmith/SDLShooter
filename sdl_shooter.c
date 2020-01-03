@@ -62,6 +62,7 @@ SDL_Texture *imgGameTimeText;
 SDL_Texture *imgTitleStartText;
 SDL_Texture *imgTitleContinueText;
 SDL_Texture *imgTitleQuitText;
+SDL_Texture *imgStatsText;
 
 SDL_Texture *imgWorldSelectText;
 SDL_Texture *imgWorldSelectSelectedText;
@@ -524,7 +525,7 @@ for (i = 0; i < 5; i++) {
 		printf("Stop looping\n");
 		break;
 		printf("Shouldn't get here\n");
-      } else if (theEvent.type == SDL_KEYDOWN || theEvent.type == SDL_KEYUP) {
+      } else if ((theEvent.type == SDL_KEYDOWN || theEvent.type == SDL_KEYUP) && (theEvent.key.repeat == 0)) {
         handleInput(theEvent.type, theEvent.key.keysym.sym);  
       }
 
@@ -622,6 +623,9 @@ for (i = 0; i < NUM_WORLDS * 2; i++) {
     SDL_DestroyTexture(imgTitleStartText);
     SDL_DestroyTexture(imgTitleContinueText);
     SDL_DestroyTexture(imgTitleQuitText);
+
+    SDL_DestroyTexture(imgStatsText);
+
 	
 for (i = 0; i < 16; i++) {
 	SDL_DestroyTexture(imgFireButton[i]);

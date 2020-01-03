@@ -13,6 +13,7 @@
 #include "bullet.h"
 #include "powerup.h"
 #include "explosion.h"
+#include "stats.h"
 
 #define BACKGROUND_ROWS 4
 #define BACKGROUND_COLS 5
@@ -45,6 +46,7 @@ extern SDL_Texture *imgLevel;
 extern SDL_Texture *imgWeaponText;
 extern SDL_Texture *imgGameTimeText;
 extern SDL_Texture *imgHealthUnit[5];
+extern SDL_Texture *imgStatsText;
 
 
 extern Mix_Chunk *soundShoot;
@@ -58,6 +60,8 @@ extern Mix_Chunk *soundPowerup;
 SDL_Rect pos;
 SDL_Rect posText;
 
+float fVerticalAxis = 0;
+float fHorizontalAxis = 0;
 int iButtonFire1Down = FALSE;
 int iButtonFire2Down = FALSE;
 int iButtonFire3Down = FALSE;
@@ -68,6 +72,7 @@ struct Node *listBullet;
 struct Node *listEnemy;
 struct Node *listPowerup;
 struct Node *listExplosion;
+struct Stats *stats;
 
 
 extern int iKeepLooping;
@@ -78,7 +83,7 @@ int iBackgroundOffset;
 int iLevelComplete = FALSE;
 int iGameOver = FALSE;
 
-int iScore;
+//int iScore;
 int iCurrentLevel = 0;
 int iCurrentWorld = 1;
 int iLevelCount = -1;
@@ -106,12 +111,16 @@ void start_screen_game() {
   ship = malloc(sizeof(struct Ship));
   init_ship(ship);
   
+  stats = malloc(sizeof(struct Stats));
+  init_stats(stats);
+  
   printf("ship values x: %d y: %d width: %d height %d\n", ship->x, ship->y, ship->width, ship->height);
 
   loadWorld();
   
-  iScore = 0;
-  updateScoreText();
+//  iScore = 0;
+  stats->iScore = 0;
+  updateDisplayText();
   updateBackgroundPattern(4);
   
 
@@ -225,6 +234,7 @@ void update_screen_game() {
 										//however, if we delete the node in the update loop, then it will break
 										//the loop since the current node will be free'd
     deleteNode = NULL;
+//	updateDisplayText();
 
   }
 //  printf("Total bullets: %d\n", count_list(listBullet));
@@ -431,6 +441,13 @@ void draw_screen_game() {
     pos.y = 64;
     SDL_QueryTexture(imgGameTimeText, NULL, NULL, &(pos.w), &(pos.h));
     SDL_RenderCopy(renderer, imgGameTimeText, NULL, &pos);
+	
+//draw stats text
+    pos.x = 32;
+    pos.y = SCREEN_HEIGHT - 32;
+    SDL_QueryTexture(imgStatsText, NULL, NULL, &(pos.w), &(pos.h));
+    SDL_RenderCopy(renderer, imgStatsText, NULL, &pos);
+
 
 //draw the fire buttons
 	SDL_Texture *imgFireButton1;
@@ -540,19 +557,19 @@ void draw_screen_game() {
 //Draw level complete text
   if (iLevelComplete) {
 		  
-    pos.x = 320;
-    pos.y = 300 + (fKeyPressDelay * UNIT_SIZE);
-  
+
     SDL_QueryTexture(imgLevelCompleteText, NULL, NULL, &(pos.w), &(pos.h)); 
+    pos.x = (SCREEN_WIDTH - pos.w) / 2;
+    pos.y = 300 + (fKeyPressDelay * UNIT_SIZE);
     SDL_RenderCopy(renderer, imgLevelCompleteText, NULL, &pos);
   }
 
 //Draw game over text
   if (iGameOver) {
-    pos.x = 320;
+	SDL_QueryTexture(imgGameOverText, NULL, NULL, &(pos.w), &(pos.h)); 
+    pos.x = (SCREEN_WIDTH - pos.w) / 2;
     pos.y = 300 + (fKeyPressDelay * UNIT_SIZE);
-  
-    SDL_QueryTexture(imgGameOverText, NULL, NULL, &(pos.w), &(pos.h)); 
+    
     SDL_RenderCopy(renderer, imgGameOverText, NULL, &pos);
   }
 
@@ -593,6 +610,8 @@ void checkCollisions() {
 //			  ((bullet->x + bullet->width / 2) >= enemy->x && (bullet->x + bullet->width / 2) < enemy->x + enemy->width) &&
 //			  ((bullet->y + bullet->height / 2) >= enemy->y && (bullet->y + bullet->height / 2) < enemy->y + enemy->height) ) {
 		    bullet->isAlive = FALSE;
+			stats->iShotsLanded++;
+			updateDisplayText();
 
 
 			damage_enemy(enemy, bullet->iDamage);
@@ -892,18 +911,32 @@ void checkLevelComplete() {
 
 
 void handleInput_screen_game(int iType, int iKey) {
-  float fSpeed = UNIT_SIZE * 5;
+  float fInputX = 0;
+  float fInputY = 0;
 
   if (iType == SDL_KEYDOWN) {
+	  
+	  
+	  
     if (iKey == SDLK_UP || iKey == SDLK_w) {
-      ship->vel_y = -fSpeed;
+		fVerticalAxis = 1;
     } else if (iKey == SDLK_DOWN || iKey == SDLK_s) {
-      ship->vel_y = fSpeed;
-    } else if (iKey == SDLK_LEFT || iKey == SDLK_a) {
-      ship->vel_x = -fSpeed;
+		fVerticalAxis = -1;
+    }
+	
+	
+    if (iKey == SDLK_LEFT || iKey == SDLK_a) {
+		fHorizontalAxis = -1;
     } else if (iKey == SDLK_RIGHT || iKey == SDLK_d) {
-      ship->vel_x = fSpeed;
-    } else if (iKey == SDLK_z) {
+		fHorizontalAxis = 1;
+    }
+	
+
+	
+	
+	
+    
+	if (iKey == SDLK_z) {
         iButtonFire1Down = TRUE;
     } else if (iKey == SDLK_x) {
         iButtonFire2Down = TRUE;
@@ -934,7 +967,7 @@ void handleInput_screen_game(int iType, int iKey) {
     } else if (iKey == SDLK_TAB) {
 		if (iButtonOptionDown == FALSE) {
 			selectWeaponUp_ship(ship);
-			updateScoreText();
+			updateDisplayText();
 			iButtonOptionDown = TRUE;
 		}
 	}
@@ -943,14 +976,23 @@ void handleInput_screen_game(int iType, int iKey) {
 
 
   if (iType == SDL_KEYUP) {
-    if ((iKey == SDLK_UP || iKey == SDLK_w) && ship->vel_y < 0) {
-      ship->vel_y = 0;
-    } else if ((iKey == SDLK_DOWN  || iKey == SDLK_s) && ship->vel_y > 0) {
-      ship->vel_y = 0;
-    } else if ((iKey == SDLK_LEFT || iKey == SDLK_a) && ship->vel_x < 0) {
-      ship->vel_x = 0;
-    } else if ((iKey == SDLK_RIGHT || iKey == SDLK_d) && ship->vel_x > 0) {
-      ship->vel_x = 0;
+    if ((iKey == SDLK_UP || iKey == SDLK_w)) {
+		if (fVerticalAxis > 0) {
+			fVerticalAxis = 0;
+		}
+
+    } else if ((iKey == SDLK_DOWN  || iKey == SDLK_s)) {
+		if (fVerticalAxis < 0) {
+			fVerticalAxis = 0;
+		}
+    } else if ((iKey == SDLK_LEFT || iKey == SDLK_a)) {
+		if (fHorizontalAxis < 0) {
+			fHorizontalAxis = 0;
+		}
+    } else if ((iKey == SDLK_RIGHT || iKey == SDLK_d)) {
+		if (fHorizontalAxis > 0) {
+			fHorizontalAxis = 0;
+		}
 
     } else if (iKey == SDLK_z) {
             iButtonFire1Down = FALSE;
@@ -963,27 +1005,31 @@ void handleInput_screen_game(int iType, int iKey) {
     }  
   }
 
+	float fMagnitude = sqrt(pow(fHorizontalAxis, 2) + pow(fVerticalAxis, 2));
+	if (fMagnitude > 0) {
+		fHorizontalAxis = fHorizontalAxis / fMagnitude;
+		fVerticalAxis = fVerticalAxis / fMagnitude;
+	}
+	setVelocity_ship(ship, fHorizontalAxis, fVerticalAxis);
+
 
 }
 
 
-void updateScoreText() {
-	printf("updateScoreText called\n");
+void updateDisplayText() {
+	printf("updateDisplayText called\n");
   SDL_Color colorText = {255, 255, 0, 0};
 
   //score display
   char strScore[64];
-  sprintf(strScore, "Score: %d", iScore);
+//  sprintf(strScore, "Score: %d", iScore);
+  sprintf(strScore, "Score: %d", stats->iScore);
 
   printf("before sprText\n");
   
   SDL_Surface *sprText;
-
   sprText = TTF_RenderText_Solid(fontDefault, strScore, colorText);
-  
   printf("TTF_GetError: %s\n", TTF_GetError());
-
-  
   imgScoreText = SDL_CreateTextureFromSurface(renderer, sprText);
   SDL_FreeSurface(sprText); 
   
@@ -1043,6 +1089,17 @@ void updateScoreText() {
   imgFireButtonText[2] = SDL_CreateTextureFromSurface(renderer, sprText);
   SDL_FreeSurface(sprText); 
 
+
+
+  //stats display
+  colorText.r = 255;
+  colorText.g = 255;
+  colorText.b = 255;
+  char strStats[128];
+  sprintf(strStats, "Shots Fired %d   Shots Landed %d   Hit Rate %d%%", getShotsFired_stats(stats), stats->iShotsLanded, getHitRate(stats));
+  sprText = TTF_RenderText_Solid(fontDefault, strStats, colorText);
+  imgStatsText = SDL_CreateTextureFromSurface(renderer, sprText);
+  SDL_FreeSurface(sprText);
 	printf("Finished update score text\n");
 	
 }
@@ -1062,7 +1119,7 @@ void updateTimeText() {
 
          char strTime[64];
     int iSeconds = (int) timeCurrent;
-         sprintf(strTime, "Time %d:%d", iSeconds / 60, iSeconds % 60);
+         sprintf(strTime, "Time %d:%02d", iSeconds / 60, iSeconds % 60);
 //         sprintf(strTime, "%s %d:%d:%d", "Time", timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec);
       //  sprintf(strTime, "%s %d", "Time", timeCurrent);
 

@@ -9,6 +9,8 @@
 #include "ship.h"
 #include "bullet.h"
 #include "enemy.h"
+#include "stats.h"
+#include "screen_game.h"
 
 #define NUM_WEAPONS 6
 #define NUM_HEALTH_UNITS 3
@@ -20,6 +22,8 @@ extern Mix_Chunk *soundShoot;
 extern Mix_Chunk *soundWeaponSelect;
 extern Mix_Chunk *soundShipDead;
 extern Mix_Chunk *soundShipHit;
+
+extern struct Stats *stats;
 
 
 
@@ -44,6 +48,7 @@ void init_ship(struct Ship *ship) {
   ship->fInvincibleDelay = 0;
   ship->fDefensePowerupDelay = 0;
   ship->fAttackPowerupDelay = 0;
+  ship->fMaxSpeed = UNIT_SIZE * 5;
 
 printf("*** init ship complete\n");
 
@@ -190,6 +195,9 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
 		ship->fEnergy -= iEnergyRequired;
 		
 		add_node(listBullet, bullet);
+		
+		stats->iShotsFired[ship->iWeaponType] += 1;
+		updateDisplayText();
 
 		
 		Mix_PlayChannel(-1, soundShoot, 0);
@@ -201,7 +209,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
       switch(iLevel) {
           case 0:
 //              iEnergyRequired = 8;
-              fShootDelay = 0.4;
+              fShootDelay = 0.3;
               break;
           case 1:
   //            iEnergyRequired = 12;
@@ -229,6 +237,9 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
 		ship->fEnergy -= iEnergyRequired;
 		
 		add_node(listBullet, bullet);
+
+		stats->iShotsFired[ship->iWeaponType] += 1;
+	updateDisplayText();
 
 		
 		Mix_PlayChannel(-1, soundShoot, 0);
@@ -279,6 +290,9 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
 			bullet->iWeaponType = ship->iWeaponType;
             add_node(listBullet, bullet);
 
+			stats->iShotsFired[ship->iWeaponType] += 2;
+	updateDisplayText();
+
             
         } else if (iLevel == 1) {
             fVelX = 0.7071; //sin(45)
@@ -306,6 +320,11 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
 		bullet->iHitsEnemy = TRUE;
 		bullet->iWeaponType = ship->iWeaponType;
 		add_node(listBullet, bullet);
+		
+		stats->iShotsFired[ship->iWeaponType] += 3;
+	updateDisplayText();
+
+		
         } else if (iLevel == 2) {
             
             fVelX = 0.2588; //sin(15)
@@ -345,6 +364,10 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
             bullet->iHitsEnemy = TRUE;
 		bullet->iWeaponType = ship->iWeaponType;
             add_node(listBullet, bullet);
+			
+		stats->iShotsFired[ship->iWeaponType] += 4;
+	updateDisplayText();
+			
 
         }
 
@@ -385,6 +408,10 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
             bullet->fWaveAmplitude = 2;
 		bullet->iWeaponType = ship->iWeaponType;
             add_node(listBullet, bullet);
+			
+					stats->iShotsFired[ship->iWeaponType] += 1;
+	updateDisplayText();
+
 
         } else if (iLevel == 1) {
             bullet = malloc(sizeof(struct Bullet));
@@ -403,6 +430,10 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
             bullet->fWaveAmplitude = -2;
 		bullet->iWeaponType = ship->iWeaponType;
             add_node(listBullet, bullet);
+			
+					stats->iShotsFired[ship->iWeaponType] += 2;
+	updateDisplayText();
+
             
         } else if (iLevel == 2) {
             bullet = malloc(sizeof(struct Bullet));
@@ -437,6 +468,10 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
             bullet->fWaveAmplitude = -4;
 		bullet->iWeaponType = ship->iWeaponType;
             add_node(listBullet, bullet);
+			
+			stats->iShotsFired[ship->iWeaponType] += 4;
+	updateDisplayText();
+			
         }
 
 		
@@ -496,6 +531,10 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
             add_node(listBullet, bullet);
 
         }
+		
+		stats->iShotsFired[ship->iWeaponType] += 1;
+	updateDisplayText();
+
 
 
 		ship->fShootDelay = ship->fMaxShootDelay;
@@ -556,6 +595,11 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
 		bullet->iWeaponType = ship->iWeaponType;
                 add_node(listBullet, bullet);
             }
+			
+					stats->iShotsFired[ship->iWeaponType] += 4;
+	updateDisplayText();
+
+			
         } else if (iLevel == 1) {
             for (i = 0; i < 8; i++) {
                 bullet = malloc(sizeof(struct Bullet));
@@ -566,6 +610,9 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
 		bullet->iWeaponType = ship->iWeaponType;
                 add_node(listBullet, bullet);
             }
+					stats->iShotsFired[ship->iWeaponType] += 8;
+	updateDisplayText();
+
 
         } else if (iLevel == 2) {
             for (i = 0; i < 12; i++) {
@@ -577,6 +624,10 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
 		bullet->iWeaponType = ship->iWeaponType;
                 add_node(listBullet, bullet);
             }
+			
+					stats->iShotsFired[ship->iWeaponType] += 16;
+	updateDisplayText();
+
 
 
         }
@@ -753,3 +804,32 @@ int getEnergyRequired(int iWeapon, int iLevel) {
 	}
 	return iEnergy;
 }
+
+
+void setVelocity_ship(struct Ship *ship, float fMagnitudeX, float fMagnitudeY) {
+//	printf("Velocity: %f, %f\n", fMagnitudeX, fMagnitudeY);
+		ship->vel_x = fMagnitudeX * ship->fMaxSpeed;
+		ship->vel_y = -fMagnitudeY * ship->fMaxSpeed;
+}
+
+/*
+void setAccelerationX(struct Ship *ship, float fAccel) {
+	ship->vel_x += fAccel;
+    if (ship->vel_x > ship->fMaxSpeed) {
+		ship->vel_x = ship->fMaxSpeed;
+	} else if (ship->vel_x < -ship->fMaxSpeed) {
+		ship->vel_x = -ship->fMaxSpeed;
+	}		
+}
+
+
+void setAccelerationY(struct Ship *ship, float fAccel) {
+	ship->vel_y += fAccel;
+    if (ship->vel_y > ship->fMaxSpeed) {
+		ship->vel_y = ship->fMaxSpeed;
+	} else if (ship->vel_y < -ship->fMaxSpeed) {
+		ship->vel_y = -ship->fMaxSpeed;
+	}		
+	
+}
+*/

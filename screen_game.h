@@ -5,7 +5,7 @@ void draw_screen_game();
 void handleInput_screen_game(int iType, int iKey);
 
 void shoot();
-void updateScoreText();
+void updateDisplayText();
 void checkCollisions();
 void checkLevelComplete();
 void updateTimeText();

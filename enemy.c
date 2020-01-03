@@ -4,12 +4,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "screen_game.h"
 #include "enemy.h"
 #include "bullet.h"
 #include "powerup.h"
 #include "explosion.h"
 #include "linked_list.h"
 #include "ship.h"
+#include "stats.h"
+
 
 extern SDL_Renderer *renderer;
 extern SDL_Texture *imgEnemyAlpha_L1_00;
@@ -45,9 +48,10 @@ extern struct Node *listExplosion;
 extern struct Node *add_node(struct Node **head, void *value);
 extern int count_list(struct Node *head);
 extern void remove_node(struct Node **head, struct Node *node);
-extern int iScore;
+//extern int iScore;
+extern struct Stats *stats;
 extern struct Ship *ship;
-extern void updateScoreText();
+//extern void updateScoreText();
 
 
 
@@ -408,7 +412,8 @@ void damage_enemy(struct Enemy *enemy, int iDamageAmount) {
 
 void destroy_enemy(struct Enemy *enemy) {
 				enemy->isAlive = FALSE;
-				iScore += enemy->iPoints;
+				//iScore += enemy->iPoints;
+				stats->iScore += enemy->iPoints;
 				
 //					    updateScoreText();
 				Mix_PlayChannel(-1, soundEnemyDead, 0);
@@ -431,7 +436,7 @@ void destroy_enemy(struct Enemy *enemy) {
 				
 				add_node(&listExplosion, explosion);
 				
-			  updateScoreText();
+			  updateDisplayText();
 
 
 	
