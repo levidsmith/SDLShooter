@@ -17,9 +17,10 @@ struct Bullet {
     int isSpinShot;
 	int iWeaponType;
 	int iDamage;
+	int iLevel;
 };
 
-void init_bullet(struct Bullet *, int, int);
+void init_bullet(struct Bullet *, int, int, int);
 void update_bullet(struct Bullet *);
 void draw_bullet(struct Bullet *);
 float getCenterX_bullet(struct Bullet *bullet);

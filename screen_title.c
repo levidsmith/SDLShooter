@@ -43,7 +43,7 @@ void start_screen_title() {
   SDL_FreeSurface(sprText); 
 
 
-  sprText = TTF_RenderText_Solid(fontDefault, "2019 Levi D. Smith", colorText);
+  sprText = TTF_RenderText_Solid(fontDefault, "2019, 2020 Levi D. Smith", colorText);
   imgCopyrightText = SDL_CreateTextureFromSurface(renderer, sprText);
   SDL_FreeSurface(sprText); 
 

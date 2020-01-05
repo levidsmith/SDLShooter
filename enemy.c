@@ -107,9 +107,28 @@ void update_enemy(struct Enemy *enemy) {
 		if (enemy->fIntroDelay <= 0) {
 			enemy->fIntroDelay = 0;
 		}
+	} else if (enemy->fFreezeDelay > 0) {
+		enemy->fFreezeDelay -= DELTA_TIME;
+		if (enemy->fFreezeDelay <= 0) {
+			//unfreeze
+			enemy->fFreezeDelay = 0;
+		}
+		
 	} else {
 		updateActive_enemy(enemy);
 	}
+
+
+	if (enemy->fDamagedCountdown > 0) {
+		enemy->fDamagedCountdown -= DELTA_TIME;
+		
+		if (enemy->fDamagedCountdown < 0) {
+			enemy->fDamagedCountdown = 0;
+			
+		}
+		
+	}
+
 
 
 }
@@ -237,15 +256,6 @@ void updateActive_enemy(struct Enemy *enemy) {
 
 
 	
-	if (enemy->fDamagedCountdown > 0) {
-		enemy->fDamagedCountdown -= DELTA_TIME;
-		
-		if (enemy->fDamagedCountdown < 0) {
-			enemy->fDamagedCountdown = 0;
-			
-		}
-		
-	}
 	
     //wrap enemy around top/bottom of screen
     if (enemy->y > SCREEN_HEIGHT) {
@@ -381,6 +391,7 @@ void draw_enemy(struct Enemy *enemy) {
 				SDL_RenderCopyEx(renderer, img, NULL, &pos, enemy->fIntroDelay * 720, NULL, SDL_FLIP_NONE);
 				
 			} else {
+				
 			
 				if (enemy->fDamagedCountdown > 0) {
 						SDL_SetTextureColorMod(img, 255, 0, 0);
@@ -388,7 +399,24 @@ void draw_enemy(struct Enemy *enemy) {
 					SDL_SetTextureColorMod(img, 255, 255, 255);
 
 				}
+				
+				//draw enemy sprite
 				SDL_RenderCopy(renderer, img, NULL, &pos);
+				
+
+				//draw frozen block
+				if (enemy->fFreezeDelay > 0) {
+					int iFreezeTransperancy = 64 + (128 * enemy->fFreezeDelay / enemy->fMaxFreezeDelay);
+					
+//					if (iFreezeTransperancy > 192) {
+//						iFreezeTransperancy = 192;
+//					}
+					SDL_Rect rectFreeze = { enemy->x, enemy->y, enemy->width, enemy->height };
+					SDL_SetRenderDrawColor(renderer, 97, 162, 255, iFreezeTransperancy);
+					SDL_RenderFillRect(renderer, &rectFreeze);
+					
+				}
+
 			}
 		}
 
@@ -409,7 +437,7 @@ void shoot_enemy(struct Enemy *enemy) {
              case 1:
 	bullet = malloc(sizeof(struct Bullet));
 
-	init_bullet(bullet, enemy->x + enemy->width / 2, enemy->y);
+	init_bullet(bullet, enemy->x + enemy->width / 2, enemy->y, 0);
 
 	bullet->vel_y = 5;
 	bullet->iHitsPlayer = TRUE;
@@ -421,7 +449,7 @@ void shoot_enemy(struct Enemy *enemy) {
 	     case 3:
 	bullet = malloc(sizeof(struct Bullet));
 
-	init_bullet(bullet, enemy->x + enemy->width / 2, enemy->y);
+	init_bullet(bullet, enemy->x + enemy->width / 2, enemy->y, 0);
 
         fDistance	= getDistance(ship->x, ship->y, bullet->x, bullet->y);
 	bullet->vel_x = 5 * (getCenterX_ship(ship) - getCenterX_bullet(bullet)) / fDistance;
@@ -489,6 +517,37 @@ void damage_enemy(struct Enemy *enemy, int iDamageAmount) {
 		
 	}
   
+
+}
+
+void freeze_enemy(struct Enemy *enemy, int iFreezeLevel, int iDamageAmount) {
+	int iNewFreezeDelay;
+	
+	if (enemy->fFreezeDelay > 0) {
+		//if the enemy is already froze, then damage the enemy
+		damage_enemy(enemy, iDamageAmount);
+	}
+
+	
+		switch(iFreezeLevel) {
+			case 0:
+				iNewFreezeDelay = 1;
+				break;
+			case 1:
+				iNewFreezeDelay = 4;
+				break;
+			case 2:
+				iNewFreezeDelay = 20;
+				break;
+		}
+		
+		if (enemy->fFreezeDelay < iNewFreezeDelay) {
+			enemy->fFreezeDelay = iNewFreezeDelay;
+			enemy->fMaxFreezeDelay = iNewFreezeDelay;
+		}
+		
+		
+		
 
 }
 

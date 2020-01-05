@@ -24,6 +24,8 @@ struct Enemy {
   float fWaitCountdown;
   int iPoints;
   float fIntroDelay;
+  float fFreezeDelay;
+  float fMaxFreezeDelay;
 };
 
 void init_enemy(struct Enemy *, int, int, int, int);
@@ -37,5 +39,7 @@ void damage_enemy(struct Enemy *enemy, int iDamageAmount);
 void destroy_enemy(struct Enemy *enemy);
 void updateActive_enemy(struct Enemy *enemy);
 void updatePosition_enemy(struct Enemy *enemy, int iType, int iLevel);
+void freeze_enemy(struct Enemy *enemy, int iFreezeLevel, int iDamageAmount);
+
 
 

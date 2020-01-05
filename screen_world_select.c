@@ -23,7 +23,7 @@ extern SDL_Texture *imgWorldSelectWorldText[NUM_WORLDS];
 extern int iCurrentWorld;
 
 int iWorldSelectChoice = 0;
-char *strWorldNames[NUM_WORLDS] = { "Celeritas", "Multa", "Fluctus", "Crepitus", "Gelida", "Torqueo", "Quaerere", "?" };
+char *strWorldNames[NUM_WORLDS] = { "Celeritas", "Multa", "Fluctus", "Crepitus", "Gelida", "Torqueo", "Quaerere", "Spatium" };
 int iBackgroundOffsetWorldSelect;
 
 

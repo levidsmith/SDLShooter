@@ -29,7 +29,7 @@ extern void remove_node(struct Node **head, struct Node *node);
 extern SDL_Renderer* renderer;
 extern void setCurrentScreen(int iScreen);
 extern void damage_enemy(struct Enemy *enemy, int iDamageAmount);
-extern SDL_Texture *imgFireButton[16];
+extern SDL_Texture *imgFireButton[(NUM_WEAPONS * 3)];
 extern SDL_Texture *imgFireButtonText[3];
 extern SDL_Texture *imgButtonWeaponSwitch;
 extern SDL_Texture *imgButtonWeaponSwitchText;
@@ -97,7 +97,7 @@ int iLevelCount = -1;
 float fKeyPressDelay = 0;
 
 
-char *strWeaponNames[NUM_WEAPONS] = {"Normal", "Speed Shot", "Multi Shot", "Wave Shot", "Blast Shot", "Spin Shot", "Freeze Ray" };
+char *strWeaponNames[NUM_WEAPONS] = {"Normal", "Speed Shot", "Multi Shot", "Wave Shot", "Blast Shot", "Spin Shot", "Freeze Shot" };
 int iBackgroundPattern[BACKGROUND_ROWS][BACKGROUND_COLS];
 
 time_t timeStartGame;
@@ -106,7 +106,7 @@ time_t timeEndGame;
 
 
 void start_screen_game() {
-  printf("start\n");
+//  printf("start\n");
 
   clear_list(&listBullet);
   clear_list(&listEnemy);
@@ -462,24 +462,17 @@ void draw_screen_game() {
 	}
 
 
-
 //draw the fire buttons
 	SDL_Texture *imgFireButton1;
 	SDL_Texture *imgFireButton2;
 	SDL_Texture *imgFireButton3;
 	
-	if (ship->iWeaponType == 0) {
-		imgFireButton1 = imgFireButton[0];
-		imgFireButton2 = imgFireButton[0];
-		imgFireButton3 = imgFireButton[0];
-	} else {
-		imgFireButton1 = imgFireButton[((ship->iWeaponType - 1) * 3) + 1];
-		imgFireButton2 = imgFireButton[((ship->iWeaponType - 1) * 3) + 2];
-		imgFireButton3 = imgFireButton[((ship->iWeaponType - 1) * 3) + 3];
+	imgFireButton1 = imgFireButton[(ship->iWeaponType * 3) + 0];
+	imgFireButton2 = imgFireButton[(ship->iWeaponType * 3) + 1];
+	imgFireButton3 = imgFireButton[(ship->iWeaponType * 3) + 2];
 		
-	}
 	
-	
+
     pos.x = 1000 + 0 * (64 + 8);
     pos.y = 64;
     SDL_QueryTexture(imgFireButton1, NULL, NULL, &(pos.w), &(pos.h));
@@ -526,6 +519,8 @@ void draw_screen_game() {
 	pos.y += 34;
     SDL_QueryTexture(imgFireButtonText[2], NULL, NULL, &(pos.w), &(pos.h));
     SDL_RenderCopy(renderer, imgFireButtonText[2], NULL, &pos);
+
+
 
      //draw weapon switch button
     pos.x = 1000 + 192;
@@ -635,10 +630,13 @@ void checkCollisions() {
 			stats->iShotsLanded++;
 			updateDisplayText();
 
-
-			damage_enemy(enemy, bullet->iDamage);
-              collidedEnemy = enemy;  //used to prevent the enemy from being hit twice from a blast shot
-			  printf("set collided enemy\n");
+			if (bullet->iWeaponType == 6) {
+				freeze_enemy(enemy, bullet->iLevel, bullet->iDamage);
+			} else {
+				damage_enemy(enemy, bullet->iDamage);
+				collidedEnemy = enemy;  //used to prevent the enemy from being hit twice from a blast shot
+				printf("set collided enemy\n");
+			}
 
 
 
@@ -862,7 +860,7 @@ void checkLevelComplete() {
 
   iCount = count_list(listEnemy);
 
-  printf("Total enemies: %d\n", iCount);
+//  printf("Total enemies: %d\n", iCount);
 
   
   if (iCount > 0) {
@@ -991,17 +989,17 @@ void handleInput_screen_game(int iType, int iKey) {
 
 
 void updateDisplayText() {
-	printf("updateDisplayText called\n");
+//	printf("updateDisplayText called\n");
   SDL_Color colorText = {255, 255, 0, 0};
 
   //score display
   char strScore[64];
   sprintf(strScore, "Score: %d", stats->iScore);
 
-  printf("before sprText\n");
+//  printf("before sprText\n");
   
   SDL_Surface *sprText;
-  printf("TTF_GetError: %s\n", TTF_GetError());
+//  printf("TTF_GetError: %s\n", TTF_GetError());
 	generateTextTexture(&imgScoreText, strScore, colorText, fontDefault);
 
   
@@ -1156,6 +1154,11 @@ void getWeaponColor(int iWeaponType, SDL_Color *c) {
 			c->r = 0x49;
 			c->g = 0xa2;
 			c->b = 0x69;
+			break;
+		case 6:
+			c->r = 0x92;
+			c->g = 0xd3;
+			c->b = 0xff;
 			break;
 	}
 }

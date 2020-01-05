@@ -11,7 +11,7 @@ extern SDL_Texture *imgBullet[6];
 extern SDL_Texture *imgBulletEnemy;
 extern struct Ship *ship;
 
-void init_bullet(struct Bullet *bullet, int init_x, int init_y) {
+void init_bullet(struct Bullet *bullet, int init_x, int init_y, int init_level) {
   bullet->x = (float) init_x;
   bullet->y = (float) init_y;
   bullet->orig_x = bullet->x;
@@ -31,6 +31,7 @@ void init_bullet(struct Bullet *bullet, int init_x, int init_y) {
   
   bullet->x -= bullet->width / 2;
   bullet->iDamage = 1;
+  bullet->iLevel = init_level;
   
   if (ship->fAttackPowerupDelay > 0) {
 	  bullet->iDamage *= 2;

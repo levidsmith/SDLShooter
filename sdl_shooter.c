@@ -41,7 +41,7 @@ SDL_Texture *imgEnemyEcho_L1_03;
 SDL_Texture *imgEnemyWarp;
 SDL_Texture *imgExplosion_L2_00;
 SDL_Texture *imgExplosion_L2_01;
-SDL_Texture *imgFireButton[(NUM_WEAPONS * 3) + 1];
+SDL_Texture *imgFireButton[NUM_WEAPONS * 3];
 SDL_Texture *imgFireButtonText[3];
 SDL_Texture *imgHealthUnit[5];
 SDL_Texture *imgButtonWeaponSwitch;
@@ -328,8 +328,9 @@ for (i = 0; i < NUM_SHIP_POWERUPS; i++) {
 
   
 
-for (i = 0; i < 16; i++) {
+for (i = 0; i < (NUM_WEAPONS * 3); i++) {
 	sprintf(strFile, "assets/images/button_fire%d.bmp", (i + 1));
+//	printf("loading i: %d, %s\n", i, strFile);
   	imgFireButton[i] = generateTexture(strFile);
 
 	
@@ -498,7 +499,7 @@ for (i = 0; i < NUM_WORLDS * 2; i++) {
     SDL_DestroyTexture(imgStatsText);
 
 	
-for (i = 0; i < 16; i++) {
+for (i = 0; i < (NUM_WEAPONS * 3); i++) {
 	SDL_DestroyTexture(imgFireButton[i]);
 }
 
