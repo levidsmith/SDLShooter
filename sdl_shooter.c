@@ -32,15 +32,16 @@ SDL_Texture *imgEnemyCharlie_L1_00;
 SDL_Texture *imgEnemyCharlie_L1_01;
 SDL_Texture *imgEnemyCharlie_L2_00;
 SDL_Texture *imgEnemyCharlie_L2_01;
-SDL_Texture *imgEnemyDelta_00;
-SDL_Texture *imgEnemyDelta_01;
-SDL_Texture *imgEnemyEcho_00;
-SDL_Texture *imgEnemyEcho_01;
-SDL_Texture *imgEnemyEcho_02;
-SDL_Texture *imgEnemyEcho_03;
+SDL_Texture *imgEnemyDelta_L1_00;
+SDL_Texture *imgEnemyDelta_L1_01;
+SDL_Texture *imgEnemyEcho_L1_00;
+SDL_Texture *imgEnemyEcho_L1_01;
+SDL_Texture *imgEnemyEcho_L1_02;
+SDL_Texture *imgEnemyEcho_L1_03;
+SDL_Texture *imgEnemyWarp;
 SDL_Texture *imgExplosion_L2_00;
 SDL_Texture *imgExplosion_L2_01;
-SDL_Texture *imgFireButton[16];
+SDL_Texture *imgFireButton[(NUM_WEAPONS * 3) + 1];
 SDL_Texture *imgFireButtonText[3];
 SDL_Texture *imgHealthUnit[5];
 SDL_Texture *imgButtonWeaponSwitch;
@@ -49,7 +50,7 @@ SDL_Texture *imgButtonWeaponSwitchText;
 
 
 SDL_Texture *imgBackground[NUM_WORLDS * 2];
-SDL_Texture *imgBullet[6];
+SDL_Texture *imgBullet[NUM_WEAPONS];
 SDL_Texture *imgBulletEnemy;
 SDL_Texture *imgScoreText;
 SDL_Texture *imgLevelCompleteText;
@@ -199,13 +200,34 @@ void quit() {
 	iKeepLooping = FALSE;
 }
 
+void handleCommandLineParameter(char *strParameter) {
+	if (strcmp(strParameter, "-nomusic") == 0) {
+		Mix_VolumeMusic(0);
+	} else if (strcmp(strParameter, "-nosound") == 0) {
+		Mix_Volume(-1, 0);
+	}
+}
+
+SDL_Texture *generateTexture(char *strFile) {
+	SDL_Surface *spr;
+	SDL_Texture *img;
+  spr = SDL_LoadBMP(strFile);
+  if (spr == NULL) {
+	  printf("Error on loading file %s: %s\n", strFile, SDL_GetError());
+  }
+  SDL_SetColorKey(spr, SDL_TRUE, SDL_MapRGB(spr->format, 255, 0, 255));
+  img = SDL_CreateTextureFromSurface(renderer, spr);
+  SDL_FreeSurface(spr);
+  
+  return img;
+
+}
 
 
 int main(int argc, char* args[]) {
 
   //seed randomizer
   srand(time(NULL));
-//  printf("random number %d\n", rand());
 
 //  if (SDL_Init( SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0) {
   if (SDL_Init( SDL_INIT_VIDEO) < 0) {
@@ -219,267 +241,112 @@ int main(int argc, char* args[]) {
     return 1;
   }
   renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-//  screenSurface = SDL_GetWindowSurface(window);
 
 
 
 
   //load media  
-  SDL_Surface* sprShip;
-  SDL_Surface* sprEnemy;
-  SDL_Surface* sprBackground;
-  SDL_Surface* sprBullet;
-  SDL_Surface  *sprPowerup;
-  SDL_Surface *sprExplosion;
-  SDL_Surface *sprFireButton;
-  SDL_Surface *spr;
 
 
 int i;
-char strFile[32];
+char strFile[64];
 
 
+printf("start load ship images\n");
 for (i = 0; i < NUM_WEAPONS; i++) {
 	sprintf(strFile, "assets/images/ship%d.bmp", (i + 1));
-  spr = SDL_LoadBMP(strFile);
-  SDL_SetColorKey(spr, SDL_TRUE, SDL_MapRGB(spr->format, 255, 0, 255));
-  imgShip[i] = SDL_CreateTextureFromSurface(renderer, spr);
-  SDL_FreeSurface(spr);
+  imgShip[i] = generateTexture(strFile);
 	
 }
 
 
   
-/*
-  sprShip = SDL_LoadBMP("assets/images/ship1.bmp");
-  SDL_SetColorKey(sprShip, SDL_TRUE, SDL_MapRGB(sprShip->format, 255, 0, 255));
-  imgShip[0] = SDL_CreateTextureFromSurface(renderer, sprShip);
-  SDL_FreeSurface(sprShip);
-
-  sprShip = SDL_LoadBMP("assets/images/ship2.bmp");
-  SDL_SetColorKey(sprShip, SDL_TRUE, SDL_MapRGB(sprShip->format, 255, 0, 255));
-  imgShip[1] = SDL_CreateTextureFromSurface(renderer, sprShip);
-  SDL_FreeSurface(sprShip);
-  
-  sprShip = SDL_LoadBMP("assets/images/ship3.bmp");
-  SDL_SetColorKey(sprShip, SDL_TRUE, SDL_MapRGB(sprShip->format, 255, 0, 255));
-  imgShip[2] = SDL_CreateTextureFromSurface(renderer, sprShip);
-  SDL_FreeSurface(sprShip);
-  
-  sprShip = SDL_LoadBMP("assets/images/ship4.bmp");
-  SDL_SetColorKey(sprShip, SDL_TRUE, SDL_MapRGB(sprShip->format, 255, 0, 255));
-  imgShip[3] = SDL_CreateTextureFromSurface(renderer, sprShip);
-  SDL_FreeSurface(sprShip);
-  
-  sprShip = SDL_LoadBMP("assets/images/ship5.bmp");
-  SDL_SetColorKey(sprShip, SDL_TRUE, SDL_MapRGB(sprShip->format, 255, 0, 255));
-  imgShip[4] = SDL_CreateTextureFromSurface(renderer, sprShip);
-  SDL_FreeSurface(sprShip);
-  
-  sprShip = SDL_LoadBMP("assets/images/ship6.bmp");
-  SDL_SetColorKey(sprShip, SDL_TRUE, SDL_MapRGB(sprShip->format, 255, 0, 255));
-  imgShip[5] = SDL_CreateTextureFromSurface(renderer, sprShip);
-  SDL_FreeSurface(sprShip);
-  */
 
 for (i = 0; i < NUM_WORLDS * 2; i++) {
 	sprintf(strFile, "assets/images/background%d.bmp", (i + 1));
   
-  sprBackground = SDL_LoadBMP(strFile);
-  imgBackground[i] = SDL_CreateTextureFromSurface(renderer, sprBackground);
+  imgBackground[i] = generateTexture(strFile);
+
 
 }
-  sprEnemy = SDL_LoadBMP("assets/images/enemy_alpha1.bmp");
-  SDL_SetColorKey(sprEnemy, SDL_TRUE, SDL_MapRGB(sprEnemy->format, 255, 0, 255));
-  imgEnemyAlpha_L1_00 = SDL_CreateTextureFromSurface(renderer, sprEnemy);
-  SDL_FreeSurface(sprEnemy);
-
-  sprEnemy = SDL_LoadBMP("assets/images/enemy_alpha2.bmp");
-  SDL_SetColorKey(sprEnemy, SDL_TRUE, SDL_MapRGB(sprEnemy->format, 255, 0, 255));
-  imgEnemyAlpha_L1_01 = SDL_CreateTextureFromSurface(renderer, sprEnemy);
-  SDL_FreeSurface(sprEnemy);
-
-  sprEnemy = SDL_LoadBMP("assets/images/enemy_alpha_l2_1.bmp");
-  SDL_SetColorKey(sprEnemy, SDL_TRUE, SDL_MapRGB(sprEnemy->format, 255, 0, 255));
-  imgEnemyAlpha_L2_00 = SDL_CreateTextureFromSurface(renderer, sprEnemy);
-  SDL_FreeSurface(sprEnemy);
-
-  sprEnemy = SDL_LoadBMP("assets/images/enemy_alpha_l2_2.bmp");
-  SDL_SetColorKey(sprEnemy, SDL_TRUE, SDL_MapRGB(sprEnemy->format, 255, 0, 255));
-  imgEnemyAlpha_L2_01 = SDL_CreateTextureFromSurface(renderer, sprEnemy);
-  SDL_FreeSurface(sprEnemy);
 
 
-  sprEnemy = SDL_LoadBMP("assets/images/enemy_bravo_l1_1.bmp");
-  SDL_SetColorKey(sprEnemy, SDL_TRUE, SDL_MapRGB(sprEnemy->format, 255, 0, 255));
-  imgEnemyBravo_L1_00 = SDL_CreateTextureFromSurface(renderer, sprEnemy);
-  SDL_FreeSurface(sprEnemy);
+  imgEnemyAlpha_L1_00 = generateTexture("assets/images/enemy_alpha_l1_1.bmp");
+  imgEnemyAlpha_L1_01 = generateTexture("assets/images/enemy_alpha_l1_2.bmp");
+  imgEnemyAlpha_L2_00 = generateTexture("assets/images/enemy_alpha_l2_1.bmp");
+  imgEnemyAlpha_L2_01 = generateTexture("assets/images/enemy_alpha_l2_2.bmp");
 
-  sprEnemy = SDL_LoadBMP("assets/images/enemy_bravo_l1_2.bmp");
-  SDL_SetColorKey(sprEnemy, SDL_TRUE, SDL_MapRGB(sprEnemy->format, 255, 0, 255));
-  imgEnemyBravo_L1_01 = SDL_CreateTextureFromSurface(renderer, sprEnemy);
-  SDL_FreeSurface(sprEnemy);
-
-  sprEnemy = SDL_LoadBMP("assets/images/enemy_bravo_l2_1.bmp");
-  SDL_SetColorKey(sprEnemy, SDL_TRUE, SDL_MapRGB(sprEnemy->format, 255, 0, 255));
-  imgEnemyBravo_L2_00 = SDL_CreateTextureFromSurface(renderer, sprEnemy);
-  SDL_FreeSurface(sprEnemy);
-
-  sprEnemy = SDL_LoadBMP("assets/images/enemy_bravo_l2_2.bmp");
-  SDL_SetColorKey(sprEnemy, SDL_TRUE, SDL_MapRGB(sprEnemy->format, 255, 0, 255));
-  imgEnemyBravo_L2_01 = SDL_CreateTextureFromSurface(renderer, sprEnemy);
-  SDL_FreeSurface(sprEnemy);
-
-  sprEnemy = SDL_LoadBMP("assets/images/enemy_charlie_l1_1.bmp");
-  SDL_SetColorKey(sprEnemy, SDL_TRUE, SDL_MapRGB(sprEnemy->format, 255, 0, 255));
-  imgEnemyCharlie_L1_00 = SDL_CreateTextureFromSurface(renderer, sprEnemy);
-  SDL_FreeSurface(sprEnemy);
-
-  sprEnemy = SDL_LoadBMP("assets/images/enemy_charlie_l1_2.bmp");
-  SDL_SetColorKey(sprEnemy, SDL_TRUE, SDL_MapRGB(sprEnemy->format, 255, 0, 255));
-  imgEnemyCharlie_L1_01 = SDL_CreateTextureFromSurface(renderer, sprEnemy);
-  SDL_FreeSurface(sprEnemy);
-
-  sprEnemy = SDL_LoadBMP("assets/images/enemy_charlie_l2_1.bmp");
-  SDL_SetColorKey(sprEnemy, SDL_TRUE, SDL_MapRGB(sprEnemy->format, 255, 0, 255));
-  imgEnemyCharlie_L2_00 = SDL_CreateTextureFromSurface(renderer, sprEnemy);
-  SDL_FreeSurface(sprEnemy);
-
-  sprEnemy = SDL_LoadBMP("assets/images/enemy_charlie_l2_2.bmp");
-  SDL_SetColorKey(sprEnemy, SDL_TRUE, SDL_MapRGB(sprEnemy->format, 255, 0, 255));
-  imgEnemyCharlie_L2_01 = SDL_CreateTextureFromSurface(renderer, sprEnemy);
-  SDL_FreeSurface(sprEnemy);
+  imgEnemyBravo_L1_00 = generateTexture("assets/images/enemy_bravo_l1_1.bmp");
+  imgEnemyBravo_L1_01 = generateTexture("assets/images/enemy_bravo_l1_2.bmp");
+  imgEnemyBravo_L2_00 = generateTexture("assets/images/enemy_bravo_l2_1.bmp");
+  imgEnemyBravo_L2_01 = generateTexture("assets/images/enemy_bravo_l2_2.bmp");
 
 
-  sprEnemy = SDL_LoadBMP("assets/images/enemy_delta1.bmp");
-  SDL_SetColorKey(sprEnemy, SDL_TRUE, SDL_MapRGB(sprEnemy->format, 255, 0, 255));
-  imgEnemyDelta_00 = SDL_CreateTextureFromSurface(renderer, sprEnemy);
-  SDL_FreeSurface(sprEnemy);
-
-  sprEnemy = SDL_LoadBMP("assets/images/enemy_delta2.bmp");
-  SDL_SetColorKey(sprEnemy, SDL_TRUE, SDL_MapRGB(sprEnemy->format, 255, 0, 255));
-  imgEnemyDelta_01 = SDL_CreateTextureFromSurface(renderer, sprEnemy);
-  SDL_FreeSurface(sprEnemy);
-
-  sprEnemy = SDL_LoadBMP("assets/images/enemy_echo1.bmp");
-  SDL_SetColorKey(sprEnemy, SDL_TRUE, SDL_MapRGB(sprEnemy->format, 255, 0, 255));
-  imgEnemyEcho_00 = SDL_CreateTextureFromSurface(renderer, sprEnemy);
-  SDL_FreeSurface(sprEnemy);
-
-  sprEnemy = SDL_LoadBMP("assets/images/enemy_echo2.bmp");
-  SDL_SetColorKey(sprEnemy, SDL_TRUE, SDL_MapRGB(sprEnemy->format, 255, 0, 255));
-  imgEnemyEcho_01 = SDL_CreateTextureFromSurface(renderer, sprEnemy);
-  SDL_FreeSurface(sprEnemy);
-
-  sprEnemy = SDL_LoadBMP("assets/images/enemy_echo3.bmp");
-  SDL_SetColorKey(sprEnemy, SDL_TRUE, SDL_MapRGB(sprEnemy->format, 255, 0, 255));
-  imgEnemyEcho_02 = SDL_CreateTextureFromSurface(renderer, sprEnemy);
-  SDL_FreeSurface(sprEnemy);
-
-  sprEnemy = SDL_LoadBMP("assets/images/enemy_echo4.bmp");
-  SDL_SetColorKey(sprEnemy, SDL_TRUE, SDL_MapRGB(sprEnemy->format, 255, 0, 255));
-  imgEnemyEcho_03 = SDL_CreateTextureFromSurface(renderer, sprEnemy);
-  SDL_FreeSurface(sprEnemy);
+  imgEnemyCharlie_L1_00 = generateTexture("assets/images/enemy_charlie_l1_1.bmp");
+  imgEnemyCharlie_L1_01 = generateTexture("assets/images/enemy_charlie_l1_2.bmp");
+  imgEnemyCharlie_L2_00 = generateTexture("assets/images/enemy_charlie_l2_1.bmp");
+  imgEnemyCharlie_L2_01 = generateTexture("assets/images/enemy_charlie_l2_2.bmp");
 
 
-  sprBullet = SDL_LoadBMP("assets/images/bullet1.bmp");
-  SDL_SetColorKey(sprBullet, SDL_TRUE, SDL_MapRGB(sprBullet->format, 255, 0, 255));
-  imgBullet[0] = SDL_CreateTextureFromSurface(renderer, sprBullet);
-  SDL_FreeSurface(sprBullet);
+  imgEnemyDelta_L1_00 = generateTexture("assets/images/enemy_delta_l1_1.bmp");
+  imgEnemyDelta_L1_01 = generateTexture("assets/images/enemy_delta_l1_2.bmp");
 
-  sprBullet = SDL_LoadBMP("assets/images/bullet2.bmp");
-  SDL_SetColorKey(sprBullet, SDL_TRUE, SDL_MapRGB(sprBullet->format, 255, 0, 255));
-  imgBullet[1] = SDL_CreateTextureFromSurface(renderer, sprBullet);
-  SDL_FreeSurface(sprBullet);
+  imgEnemyEcho_L1_00 = generateTexture("assets/images/enemy_echo_l1_1.bmp");
+  imgEnemyEcho_L1_01 = generateTexture("assets/images/enemy_echo_l1_2.bmp");
+  imgEnemyEcho_L1_02 = generateTexture("assets/images/enemy_echo_l1_3.bmp");
+  imgEnemyEcho_L1_03 = generateTexture("assets/images/enemy_echo_l1_4.bmp");
 
-  sprBullet = SDL_LoadBMP("assets/images/bullet3.bmp");
-  SDL_SetColorKey(sprBullet, SDL_TRUE, SDL_MapRGB(sprBullet->format, 255, 0, 255));
-  imgBullet[2] = SDL_CreateTextureFromSurface(renderer, sprBullet);
-  SDL_FreeSurface(sprBullet);
 
-  sprBullet = SDL_LoadBMP("assets/images/bullet4.bmp");
-  SDL_SetColorKey(sprBullet, SDL_TRUE, SDL_MapRGB(sprBullet->format, 255, 0, 255));
-  imgBullet[3] = SDL_CreateTextureFromSurface(renderer, sprBullet);
-  SDL_FreeSurface(sprBullet);
+	for (i = 0; i < NUM_WEAPONS; i++) {
+			sprintf(strFile, "assets/images/bullet%d.bmp", (i + 1));
 
-  sprBullet = SDL_LoadBMP("assets/images/bullet5.bmp");
-  SDL_SetColorKey(sprBullet, SDL_TRUE, SDL_MapRGB(sprBullet->format, 255, 0, 255));
-  imgBullet[4] = SDL_CreateTextureFromSurface(renderer, sprBullet);
-  SDL_FreeSurface(sprBullet);
+		imgBullet[i] = generateTexture(strFile);
+		
+	}
 
-  sprBullet = SDL_LoadBMP("assets/images/bullet6.bmp");
-  SDL_SetColorKey(sprBullet, SDL_TRUE, SDL_MapRGB(sprBullet->format, 255, 0, 255));
-  imgBullet[5] = SDL_CreateTextureFromSurface(renderer, sprBullet);
-  SDL_FreeSurface(sprBullet);
-
-  sprBullet = SDL_LoadBMP("assets/images/bullet7.bmp");
-  SDL_SetColorKey(sprBullet, SDL_TRUE, SDL_MapRGB(sprBullet->format, 255, 0, 255));
-  imgBulletEnemy = SDL_CreateTextureFromSurface(renderer, sprBullet);
-
-/*
-  sprPowerup = SDL_LoadBMP("assets/images/powerup_alpha.bmp");
-  SDL_SetColorKey(sprPowerup, SDL_TRUE, SDL_MapRGB(sprPowerup->format, 255, 0, 255));
-  imgPowerupAlpha = SDL_CreateTextureFromSurface(renderer, sprPowerup);
-*/
+	sprintf(strFile, "assets/images/bullet%d.bmp", NUM_WEAPONS + 1);
+	imgBulletEnemy = generateTexture(strFile);
+  
 
 for (i = 0; i < NUM_POWERUPS * 2; i++) {
 	sprintf(strFile, "assets/images/powerup%d.bmp", (i + 1));
-  spr = SDL_LoadBMP(strFile);
-  SDL_SetColorKey(spr, SDL_TRUE, SDL_MapRGB(spr->format, 255, 0, 255));
-  imgPowerup[i] = SDL_CreateTextureFromSurface(renderer, spr);
-  SDL_FreeSurface(spr);
+  		imgPowerup[i] = generateTexture(strFile);
+
 	
 }
 
 for (i = 0; i < NUM_SHIP_POWERUPS; i++) {
 	sprintf(strFile, "assets/images/ship_powerup%d.bmp", (i + 1));
-  spr = SDL_LoadBMP(strFile);
-  SDL_SetColorKey(spr, SDL_TRUE, SDL_MapRGB(spr->format, 255, 0, 255));
-  imgShipPowerup[i] = SDL_CreateTextureFromSurface(renderer, spr);
-  SDL_FreeSurface(spr);
+		imgShipPowerup[i] = generateTexture(strFile);
+
 	
 }
 
-  sprExplosion = SDL_LoadBMP("assets/images/explosion_l2_1.bmp");
-  SDL_SetColorKey(sprExplosion, SDL_TRUE, SDL_MapRGB(sprExplosion->format, 255, 0, 255));
-  imgExplosion_L2_00 = SDL_CreateTextureFromSurface(renderer, sprExplosion);
 
-  sprExplosion = SDL_LoadBMP("assets/images/explosion_l2_2.bmp");
-  SDL_SetColorKey(sprExplosion, SDL_TRUE, SDL_MapRGB(sprExplosion->format, 255, 0, 255));
-  imgExplosion_L2_01 = SDL_CreateTextureFromSurface(renderer, sprExplosion);
+	imgExplosion_L2_00 = generateTexture("assets/images/explosion_l2_1.bmp");
+	imgExplosion_L2_01 = generateTexture("assets/images/explosion_l2_2.bmp");
+
   
-//int i;
-//char strFile[32];
 
 for (i = 0; i < 16; i++) {
 	sprintf(strFile, "assets/images/button_fire%d.bmp", (i + 1));
-  sprFireButton = SDL_LoadBMP(strFile);
-  SDL_SetColorKey(sprFireButton, SDL_TRUE, SDL_MapRGB(sprFireButton->format, 255, 0, 255));
-  imgFireButton[i] = SDL_CreateTextureFromSurface(renderer, sprFireButton);
-  SDL_FreeSurface(sprFireButton);
+  	imgFireButton[i] = generateTexture(strFile);
+
 	
 }
 
 for (i = 0; i < 5; i++) {
 	sprintf(strFile, "assets/images/health_unit%d.bmp", (i + 1));
-  spr = SDL_LoadBMP(strFile);
-  SDL_SetColorKey(spr, SDL_TRUE, SDL_MapRGB(spr->format, 255, 0, 255));
-  imgHealthUnit[i] = SDL_CreateTextureFromSurface(renderer, spr);
-  SDL_FreeSurface(spr);
+   	imgHealthUnit[i] = generateTexture(strFile);
+
 	
 }
 
-    
-    spr = SDL_LoadBMP("assets/images/button_weapon_switch.bmp");
-    SDL_SetColorKey(spr, SDL_TRUE, SDL_MapRGB(spr->format, 255, 0, 255));
-    imgButtonWeaponSwitch = SDL_CreateTextureFromSurface(renderer, spr);
+  	imgButtonWeaponSwitch = generateTexture("assets/images/button_weapon_switch.bmp");
+	imgEnemyWarp = generateTexture("assets/images/enemy_warp.bmp");
+
 
   
-  printf("created textures\n");
-
-
-  SDL_FreeSurface(sprBackground);
-//  SDL_FreeSurface(sprPowerup);
 
 
 //handle loading fonts
@@ -509,13 +376,18 @@ for (i = 0; i < 5; i++) {
   musicGame = Mix_LoadMUS("assets/audio/sdl-shooter-level.wav");
   musicTitle = Mix_LoadMUS("assets/audio/sdl-shooter-title.wav");
 
+		
+	for (i = 0; i < argc; i++) {
+		printf("args[%d]: %s\n", i, args[i]);
+		handleCommandLineParameter(args[i]);
+	}
+
 
 
   start();
 
   iTime = SDL_GetTicks();
   
- // while (iKeepLooping == TRUE) {
 	while(1) {
       SDL_Event theEvent;
 
@@ -557,7 +429,7 @@ for (i = 0; i < 5; i++) {
 	SDL_Delay(16);  //just set this to a constant for now.  seems to resolve freezes
   }
   
-  printf("Stopped looping\n");
+//  printf("Stopped looping\n");
 
   TTF_Quit();
 
@@ -583,15 +455,6 @@ for (i = 0; i < NUM_WEAPONS; i++) {
   SDL_DestroyTexture(imgShip[i]);
 }  
 
-/*  
-  SDL_DestroyTexture(imgShip[0]);
-  SDL_DestroyTexture(imgShip[1]);
-  SDL_DestroyTexture(imgShip[2]);
-  SDL_DestroyTexture(imgShip[3]);
-  SDL_DestroyTexture(imgShip[4]);
-  */
-  
-  
 for (i = 0; i < NUM_WORLDS * 2; i++) {
   SDL_DestroyTexture(imgBackground[i]);
 }  
@@ -608,12 +471,12 @@ for (i = 0; i < NUM_WORLDS * 2; i++) {
   SDL_DestroyTexture(imgEnemyCharlie_L1_01);
   SDL_DestroyTexture(imgEnemyCharlie_L2_00);
   SDL_DestroyTexture(imgEnemyCharlie_L2_01);
-  SDL_DestroyTexture(imgEnemyDelta_00);
-  SDL_DestroyTexture(imgEnemyDelta_01);
-  SDL_DestroyTexture(imgEnemyEcho_00);
-  SDL_DestroyTexture(imgEnemyEcho_01);
-  SDL_DestroyTexture(imgEnemyEcho_02);
-  SDL_DestroyTexture(imgEnemyEcho_03);
+  SDL_DestroyTexture(imgEnemyDelta_L1_00);
+  SDL_DestroyTexture(imgEnemyDelta_L1_01);
+  SDL_DestroyTexture(imgEnemyEcho_L1_00);
+  SDL_DestroyTexture(imgEnemyEcho_L1_01);
+  SDL_DestroyTexture(imgEnemyEcho_L1_02);
+  SDL_DestroyTexture(imgEnemyEcho_L1_03);
   SDL_DestroyTexture(imgExplosion_L2_00);
   SDL_DestroyTexture(imgExplosion_L2_01);
   
@@ -665,6 +528,7 @@ for (i = 0; i < 3; i++) {
     
     SDL_DestroyTexture(imgButtonWeaponSwitch);
     SDL_DestroyTexture(imgButtonWeaponSwitchText);
+    SDL_DestroyTexture(imgEnemyWarp);
 
 
   SDL_DestroyRenderer(renderer);

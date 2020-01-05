@@ -28,11 +28,8 @@ void read_level(char *strFile, int iLevelToRead) {
   printf("Reading level\n");
 
   int iCols;
-//  iCols = (1280 / 64) + 1;
   iCols = 21;
-//  char strLine[iCols];
     char *strLine;
-    //  FILE *f = fopen(strFile, "r");
   x = 0;
   y = 0;
 
@@ -51,11 +48,8 @@ void read_level(char *strFile, int iLevelToRead) {
     
     
     strLine = strFileContents;
-//  while (fgets(strLine, iCols, f) != NULL) {
     for (i = 0; i < iFileSize; i++) {
 
-        //printf("strLine: %s", strLine);
-//    for (i = 0; i < strlen(strLine); i++) {
 		
 		if (iLevel == iLevelToRead) {
 	
@@ -199,6 +193,8 @@ void read_level(char *strFile, int iLevelToRead) {
 					
 					}
 					e1->fLifetime = j / 2.0;
+					updatePosition_enemy(e1, e1->iType, e1->iLevel);
+
 
 
 					add_node(&listEnemy, e1);
@@ -227,37 +223,27 @@ void read_level(char *strFile, int iLevelToRead) {
 
 			}
 
-  			//x = i * 64;
             x += UNIT_SIZE;
 			
 			if (strLine[i] == '\n') {
                 x = 0;
 				y += UNIT_SIZE;
- //                               memset(strLine, 0, sizeof(strLine)); //clear the character array
-                             //   break; //quit reading characters which may be from old character array
 
 			}
 
 
 		} 
 		
-//		if (i == 0 && strLine[i] == '=') {
         if (strLine[i] == '=') {
 			iLevel++;
             x = 0;
 			y = 0;
-			//fsbreak;  //break to prevent processing any more characters on this line
 
 		} 
      
     }
-	
-	
-    
-//  }
-//  fclose(f);
   
-  printf("Enemies spawned: %d\n", iEnemyCount);
+//  printf("Enemies spawned: %d\n", iEnemyCount);
 
 }
 
@@ -280,12 +266,7 @@ int read_count_levels(char *strFile) {
     Sint64 iFileSize = SDL_RWsize(f);
     printf("File size: %d\n", iFileSize);
     char strFileContents[iFileSize];
-//  FILE *f = fopen(strFile, "r");
-
-    
-//    for(i = 0; i < SDL_RWsize(f); i++ ) {
         SDL_RWread( f, strFileContents, sizeof(char), iFileSize );
-//    }
     
     printf("*** File Contents: %s\n", strFileContents);
 
@@ -295,25 +276,10 @@ int read_count_levels(char *strFile) {
             
         }
     }
-    /*
-    while (fgets(strLine, iCols, f) != NULL) {
-  printf("Got a line: %s\n", strLine);
-	  
-    for (i = 0; i < iCols; i++) {
-		if (i == 0 && strLine[i] == '=') {
-			iLevelCount++;
-			break;  //break to prevent processing any more characters on this line
-		} 
-    }
-	
-	
-    
-  }*/
-//  fclose(f);
     SDL_RWclose(f);
-  printf("End Reading file\n");
+//  printf("End Reading file\n");
   
-  printf("total levels: %d\n", iLevelCount);
+//  printf("total levels: %d\n", iLevelCount);
   
   return iLevelCount;
 
@@ -322,6 +288,5 @@ int read_count_levels(char *strFile) {
 int getDropCountdown() {
 	int iReturn;
 	iReturn = 5 + (rand() % 3);
-	printf("getDropCountdown: %d\n", iReturn);
 	return iReturn;
 }

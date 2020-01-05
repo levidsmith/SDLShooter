@@ -55,7 +55,7 @@ void remove_node(struct Node **head, struct Node *node) {
 void print_list(struct Node *head) {
   struct Node *current = head;
 
-  printf("start print_list\n");
+//  printf("start print_list\n");
 //  printf("  head address: %x\n", head);
   while(current != NULL) {
 //    printf("  value: %d, address: %x\n", *((int *) current->data), current);
@@ -66,10 +66,8 @@ void print_list(struct Node *head) {
 
 void clear_list(struct Node **head) {
   struct Node *currentNode;
-//  struct Node *nextNode;
   
   currentNode = *head;
-//  nextNode = NULL;
 
   while(currentNode != NULL) {
         *head = currentNode->next;

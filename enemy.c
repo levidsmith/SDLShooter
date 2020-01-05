@@ -27,12 +27,13 @@ extern SDL_Texture *imgEnemyCharlie_L1_00;
 extern SDL_Texture *imgEnemyCharlie_L1_01;
 extern SDL_Texture *imgEnemyCharlie_L2_00;
 extern SDL_Texture *imgEnemyCharlie_L2_01;
-extern SDL_Texture *imgEnemyDelta_00;
-extern SDL_Texture *imgEnemyDelta_01;
-extern SDL_Texture *imgEnemyEcho_00;
-extern SDL_Texture *imgEnemyEcho_01;
-extern SDL_Texture *imgEnemyEcho_02;
-extern SDL_Texture *imgEnemyEcho_03;
+extern SDL_Texture *imgEnemyDelta_L1_00;
+extern SDL_Texture *imgEnemyDelta_L1_01;
+extern SDL_Texture *imgEnemyEcho_L1_00;
+extern SDL_Texture *imgEnemyEcho_L1_01;
+extern SDL_Texture *imgEnemyEcho_L1_02;
+extern SDL_Texture *imgEnemyEcho_L1_03;
+extern SDL_Texture *imgEnemyWarp;
 
 
 extern Mix_Chunk *soundEnemyShoot;
@@ -48,13 +49,8 @@ extern struct Node *listExplosion;
 extern struct Node *add_node(struct Node **head, void *value);
 extern int count_list(struct Node *head);
 extern void remove_node(struct Node **head, struct Node *node);
-//extern int iScore;
 extern struct Stats *stats;
 extern struct Ship *ship;
-//extern void updateScoreText();
-
-
-
 
 void init_enemy(struct Enemy *enemy, int init_x, int init_y, int init_iType, int init_iLevel) {
   enemy->x = init_x;
@@ -69,6 +65,7 @@ void init_enemy(struct Enemy *enemy, int init_x, int init_y, int init_iType, int
   enemy->isAlive = TRUE;
   enemy->iType = init_iType;
   enemy->fLifetime = 0;
+  enemy->fActiveTime = 0;
   enemy->fShootDelay = 0;
   enemy->hasDrop = FALSE;
   enemy->iHealth = 1;
@@ -78,6 +75,7 @@ void init_enemy(struct Enemy *enemy, int init_x, int init_y, int init_iType, int
   enemy->target_y = 0;
   enemy->iMoveToTarget = FALSE;
   enemy->iPoints = 50;
+  enemy->fIntroDelay = 1;
   
   setShootDelay_enemy(enemy);
     
@@ -89,10 +87,10 @@ void init_enemy(struct Enemy *enemy, int init_x, int init_y, int init_iType, int
             } else if (enemy->iLevel == 2) {
                 enemy->fChangeMovementCountdown = getRandomInt(1, 3);
                 enemy->vel_y = UNIT_SIZE;
-                //enemy->fWaitCountdown = 2;
             
             }
             break;
+
         case 4:
             //Echo
             setTargetPosition_enemy(enemy, (1 + (rand() % ((SCREEN_WIDTH / 64) - 2))) * 64, (1 + (rand() % ((SCREEN_HEIGHT / 64) - 2))) * 64);
@@ -102,7 +100,25 @@ void init_enemy(struct Enemy *enemy, int init_x, int init_y, int init_iType, int
 
 }
 
+
 void update_enemy(struct Enemy *enemy) {
+	if (enemy->fIntroDelay > 0) {
+		enemy->fIntroDelay -= DELTA_TIME;
+		if (enemy->fIntroDelay <= 0) {
+			enemy->fIntroDelay = 0;
+		}
+	} else {
+		updateActive_enemy(enemy);
+	}
+
+
+}
+
+
+void updateActive_enemy(struct Enemy *enemy) {
+	
+	
+	
     enemy->fLifetime += DELTA_TIME;
 
     switch(enemy->iType) {
@@ -138,14 +154,19 @@ void update_enemy(struct Enemy *enemy) {
       case 2:
             //Charlie
 	    if (enemy->iLevel == 1) {
-			enemy->x = enemy->orig_x + 100 * sin(enemy->fLifetime * PI);
+			enemy->fActiveTime += DELTA_TIME;
+			enemy->x = enemy->orig_x + 100 * sin(enemy->fActiveTime * PI);
 			enemy->y += enemy->vel_y * DELTA_TIME;
 			
 		} else if (enemy->iLevel == 2) {
-			enemy->x = enemy->orig_x + 250 * sin(enemy->fLifetime * PI);
             
             if (enemy->fChangeMovementCountdown > 0) {
+				enemy->fActiveTime += DELTA_TIME;
+
                 enemy->fChangeMovementCountdown -= DELTA_TIME;
+
+				enemy->x = enemy->orig_x + 250 * sin(enemy->fActiveTime * PI);
+
 
                 if (enemy->fChangeMovementCountdown <= 0) {
                     enemy->fChangeMovementCountdown = 0;
@@ -171,9 +192,7 @@ void update_enemy(struct Enemy *enemy) {
 		break;
 
     case 3:
-            //Delta
-	    enemy->x = enemy->orig_x + (128 * cos(enemy->fLifetime * PI));
-		enemy->y = enemy->orig_y + (128 * sin(enemy->fLifetime * PI));
+		updatePosition_enemy(enemy, enemy->iType, enemy->iLevel);
 		break;
 
       case 4:
@@ -183,7 +202,6 @@ void update_enemy(struct Enemy *enemy) {
 			if (enemy->fWaitCountdown <= 0) {
 				enemy->fWaitCountdown = 0;
 				setTargetPosition_enemy(enemy, (1 + (rand() % ((SCREEN_WIDTH / 64) - 2))) * 64, (1 + (rand() % ((SCREEN_HEIGHT / 64) - 2))) * 64);
-				//setTargetPosition_enemy(enemy, 5 * 64, 5 * 64);
 
 			}
 		} else if (enemy->iMoveToTarget) {
@@ -233,16 +251,25 @@ void update_enemy(struct Enemy *enemy) {
     if (enemy->y > SCREEN_HEIGHT) {
       enemy->y -= SCREEN_HEIGHT + enemy->height;
     } else if (enemy->y + enemy->height < 0) {
-        enemy->y += SCREEN_HEIGHT;
+        enemy->y += SCREEN_HEIGHT + enemy->height;
         
     }
+}
+
+void updatePosition_enemy(struct Enemy *enemy, int iType, int iLevel) {
+	switch(iType) {
+		case 3:
+            //Delta
+			enemy->x = enemy->orig_x + (128 * cos(enemy->fLifetime * PI));
+			enemy->y = enemy->orig_y + (128 * sin(enemy->fLifetime * PI));
+			break;
+		
+	}
 }
 
 void draw_enemy(struct Enemy *enemy) {
     SDL_Rect pos;
 	SDL_Texture *img = NULL;
-	
-//	printf("enemy x: %f y %f\n", enemy->x, enemy->y);
 	
 	int iSpriteIndex = ((int) (enemy->fLifetime * 2)) % 2; //change sprite every 0.5 seconds
 	
@@ -252,24 +279,25 @@ void draw_enemy(struct Enemy *enemy) {
       pos.y = enemy->y;
 	  pos.w = enemy->width;
 	  pos.h = enemy->height;
+	  
+	  
+	  if (enemy->fIntroDelay > 0) {
+		  img = imgEnemyWarp;
+	  } else {
 
       switch(enemy->iType) {
         case 0:
           if (iSpriteIndex == 0) {
 			  if (enemy->iLevel == 1) {
-				//SDL_RenderCopy(renderer, imgEnemyAlpha_L1_00, NULL, &pos);
 				img = imgEnemyAlpha_L1_00;
 			  } else if (enemy->iLevel == 2) {
-				  //SDL_RenderCopy(renderer, imgEnemyAlpha_L2_00, NULL, &pos);
 				img = imgEnemyAlpha_L2_00;
 			  }
 		  } else if (iSpriteIndex == 1) {
 			  if (enemy->iLevel == 1) {
-//				SDL_RenderCopy(renderer, imgEnemyAlpha_L1_01, NULL, &pos);
 				img = imgEnemyAlpha_L1_01;
 
 			  } else if (enemy->iLevel == 2) {
-//				  SDL_RenderCopy(renderer, imgEnemyAlpha_L2_01, NULL, &pos);
 				img = imgEnemyAlpha_L2_01;
 
 			  }
@@ -317,13 +345,11 @@ void draw_enemy(struct Enemy *enemy) {
         case 3:
 		  
           if (iSpriteIndex == 0) {
-				img = imgEnemyDelta_00;
+				img = imgEnemyDelta_L1_00;
 			  
-//	        SDL_RenderCopy(renderer, imgEnemyDelta_00, NULL, &pos);
 		  } else if (iSpriteIndex == 1) {
-				img = imgEnemyDelta_01;
+				img = imgEnemyDelta_L1_01;
 			  
-//	        SDL_RenderCopy(renderer, imgEnemyDelta_01, NULL, &pos);
 		  }
 
           break;
@@ -331,15 +357,15 @@ void draw_enemy(struct Enemy *enemy) {
         case 4:
           if (iSpriteIndex == 0) {
 			  if (enemy->fWaitCountdown > 0) {
-				img = imgEnemyEcho_00;
+				img = imgEnemyEcho_L1_00;
 			  } else {
-				img = imgEnemyEcho_02;
+				img = imgEnemyEcho_L1_02;
 			  }
 		  } else if (iSpriteIndex == 1) {
 			  if (enemy->fWaitCountdown > 0) {
-				img = imgEnemyEcho_01;
+				img = imgEnemyEcho_L1_01;
 			  } else {
-				img = imgEnemyEcho_03;
+				img = imgEnemyEcho_L1_03;
 			  }
 		  }
 
@@ -347,15 +373,23 @@ void draw_enemy(struct Enemy *enemy) {
 		  
 		  
       }
+	  }
 	
 		if (img != NULL) {
-			if (enemy->fDamagedCountdown > 0) {
-					SDL_SetTextureColorMod(img, 255, 0, 0);
+			
+			if (enemy->fIntroDelay > 0) {
+				SDL_RenderCopyEx(renderer, img, NULL, &pos, enemy->fIntroDelay * 720, NULL, SDL_FLIP_NONE);
+				
 			} else {
-				SDL_SetTextureColorMod(img, 255, 255, 255);
+			
+				if (enemy->fDamagedCountdown > 0) {
+						SDL_SetTextureColorMod(img, 255, 0, 0);
+				} else {
+					SDL_SetTextureColorMod(img, 255, 255, 255);
 
+				}
+				SDL_RenderCopy(renderer, img, NULL, &pos);
 			}
-			SDL_RenderCopy(renderer, img, NULL, &pos);
 		}
 
     }
@@ -442,7 +476,6 @@ void damage_enemy(struct Enemy *enemy, int iDamageAmount) {
 		if (enemy->iHealth <= 0) {
 			enemy->isAlive = FALSE;
 			destroy_enemy(enemy);
-//			Mix_PlayChannel(-1, soundEnemyDead, 0);
 		
 		} else {
 			Mix_PlayChannel(-1, soundEnemyHit, 0);
@@ -461,10 +494,8 @@ void damage_enemy(struct Enemy *enemy, int iDamageAmount) {
 
 void destroy_enemy(struct Enemy *enemy) {
 				enemy->isAlive = FALSE;
-				//iScore += enemy->iPoints;
 				stats->iScore += enemy->iPoints;
 				
-//					    updateScoreText();
 				Mix_PlayChannel(-1, soundEnemyDead, 0);
 				
 			
@@ -496,21 +527,10 @@ void setTargetPosition_enemy(struct Enemy *enemy, float x, float y) {
 	float fSpeed = 1;
 	enemy->target_x = x;
 	enemy->target_y = y;
-	
-	
-
-	printf("Enemy at x: %f, y: %f, Target position x: %f, y: %f\n", enemy->x, enemy->y, enemy->target_x, enemy->target_y);
-	
-	
 				
 			float fDistanceX = enemy->target_x - enemy->x;
 			float fDistanceY = enemy->target_y - enemy->y;
 			float fDistance = sqrt(pow(fDistanceX, 2) + pow(fDistanceY, 2));
-//			float fAngle = atan(fDistanceY / fDistanceX);
-			
-//			printf("x: %f, y: %f, target_x: %f, target_y: %f, angle %f, distance: %f\n", enemy->x, enemy->y, enemy->target_x, enemy->target_y,
-//			 fAngle, fHyp);
-//			 printf("moving x: %f, y: %f\n", cos(fAngle), sin(fAngle));
 			if (fDistance != 0) {
 			 enemy->vel_x = fSpeed * cos(acos(fDistanceX / fDistance));
 			 enemy->vel_y = fSpeed * sin(asin(fDistanceY / fDistance));

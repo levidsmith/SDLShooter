@@ -12,11 +12,10 @@
 #include "stats.h"
 #include "screen_game.h"
 
-#define NUM_WEAPONS 6
 #define NUM_HEALTH_UNITS 3
 
 extern SDL_Renderer *renderer;
-extern SDL_Texture *imgShip[6];
+extern SDL_Texture *imgShip[NUM_WEAPONS];
 extern SDL_Texture *imgShipPowerup[NUM_SHIP_POWERUPS];
 extern Mix_Chunk *soundShoot;
 extern Mix_Chunk *soundWeaponSelect;
@@ -30,7 +29,6 @@ extern struct Stats *stats;
 
 
 void init_ship(struct Ship *ship) {
-//printf("*** init ship started\n");
   ship->width = 64;
   ship->height = 64;
   ship->vel_x = 0;
@@ -56,7 +54,6 @@ printf("*** init ship complete\n");
 
 
 void update_ship(struct Ship *ship) {
-//printf("*** update ship\n");
 	
 	
 	  //update ship
@@ -123,7 +120,6 @@ void update_ship(struct Ship *ship) {
 }
 
 void draw_ship(struct Ship *ship) {
-//printf("*** draw_ship\n");
 	
 	
 	SDL_Rect pos;
@@ -172,7 +168,6 @@ void draw_ship(struct Ship *ship) {
 }
 
 void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
-//	ship->fShootDelay = 0.5;
     int iEnergyRequired = 5;
 	float bullet_x, bullet_y;
 
@@ -208,15 +203,12 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
 
       switch(iLevel) {
           case 0:
-//              iEnergyRequired = 8;
               fShootDelay = 0.3;
               break;
           case 1:
-  //            iEnergyRequired = 12;
               fShootDelay = 0.2;
               break;
           case 2:
-//              iEnergyRequired = 16;
               fShootDelay = 0.1;
               break;
               
@@ -249,20 +241,6 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
   } else if (ship->iWeaponType == 2) {
 	  
 	  	iEnergyRequired = getEnergyRequired(ship->iWeaponType, iLevel);
-
-	  /*
-      switch(iLevel) {
-          case 0:
-              iEnergyRequired = 10;
-              break;
-          case 1:
-              iEnergyRequired = 20;
-              break;
-          case 2:
-              iEnergyRequired = 30;
-              break;
-      }
-	  */
       
       
 	if (ship->fEnergy >= iEnergyRequired) {
@@ -383,19 +361,6 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
 	  
 	  	iEnergyRequired = getEnergyRequired(ship->iWeaponType, iLevel);
 
-	  /*
-      switch (iLevel) {
-          case 0:
-              iEnergyRequired = 7;
-              break;
-          case 1:
-              iEnergyRequired = 14;
-              break;
-          case 2:
-              iEnergyRequired = 28;
-              break;
-      }
-	  */
       
 	if (ship->fEnergy >= iEnergyRequired) {
 		struct Bullet *bullet;
@@ -487,19 +452,6 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
 	  
 	  	iEnergyRequired = getEnergyRequired(ship->iWeaponType, iLevel);
 
-	  /*
-      switch(iLevel) {
-          case 0:
-              iEnergyRequired = 12;
-              break;
-          case 1:
-              iEnergyRequired = 24;
-              break;
-          case 2:
-              iEnergyRequired = 48;
-              break;
-      }
-	  */
       
 	if (ship->fEnergy >= iEnergyRequired) {
 		struct Bullet *bullet;
@@ -548,19 +500,6 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
   } else if (ship->iWeaponType == 5) {
 	  	iEnergyRequired = getEnergyRequired(ship->iWeaponType, iLevel);
 
-	  /*
-        switch(iLevel) {
-            case 0:
-                iEnergyRequired = 20;
-                break;
-            case 1:
-                iEnergyRequired = 40;
-                break;
-            case 2:
-                iEnergyRequired = 60;
-                break;
-        }
-		*/
     if (ship->fEnergy >= iEnergyRequired) {
         struct Bullet *bullet;
 
@@ -573,7 +512,6 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
           update_bullet(bullet);
           if (bullet->isSpinShot) {
               bullet->isSpinShot = FALSE;
- //             bullet->vel_y = -5;
               float    fDistance    = getDistance(ship->x, ship->y, bullet->x, bullet->y);
               bullet->vel_x = -5 * (getCenterX_ship(ship) - getCenterX_bullet(bullet)) / fDistance;
               bullet->vel_y = -5 * (getCenterY_ship(ship) - getCenterY_bullet(bullet)) / fDistance;
@@ -807,29 +745,6 @@ int getEnergyRequired(int iWeapon, int iLevel) {
 
 
 void setVelocity_ship(struct Ship *ship, float fMagnitudeX, float fMagnitudeY) {
-//	printf("Velocity: %f, %f\n", fMagnitudeX, fMagnitudeY);
 		ship->vel_x = fMagnitudeX * ship->fMaxSpeed;
 		ship->vel_y = -fMagnitudeY * ship->fMaxSpeed;
 }
-
-/*
-void setAccelerationX(struct Ship *ship, float fAccel) {
-	ship->vel_x += fAccel;
-    if (ship->vel_x > ship->fMaxSpeed) {
-		ship->vel_x = ship->fMaxSpeed;
-	} else if (ship->vel_x < -ship->fMaxSpeed) {
-		ship->vel_x = -ship->fMaxSpeed;
-	}		
-}
-
-
-void setAccelerationY(struct Ship *ship, float fAccel) {
-	ship->vel_y += fAccel;
-    if (ship->vel_y > ship->fMaxSpeed) {
-		ship->vel_y = ship->fMaxSpeed;
-	} else if (ship->vel_y < -ship->fMaxSpeed) {
-		ship->vel_y = -ship->fMaxSpeed;
-	}		
-	
-}
-*/

@@ -50,7 +50,6 @@ void start_screen_title() {
     updateText_screen_title();
 
   Mix_PlayMusic(musicTitle, -1);
-//    iTitleMenuChoice = 0;
 
 	
 }

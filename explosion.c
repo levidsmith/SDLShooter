@@ -46,10 +46,6 @@ void draw_explosion(struct Explosion *explosion) {
 		rect.w = explosion->fRadius * 2;
 		rect.h = explosion->fRadius * 2;
 	
-//		SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255 * (1 - (explosion->fLifetime / explosion->fMaxLifetime)));
-//	SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-
-//		SDL_RenderFillRect(renderer, &rect);
 		if (iSpriteIndex == 0) {
 			img = imgExplosion_L2_00;
 		} else if (iSpriteIndex == 1) {
@@ -58,8 +54,6 @@ void draw_explosion(struct Explosion *explosion) {
 		
 		if (img != NULL) {
 			SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
-//			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255 * (-1 * (explosion->fLifetime / explosion->fMaxLifetime)));
-//			SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
 			SDL_SetTextureColorMod(img, explosion->c.r, explosion->c.g, explosion->c.b);
 
 			SDL_SetTextureAlphaMod(img, 255 * (1 - (explosion->fLifetime / explosion->fMaxLifetime)));
@@ -67,7 +61,6 @@ void draw_explosion(struct Explosion *explosion) {
 		}
 
 	
-//	printf("Draw the explosion\n");
     }
 
 

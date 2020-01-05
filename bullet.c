@@ -53,7 +53,6 @@ void update_bullet(struct Bullet *bullet) {
   
   if (bullet->fWaveAmplitude != 0) {
     bullet->x = bullet->orig_x + (bullet->fWaveAmplitude * UNIT_SIZE * sin(bullet->fLifetime * PI * 2));
-//    bullet->x = bullet->orig_x + (bullet->fWaveAmplitude * UNIT_SIZE);
   }
     
     if (bullet->isSpinShot) {

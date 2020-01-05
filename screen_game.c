@@ -14,6 +14,7 @@
 #include "powerup.h"
 #include "explosion.h"
 #include "stats.h"
+#include "options.h"
 
 #define BACKGROUND_ROWS 4
 #define BACKGROUND_COLS 5
@@ -77,6 +78,8 @@ struct Node *listPowerup;
 struct Node *listExplosion;
 struct Stats *stats;
 
+struct Options *options;
+
 
 extern int iKeepLooping;
 extern int iGameContinue;
@@ -94,7 +97,7 @@ int iLevelCount = -1;
 float fKeyPressDelay = 0;
 
 
-char *strWeaponNames[7] = {"Normal", "Speed Shot", "Multi Shot", "Wave Shot", "Blast Shot", "Spin Shot" };
+char *strWeaponNames[NUM_WEAPONS] = {"Normal", "Speed Shot", "Multi Shot", "Wave Shot", "Blast Shot", "Spin Shot", "Freeze Ray" };
 int iBackgroundPattern[BACKGROUND_ROWS][BACKGROUND_COLS];
 
 time_t timeStartGame;
@@ -117,11 +120,10 @@ void start_screen_game() {
   stats = malloc(sizeof(struct Stats));
   init_stats(stats);
   
-  printf("ship values x: %d y: %d width: %d height %d\n", ship->x, ship->y, ship->width, ship->height);
+//  printf("ship values x: %d y: %d width: %d height %d\n", ship->x, ship->y, ship->width, ship->height);
 
   loadWorld();
   
-//  iScore = 0;
   stats->iScore = 0;
   updateDisplayText();
   updateBackgroundPattern(4);
@@ -134,14 +136,14 @@ void start_screen_game() {
 
     //initialize game time
     if (&timeStartGame == NULL || !iGameContinue) {
-        printf("Initialize time\n");
+//        printf("Initialize time\n");
         time(&timeStartGame);
     }
     
     //enable continue option on title screen
     iCanContinue = TRUE;
     
-  Mix_VolumeMusic(MIX_MAX_VOLUME * 0.2);
+//  Mix_VolumeMusic(MIX_MAX_VOLUME * 0.2);
   Mix_PlayMusic(musicGame, -1);
   
   printf("Finished start_screen_game\n");
@@ -157,15 +159,12 @@ void loadWorld() {
     if (!iGameContinue) {
         iCurrentLevel = 0;
     }
-//    char *strLevelFile = LEVEL_FILE;
-//  if (iLevelCount < 0) {
 	  iLevelCount = read_count_levels(strLevelFile);
-//  }
-  printf("iLevelCount: %d\n", iLevelCount);
-  printf("call read_level\n");
+//  printf("iLevelCount: %d\n", iLevelCount);
+//  printf("call read_level\n");
     read_level(strLevelFile, iCurrentLevel);
 
-  printf("finished read_level\n");
+//  printf("finished read_level\n");
 	
 }
 
@@ -237,10 +236,8 @@ void update_screen_game() {
 										//however, if we delete the node in the update loop, then it will break
 										//the loop since the current node will be free'd
     deleteNode = NULL;
-//	updateDisplayText();
 
   }
-//  printf("Total bullets: %d\n", count_list(listBullet));
 
 
   //Update the powerups
@@ -309,8 +306,6 @@ void draw_screen_game() {
     
 	  //Draw the background
   int i, j;
-//  int iBackgroundCols = SCREEN_WIDTH / 256;
-//  int iBackgroundRows = SCREEN_HEIGHT / 256;
   int iBackgroundCols = BACKGROUND_COLS;
   int iBackgroundRows = BACKGROUND_ROWS;
   for (i = 0; i < iBackgroundRows; i++) {
@@ -371,7 +366,6 @@ void draw_screen_game() {
   rectMeter.h =  16;
   SDL_RenderFillRect(renderer, &rectMeter);
 
-//  SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
   SDL_SetRenderDrawColor(renderer, colorMeter.r, colorMeter.g, colorMeter.b, 255);
 
   rectMeter.w = ship->fEnergy;
@@ -398,7 +392,6 @@ void draw_screen_game() {
   SDL_SetRenderDrawColor(renderer, 0xc0, 0xc0, 0xc0, 0x80);
   rectMeter.x = x_offset + ship->fEnergy - iLength2;
   rectMeter.y = 32 + 100 + 8;
-//  rectMeter.w = iLength2 - iLength1;
   rectMeter.w = iLength2;
   rectMeter.h =  4;
   SDL_RenderFillRect(renderer, &rectMeter);
@@ -411,7 +404,6 @@ void draw_screen_game() {
   SDL_SetRenderDrawColor(renderer, 0x80, 0x80, 0x80, 0x80);
   rectMeter.x = x_offset + ship->fEnergy - iLength3;
   rectMeter.y = 32 + 100 + 12;
-//  rectMeter.w = iLength3 - iLength2;
   rectMeter.w = iLength3;
   rectMeter.h =  4;
   SDL_RenderFillRect(renderer, &rectMeter);
@@ -637,10 +629,8 @@ void checkCollisions() {
 
 
 		  if ( (bullet->iHitsEnemy) &&
-			(enemy->isAlive) && (bullet != NULL) && (bullet->isAlive) && 
+			(enemy->isAlive) && (enemy->fIntroDelay <= 0) && (bullet != NULL) && (bullet->isAlive) && 
 			collidedRectRect(bullet->x, bullet->y, bullet->width, bullet->height, enemy->x, enemy->y, enemy->width, enemy->height)) {
-//			  ((bullet->x + bullet->width / 2) >= enemy->x && (bullet->x + bullet->width / 2) < enemy->x + enemy->width) &&
-//			  ((bullet->y + bullet->height / 2) >= enemy->y && (bullet->y + bullet->height / 2) < enemy->y + enemy->height) ) {
 		    bullet->isAlive = FALSE;
 			stats->iShotsLanded++;
 			updateDisplayText();
@@ -664,8 +654,6 @@ void checkCollisions() {
 //exploding bullet			
 		if (!bullet->isAlive && bullet->fBlastRadius > 0) {
 			printf("Bullet blast: %f\n", bullet->fBlastRadius);
-//			float fExplosionX = bullet->x - ((bullet->width + UNIT_SIZE * bullet->fBlastRadius) / 2);
-//			float fExplosionY = bullet->y - ((bullet->width + UNIT_SIZE * bullet->fBlastRadius) / 2);
 
 			float fExplosionX;
 			float fExplosionY;
@@ -695,17 +683,13 @@ void checkCollisions() {
 			add_node(&listExplosion, explosion);
 
 			
-			printf("check damaged enemies\n");
+	//		printf("check damaged enemies\n");
 
 			currentEnemy = listEnemy;
 			while (currentEnemy != NULL) {
 				enemy = (struct Enemy *) currentEnemy->data;
 				
 				if (enemy->isAlive && enemy != collidedEnemy) {
-					//were just checking to see if the center of the enemy is in the radius of the explosion
-//					if (getDistance(fExplosionX + (explosion->fRadius), fExplosionY + (explosion->fRadius), 
-	//								enemy->x + (enemy->width / 2), enemy->y + (enemy->height / 2))
-//									< UNIT_SIZE * bullet->fBlastRadius) {
 	
 					//better circle / rectangle collision
 					if (collidedCircleRect(explosion->x, explosion->y, explosion->fRadius, enemy->x, enemy->y, enemy->width, enemy->height)) {
@@ -720,22 +704,9 @@ void checkCollisions() {
 				currentEnemy = currentEnemy->next;
 			}
 			
-			printf("After circle collision\n");
+//			printf("After circle collision\n");
 
 
-			/*
-			struct Bullet *explodeBullet;
-					explodeBullet = malloc(sizeof(struct Bullet));
-					init_bullet(explodeBullet, bullet->x - bullet->fBlastRadius, bullet->y - bullet->fBlastRadius);
-					explodeBullet->width = UNIT_SIZE * bullet->fBlastRadius * 2;
-					explodeBullet->height = UNIT_SIZE * bullet->fBlastRadius * 2;
-					
-					explodeBullet->iHitsEnemy = TRUE;
-					
-					add_node(&listBullet, explodeBullet);
-		
-//		Mix_PlayChannel(-1, soundShoot, 0);
-*/
 
 			
 		}
@@ -745,16 +716,6 @@ void checkCollisions() {
 		if ( (bullet->iHitsPlayer) &&
 			(bullet->isAlive) &&  (ship->isAlive) &&
 			collidedRectRect(bullet->x, bullet->y, bullet->width, bullet->height, ship->x, ship->y, ship->width, ship->height)) {
-
-//			  ((bullet->x + bullet->width / 2) >= ship->x && (bullet->x + bullet->width / 2) < ship->x + ship->width) &&
-//			  ((bullet->y + bullet->height / 2) >= ship->y && (bullet->y + bullet->height / 2) < ship->y + ship->height) ) {
-	
-	
-	
-//			ship->isAlive = FALSE;
-//			iGameOver = TRUE;
-//		    Mix_PlayChannel(-1, soundShipDead, 0);
-//			fKeyPressDelay = 5;
 
 			damage_ship(ship, 4);
 			if (!ship->isAlive) {
@@ -766,9 +727,6 @@ void checkCollisions() {
 
 	  
 		} 
-
-			
-			
 			
 			currentBullet = currentBullet->next;
 		  
@@ -782,13 +740,8 @@ void checkCollisions() {
 		enemy = (struct Enemy *) currentEnemy->data;
 	  
 		//check collision with ship	  
-		if ( (enemy->isAlive) &&  (ship->isAlive) &&
+		if ( (enemy->isAlive) && (enemy->fIntroDelay <= 0) &&  (ship->isAlive) &&
 			collidedRectRect(ship->x, ship->y, ship->width, ship->height, enemy->x, enemy->y, enemy->width, enemy->height)) {
-//			(ship->x >= enemy->x && ship->x < enemy->x + enemy->width) &&
-//			(ship->y >= enemy->y && ship->y < enemy->y + enemy->height) ) {
-		//ship->isAlive = FALSE;
-		//iGameOver = TRUE;
-		//fKeyPressDelay = 5;
 			damage_ship(ship, 8);
 			if (!ship->isAlive) {
 				iGameOver = TRUE;
@@ -816,11 +769,6 @@ void checkCollisions() {
 		if ( (ship->isAlive) &&  (powerup->isAlive) &&
 			collidedRectRect(powerup->x, powerup->y, powerup->width, powerup->height, ship->x, ship->y, ship->width, ship->height)) {
 		
-//			(ship->x >= powerup->x && ship->x < powerup->x + powerup->width) &&
-//			(ship->y >= powerup->y && ship->y < powerup->y + powerup->height) ) {
-//			(powerup->x + (powerup->width / 2) >= ship->x && powerup->x + (powerup->width / 2) < ship->x + ship->width) &&
-//			(powerup->y + (powerup->height / 2) >= ship->y && powerup->y + (powerup->height / 2) < ship->y + ship->height) ) {
-				//increaseFireRate_ship(ship);
 				applyPowerup_ship(ship, powerup->iType);
 				powerup->isAlive = FALSE;
 				Mix_PlayChannel(-1, soundPowerup, 0);
@@ -927,18 +875,12 @@ void checkLevelComplete() {
 		  iLevelComplete = TRUE;
 		  fKeyPressDelay = 5;
 	  } else {
-//		read_level(LEVEL_FILE, iCurrentLevel);
 		loadLevel();
 		
 	  }
 
 		  
   }
-  
-  
-
-
-//  iLevelComplete = iComplete;
 
 }
 
@@ -992,7 +934,6 @@ void handleInput_screen_game(int iType, int iKey) {
 
 	  }
     } else if (iKey == SDLK_q || iKey == SDLK_ESCAPE) {
-      //iKeepLooping = FALSE;
         iTitleMenuChoice = 1;
 	  setCurrentScreen(0);
     } else if (iKey == SDLK_m) {
@@ -1055,19 +996,12 @@ void updateDisplayText() {
 
   //score display
   char strScore[64];
-//  sprintf(strScore, "Score: %d", iScore);
   sprintf(strScore, "Score: %d", stats->iScore);
 
   printf("before sprText\n");
   
   SDL_Surface *sprText;
-//  sprText = TTF_RenderText_Solid(fontDefault, strScore, colorText);
   printf("TTF_GetError: %s\n", TTF_GetError());
-//  if (imgScoreText != NULL) {
-//	  SDL_DestroyTexture(imgScoreText);
-//  }
-//  imgScoreText = SDL_CreateTextureFromSurface(renderer, sprText);
-//  SDL_FreeSurface(sprText); 
 	generateTextTexture(&imgScoreText, strScore, colorText, fontDefault);
 
   
@@ -1079,23 +1013,14 @@ void updateDisplayText() {
 
   char strLevel[20];
   sprintf(strLevel, "Area %d", iCurrentLevel + 1);
-//  sprText = TTF_RenderText_Solid(fontDefault, strLevel, colorText);
-//  imgLevel = SDL_CreateTextureFromSurface(renderer, sprText);
-//  SDL_FreeSurface(sprText); 
 	generateTextTexture(&imgLevel, strLevel, colorText, fontDefault);
 
 
   //weapon display
-//  colorText.r = 255;
-//  colorText.g = 0;
-//  colorText.b = 0;
   getWeaponColor(ship->iWeaponType, &colorText);
 
   char strWeapon[64];
   sprintf(strWeapon, "%s", strWeaponNames[ship->iWeaponType]);
-//  sprText = TTF_RenderText_Solid(fontDefault, strWeapon, colorText);
-//  imgWeaponText = SDL_CreateTextureFromSurface(renderer, sprText);
-//  SDL_FreeSurface(sprText);
 	generateTextTexture(&imgWeaponText, strWeapon, colorText, fontDefault);
 
 
@@ -1104,16 +1029,10 @@ void updateDisplayText() {
   colorText.g = 0;
   colorText.b = 255;
 
-//  sprText = TTF_RenderText_Solid(fontLarge, "LEVEL COMPLETE", colorText);
-//  imgLevelCompleteText = SDL_CreateTextureFromSurface(renderer, sprText);
-//  SDL_FreeSurface(sprText); 
 	generateTextTexture(&imgLevelCompleteText, "LEVEL COMPLETE", colorText, fontLarge);
 
 
   //game over display
-//  sprText = TTF_RenderText_Solid(fontLarge, "GAME OVER", colorText);
-//  imgGameOverText = SDL_CreateTextureFromSurface(renderer, sprText);
-//  SDL_FreeSurface(sprText); 
 	generateTextTexture(&imgGameOverText, "GAME OVER", colorText, fontLarge);
 
 
@@ -1124,20 +1043,11 @@ void updateDisplayText() {
   colorText.g = 255;
   colorText.b = 255;
   
-//  sprText = TTF_RenderText_Solid(fontDefault, "Z", colorText);
-//  imgFireButtonText[0] = SDL_CreateTextureFromSurface(renderer, sprText);
-//  SDL_FreeSurface(sprText); 
 	generateTextTexture(&imgFireButtonText[0], "Z", colorText, fontDefault);
 
 
-//  sprText = TTF_RenderText_Solid(fontDefault, "X", colorText);
-//  imgFireButtonText[1] = SDL_CreateTextureFromSurface(renderer, sprText);
-//  SDL_FreeSurface(sprText); 
 	generateTextTexture(&imgFireButtonText[1], "X", colorText, fontDefault);
 
-//  sprText = TTF_RenderText_Solid(fontDefault, "C", colorText);
-//  imgFireButtonText[2] = SDL_CreateTextureFromSurface(renderer, sprText);
-//  SDL_FreeSurface(sprText); 
 	generateTextTexture(&imgFireButtonText[2], "C", colorText, fontDefault);
     
     generateTextTexture(&imgButtonWeaponSwitchText, "tab", colorText, fontDefault);
@@ -1150,9 +1060,6 @@ void updateDisplayText() {
   colorText.b = 255;
   char strStats[128];
   sprintf(strStats, "Shots Fired %d   Shots Landed %d   Hit Rate %d%%", getShotsFired_stats(stats), stats->iShotsLanded, getHitRate(stats));
-//  sprText = TTF_RenderText_Solid(fontDefault, strStats, colorText);
-//  imgStatsText = SDL_CreateTextureFromSurface(renderer, sprText);
-//  SDL_FreeSurface(sprText);
 	generateTextTexture(&imgStatsText, strStats, colorText, fontDefault);
 
 	
@@ -1164,9 +1071,6 @@ void updateDisplayText() {
 	colorText.b = 0;
 	char strStats[128];
 	sprintf(strStats, "Defense Up");
-//	sprText = TTF_RenderText_Solid(fontDefault, strStats, colorText);
-//	imgBonusText[0] = SDL_CreateTextureFromSurface(renderer, sprText);
-//	SDL_FreeSurface(sprText);
 	generateTextTexture(&imgBonusText[0], strStats, colorText, fontDefault);
 
 	  
@@ -1178,16 +1082,13 @@ void updateDisplayText() {
 	colorText.b = 0;
 	char strStats[128];
 	sprintf(strStats, "Attack Up");
-//	sprText = TTF_RenderText_Solid(fontDefault, strStats, colorText);
-//	imgBonusText[1] = SDL_CreateTextureFromSurface(renderer, sprText);
-//	SDL_FreeSurface(sprText);
 	generateTextTexture(&imgBonusText[1], strStats, colorText, fontDefault);
 
 	  
   }
 
 
-	printf("Finished update score text\n");
+//	printf("Finished update score text\n");
 	
 }
 
@@ -1199,7 +1100,6 @@ void updateTimeText() {
     
        //time display
         time_t timeCurrent = difftime(time(NULL), timeStartGame);
- //       struct tm *timeinfo = localtime(&timeCurrent);
          colorText.r = 255;
          colorText.g = 255;
          colorText.b = 255;
@@ -1207,8 +1107,6 @@ void updateTimeText() {
          char strTime[64];
     int iSeconds = (int) timeCurrent;
          sprintf(strTime, "Time %d:%02d", iSeconds / 60, iSeconds % 60);
-//         sprintf(strTime, "%s %d:%d:%d", "Time", timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec);
-      //  sprintf(strTime, "%s %d", "Time", timeCurrent);
 
          sprText = TTF_RenderText_Solid(fontDefault, strTime, colorText);
          imgGameTimeText = SDL_CreateTextureFromSurface(renderer, sprText);
@@ -1224,7 +1122,6 @@ void shoot(int iLevel) {
 
 	shoot_ship(ship, iLevel, &listBullet);
 	
-//    Mix_PlayChannel(-1, soundShoot, 0);
   }
 }
 
@@ -1275,7 +1172,6 @@ void updateBackgroundPattern(int iRowsToGenerate) {
 				} else {
 					iBackgroundPattern[i][j] = 0;
 				}
-				//iBackgroundPattern[i][j] = 0;
 			}
 			
 			
