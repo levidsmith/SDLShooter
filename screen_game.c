@@ -86,7 +86,7 @@ extern int iGameContinue;
 extern int iCanContinue;
 extern int iTitleMenuChoice;
 int iBackgroundOffset;
-int iLevelComplete = FALSE;
+int iWorldComplete = FALSE;
 int iGameOver = FALSE;
 
 //int iScore;
@@ -100,8 +100,12 @@ float fKeyPressDelay = 0;
 char *strWeaponNames[NUM_WEAPONS] = {"Normal", "Speed Shot", "Multi Shot", "Wave Shot", "Blast Shot", "Spin Shot", "Freeze Shot" };
 int iBackgroundPattern[BACKGROUND_ROWS][BACKGROUND_COLS];
 
-time_t timeStartGame;
-time_t timeEndGame;
+//time_t timeStartGame;
+//time_t timeEndGame;
+Uint32 timeStartGame;
+Uint32 timeCurrent;
+Uint32 timePrevious;
+Uint32 timeElapsed;
 
 
 
@@ -113,32 +117,55 @@ void start_screen_game() {
   clear_list(&listPowerup);
   clear_list(&listExplosion);
 
-	
-  ship = malloc(sizeof(struct Ship));
-  init_ship(ship);
+	if (ship == NULL) {
+		ship = malloc(sizeof(struct Ship));
+	}
+	init_ship(ship);
+
   
+  
+  	if (stats == NULL) {
+		stats = malloc(sizeof(struct Stats));
+		init_stats(stats);
+	}
+
+  
+  /*
   stats = malloc(sizeof(struct Stats));
   init_stats(stats);
+  */
   
 //  printf("ship values x: %d y: %d width: %d height %d\n", ship->x, ship->y, ship->width, ship->height);
 
-  loadWorld();
+    iLevelCount = getWorldLevels(iCurrentWorld);
+
+	printf("Spawn world %d, level %d\n", iCurrentWorld, iCurrentLevel);
+	spawnLevelEnemies(iCurrentWorld, iCurrentLevel);
   
   stats->iScore = 0;
   updateDisplayText();
   updateBackgroundPattern(4);
   
 
-  iLevelComplete = FALSE;
+  iWorldComplete = FALSE;
   iGameOver = FALSE;
 
 
 
     //initialize game time
-    if (&timeStartGame == NULL || !iGameContinue) {
+//    if (&timeStartGame == NULL || !iGameContinue) {
 //        printf("Initialize time\n");
-        time(&timeStartGame);
-    }
+//        time(&timeStartGame);
+//    }
+	if (!iGameContinue) {
+		timeStartGame = SDL_GetTicks();
+		timeElapsed = 0;
+		
+	}
+	
+	timeCurrent = SDL_GetTicks();
+	timePrevious = SDL_GetTicks();
+	
     
     //enable continue option on title screen
     iCanContinue = TRUE;
@@ -150,31 +177,38 @@ void start_screen_game() {
 
 }
 
-void loadWorld() {
+/*
+void loadGameData() {
 	char strLevelFile[32];
 	
-	sprintf(strLevelFile, "%s0%d%s", LEVEL_FILE_PREFIX, iCurrentWorld, LEVEL_FILE_SUFFIX);
 	
   //read level
     if (!iGameContinue) {
         iCurrentLevel = 0;
     }
+
 	  iLevelCount = read_count_levels(strLevelFile);
 //  printf("iLevelCount: %d\n", iLevelCount);
 //  printf("call read_level\n");
-    read_level(strLevelFile, iCurrentLevel);
+//   read_level(strLevelFile, iCurrentLevel);
+//	parse_level_data(iCurrentWorld, iCurrentLevel);
 
 //  printf("finished read_level\n");
 	
 }
+*/
 
-void loadLevel() {
+
+/*
+void spawnLevelEnemies(int iWorld, int iLevel) {
+
 	char strLevelFile[32];
 	
 	sprintf(strLevelFile, "%s0%d%s", LEVEL_FILE_PREFIX, iCurrentWorld, LEVEL_FILE_SUFFIX);
     read_level(strLevelFile, iCurrentLevel);
 	
 }
+*/
 
 
 void update_screen_game() {
@@ -292,6 +326,18 @@ void update_screen_game() {
 	  if (fKeyPressDelay < 0) {
 		  fKeyPressDelay = 0;
 	  }
+  }
+  
+  
+  //update time trackers
+  if (!iWorldComplete && !iGameOver) {
+//	printf("update %d\n", SDL_GetTicks());
+	timePrevious = timeCurrent;
+	timeCurrent = SDL_GetTicks();
+//		printf("previous: %d, current: %d, elapsed %d\n", timePrevious, timeCurrent, timeElapsed);
+	if (timePrevious > 0) {
+		timeElapsed += timeCurrent - timePrevious;
+	}
   }
     
     //update time display
@@ -574,8 +620,7 @@ void draw_screen_game() {
 
 
 //Draw level complete text
-  if (iLevelComplete) {
-		  
+  if (iWorldComplete) {
 
     SDL_QueryTexture(imgLevelCompleteText, NULL, NULL, &(pos.w), &(pos.h)); 
     pos.x = (SCREEN_WIDTH - pos.w) / 2;
@@ -870,10 +915,13 @@ void checkLevelComplete() {
   if (iNoMoreEnemies) {
 	  iCurrentLevel++;
 	  if (iCurrentLevel > iLevelCount) {
-		  iLevelComplete = TRUE;
+		  iWorldComplete = TRUE;
+		  stats->iWorldCompleted[iCurrentWorld] = TRUE;
+		  stats->iWorldTime[iCurrentWorld] = timeElapsed;
 		  fKeyPressDelay = 5;
 	  } else {
-		loadLevel();
+//		loadLevel();
+		spawnLevelEnemies(iCurrentWorld, iCurrentLevel);
 		
 	  }
 
@@ -918,7 +966,7 @@ void handleInput_screen_game(int iType, int iKey) {
 
     } else if (iKey == SDLK_SPACE) {
 
-	  if (iLevelComplete) {
+	  if (iWorldComplete) {
 		if (fKeyPressDelay <= 0) {
 			iCurrentLevel = 0;
 			setCurrentScreen(2);
@@ -1097,14 +1145,20 @@ void updateTimeText() {
     
     
        //time display
-        time_t timeCurrent = difftime(time(NULL), timeStartGame);
+//        time_t timeCurrent = difftime(time(NULL), timeStartGame);
+//		Uint32 timeCurrent = difftime(SDL_GetTicks(), timeStartGame);
          colorText.r = 255;
          colorText.g = 255;
          colorText.b = 255;
 
          char strTime[64];
-    int iSeconds = (int) timeCurrent;
-         sprintf(strTime, "Time %d:%02d", iSeconds / 60, iSeconds % 60);
+		 char strTimeValue[16];
+//		int iSeconds = (int) timeElapsed / 1000;
+//		int iHundredths = (timeElapsed / 10) % 100;
+	
+//         sprintf(strTime, "Time %d:%02d.%02d", iSeconds / 60, iSeconds % 60, iHundredths);
+		formatTime(strTimeValue, timeElapsed);
+		sprintf(strTime, "Time %s", strTimeValue);
 
          sprText = TTF_RenderText_Solid(fontDefault, strTime, colorText);
          imgGameTimeText = SDL_CreateTextureFromSurface(renderer, sprText);
@@ -1205,3 +1259,11 @@ int getRandomInt(int iMin, int iMax) {
     
 }
 
+void formatTime(char *strTime, Uint32 timeValue) {
+        
+		int iSeconds = (int) timeValue / 1000;
+		int iHundredths = (timeValue / 10) % 100;
+	
+         sprintf(strTime, "%d:%02d.%02d", iSeconds / 60, iSeconds % 60, iHundredths);
+
+}

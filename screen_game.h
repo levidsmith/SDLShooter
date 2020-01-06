@@ -16,4 +16,6 @@ void updateBackgroundPattern(int iRows);
 void loadWorld();
 void generateTextTexture(SDL_Texture **imgText, char *strText, SDL_Color colorText, TTF_Font *font);
 int getRandomInt(int iMin, int iMax);
+void formatTime(char *strTime, Uint32 timeValue);
+
 

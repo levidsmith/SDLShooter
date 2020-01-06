@@ -15,12 +15,52 @@ extern struct Node *listEnemy;
 
 extern struct Node *add_node(struct Node **head, void *value);
 
+char *strWorldData[NUM_WORLDS];
 
-void read_level(char *strFile, int iLevelToRead) {
+
+void loadGameData() {
+	int i;
+	char strFile[64];
+	
+	for (i = 0; i < NUM_WORLDS; i++) {
+		
+		sprintf(strFile, "%s0%d%s", LEVEL_FILE_PREFIX, i, LEVEL_FILE_SUFFIX);
+
+	
+	
+	
+      printf("Start Reading file: %s\n", strFile);
+        SDL_RWops *f;
+        f = SDL_RWFromFile(strFile, "r");
+        Sint64 iFileSize = SDL_RWsize(f);
+//        printf("File size: %d\n", iFileSize);
+        char strFileContents[iFileSize];
+            SDL_RWread( f, strFileContents, sizeof(char), iFileSize );
+//        printf("*** File Contents: %s\n", strFileContents);
+        
+        SDL_RWclose(f);
+      printf("End Reading file\n");
+
+		strWorldData[i] = malloc(sizeof(char) * strlen(strFileContents));
+		strcpy(strWorldData[i], strFileContents);
+//	  strWorldData[i] = strFileContents;
+//        printf("World %d - %s\n", i, strWorldData[i]);
+//        printf("World 0 - %s\n", strWorldData[0]);
+	}
+
+
+        printf("World 0 - %s\n", strWorldData[0]);
+	
+}
+
+
+void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
   int x, y;
   int i;
   int iLevel = 0;
   int iEnemyCount = 0;
+  
+  int iFileSize;
   
   int iDropCountdown = getDropCountdown();
   
@@ -33,25 +73,18 @@ void read_level(char *strFile, int iLevelToRead) {
   x = 0;
   y = 0;
 
-      printf("Start Reading fileb: %s\n", strFile);
-        SDL_RWops *f;
-        f = SDL_RWFromFile(strFile, "r");
-        Sint64 iFileSize = SDL_RWsize(f);
-        printf("File size: %d\n", iFileSize);
-        char strFileContents[iFileSize];
-            SDL_RWread( f, strFileContents, sizeof(char), iFileSize );
-        printf("*** File Contents: %s\n", strFileContents);
-        
-        SDL_RWclose(f);
-      printf("End Reading file\n");
     
     
     
-    strLine = strFileContents;
+//    strLine = strFileContents;
+	strLine = strWorldData[iWorld];
+	
+	printf("World size: %d, data: %s\n", strlen(strLine), strLine);
+	iFileSize = strlen(strLine);
     for (i = 0; i < iFileSize; i++) {
 
 		
-		if (iLevel == iLevelToRead) {
+		if (iLevel == iLevelToSpawn) {
 	
 		
 			if (strLine[i] == '0') {
@@ -249,7 +282,7 @@ void read_level(char *strFile, int iLevelToRead) {
 
 
 
-int read_count_levels(char *strFile) {
+int getWorldLevels(int iWorld) {
 	int iLevelCount;
 	int i;
 	int iCols;
@@ -257,8 +290,9 @@ int read_count_levels(char *strFile) {
     SDL_RWops *f;
 
   iLevelCount = 0;  //this is really a count of levels after the first one (index 0)
-  iCols = 64; //only need to read the first character on the line
+//  iCols = 64; //only need to read the first character on the line
 
+/*
     system("pwd");
   printf("Start Reading filea: %s\n", strFile);
     f = SDL_RWFromFile(strFile, "r");
@@ -277,9 +311,17 @@ int read_count_levels(char *strFile) {
         }
     }
     SDL_RWclose(f);
+	*/
 //  printf("End Reading file\n");
   
 //  printf("total levels: %d\n", iLevelCount);
+  
+  for (i = 0; i < strlen(strWorldData[iWorld]); i++) {
+        if (strWorldData[iWorld][i] == '=') {
+			iLevelCount++;
+		}
+	  
+  }
   
   return iLevelCount;
 

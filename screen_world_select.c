@@ -1,8 +1,11 @@
 //2019 Levi D. Smith
 #include "globals.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "screen_world_select.h"
+#include "screen_game.h"
+#include "stats.h"
 
 
 //Function Prototypes
@@ -21,6 +24,8 @@ extern TTF_Font *fontLarge;
 extern SDL_Texture *imgBackground[NUM_WORLDS * 2];
 extern SDL_Texture *imgWorldSelectWorldText[NUM_WORLDS];
 extern int iCurrentWorld;
+extern struct Stats *stats;
+
 
 int iWorldSelectChoice = 0;
 char *strWorldNames[NUM_WORLDS] = { "Celeritas", "Multa", "Fluctus", "Crepitus", "Gelida", "Torqueo", "Quaerere", "Spatium" };
@@ -30,6 +35,11 @@ int iBackgroundOffsetWorldSelect;
 
 
 void start_screen_world_select() {
+	
+	if (stats == NULL) {
+		stats = malloc(sizeof(struct Stats));
+		init_stats(stats);
+	}
 	
   SDL_Color colorText = {0, 0, 255, 0};
   SDL_Surface *sprText;
@@ -53,15 +63,29 @@ void update_screen_world_select() {
   SDL_Color colorText;
   SDL_Color colorHighlight = { 0xFF, 0x00, 0x00, 0xFF };
   SDL_Color colorDefault = { 0x00, 0x00, 0xFF, 0xFF };
+  SDL_Color colorCompleted = { 0x00, 0x00, 0x00, 0xFF };
   
 	int i;
 	for (i = 0; i < NUM_WORLDS; i++) {
 		if (i == iWorldSelectChoice) {
 			colorText = colorHighlight;
+		} else if (stats->iWorldCompleted[i]) {
+			colorText = colorCompleted;
 		} else {
 			colorText = colorDefault;
 		}
-		sprText = TTF_RenderText_Solid(fontDefault, strWorldNames[i], colorText);
+		
+		char strText[64];
+		
+		if (stats->iWorldCompleted[i]) {
+			char strTimeValue[16];
+			formatTime(strTimeValue, stats->iWorldTime[i]);
+
+			sprintf(strText, "%s - Completed %s", strWorldNames[i], strTimeValue);
+		} else {
+			sprintf(strText, "%s", strWorldNames[i]);
+		}
+		sprText = TTF_RenderText_Solid(fontDefault, strText, colorText);
 		imgWorldSelectWorldText[i] = SDL_CreateTextureFromSurface(renderer, sprText);
 		SDL_FreeSurface(sprText); 
 
@@ -113,8 +137,13 @@ void draw_screen_world_select() {
 void handleInput_screen_world_select(int iType, int iKey) {
   if (iType == SDL_KEYDOWN) {
     if (iKey == SDLK_SPACE) {
-		iCurrentWorld = iWorldSelectChoice;
-		setCurrentScreen(1);
+		
+		if (!stats->iWorldCompleted[iWorldSelectChoice]) {
+			iCurrentWorld = iWorldSelectChoice;
+			setCurrentScreen(1);
+		} else {
+			//can't replay level
+		}
 
     } else if (iKey == SDLK_UP) {
         decreaseSelectedOption_screen_world_select();
@@ -141,11 +170,6 @@ void updateText_screen_world_select() {
   SDL_Surface *sprText;
   char *strWorld;
 	
-  if (iWorldSelectChoice == 0) {
-	  strWorld = "Moon";
-  } else if (iWorldSelectChoice == 1) {
-	  strWorld = "Space";
-  }
 	
   sprText = TTF_RenderText_Solid(fontLarge, strWorld, colorText);
   imgWorldSelectSelectedText = SDL_CreateTextureFromSurface(renderer, sprText);

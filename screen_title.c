@@ -3,6 +3,7 @@
 #include <stdio.h>
 
 #include "globals.h"
+#include "level_reader.h"
 #include "screen_title.h"
 
 #define NUM_MENU_OPTIONS 3
@@ -24,6 +25,7 @@ extern SDL_Texture *imgTitleContinueText;
 extern SDL_Texture *imgTitleQuitText;
 
 extern Mix_Music *musicTitle;
+
 
 
 int iBackgroundOffsetTitle;
@@ -48,6 +50,8 @@ void start_screen_title() {
   SDL_FreeSurface(sprText); 
 
     updateText_screen_title();
+	
+	loadGameData();
 
   Mix_PlayMusic(musicTitle, -1);
 

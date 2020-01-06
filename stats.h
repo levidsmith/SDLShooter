@@ -2,6 +2,10 @@ struct Stats {
 	int iScore;
 	int iShotsFired[NUM_WEAPONS];
 	int iShotsLanded;
+
+	int iWorldCompleted[NUM_WORLDS];
+	Uint32 iWorldTime[NUM_WORLDS];
+
 	
 };
 

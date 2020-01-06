@@ -1,6 +1,7 @@
 #include "globals.h"
 #include "stats.h"
 
+
 void init_stats(struct Stats *stats) {
 	int i;
 	stats->iScore = 0;
@@ -8,6 +9,11 @@ void init_stats(struct Stats *stats) {
 		stats->iShotsFired[i] = 0;
 	}
 	stats->iShotsLanded = 0;
+	
+	for (i = 0; i < NUM_WORLDS; i++) {
+		stats->iWorldCompleted[i] = FALSE;
+		stats->iWorldTime[i] = 0;
+	}
 	
 
 }
