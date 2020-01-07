@@ -621,7 +621,47 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
 	
 	
 	
-  }
+	//seek shot
+	} else if (ship->iWeaponType == 7) {
+		iEnergyRequired = getEnergyRequired(ship->iWeaponType, iLevel);
+
+
+		if (ship->fEnergy >= iEnergyRequired) {
+			struct Bullet *bullet;
+		
+			bullet = malloc(sizeof(struct Bullet));
+			init_bullet(bullet, ship->x + ship->width / 2, ship->y, iLevel);
+			bullet->vel_y = -5;
+			bullet->iHitsEnemy = TRUE;
+			bullet->iWeaponType = ship->iWeaponType;
+
+			switch(iLevel) {
+			case 0:
+				bullet->fSeekRadius = 2;
+				break;
+			case 1:
+				bullet->fSeekRadius = 4;
+				break;
+			case 2:
+				bullet->fSeekRadius = 8;
+				break;
+              
+			}
+//			seekEnemy_bullet(bullet);
+		
+			ship->fShootDelay = ship->fMaxShootDelay;
+			ship->fEnergy -= iEnergyRequired;
+		
+			add_node(listBullet, bullet);
+
+			stats->iShotsFired[ship->iWeaponType] += 1;
+			updateDisplayText();
+
+		
+			Mix_PlayChannel(-1, soundShoot, 0);
+		}
+	}
+
         
     
 }
@@ -748,7 +788,7 @@ int getEnergyRequired(int iWeapon, int iLevel) {
 					iEnergy = 14;
 					break;
 				case 2:
-					iEnergy = 32;
+					iEnergy = 28;
 					break;
 			}
 			break;
@@ -792,6 +832,21 @@ int getEnergyRequired(int iWeapon, int iLevel) {
 					break;
 				case 2:
 					iEnergy = 40;
+					break;
+			}
+			break;
+
+		case 7:
+			//seek shot
+			switch(iLevel) {
+				case 0:
+					iEnergy = 14;
+					break;
+				case 1:
+					iEnergy = 28;
+					break;
+				case 2:
+					iEnergy = 36;
 					break;
 			}
 			break;

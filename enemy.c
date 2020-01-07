@@ -76,6 +76,8 @@ void init_enemy(struct Enemy *enemy, int init_x, int init_y, int init_iType, int
   enemy->iMoveToTarget = FALSE;
   enemy->iPoints = 50;
   enemy->fIntroDelay = 1;
+  enemy->fFreezeDelay = 0;
+  enemy->fMaxFreezeDelay = 0;
   
   setShootDelay_enemy(enemy);
     
@@ -608,4 +610,14 @@ void setTargetPosition_enemy(struct Enemy *enemy, float x, float y) {
 float getDistance(float x1, float y1, float x2, float y2) {
 	return sqrt(pow(x2-x1, 2) + pow(y2-y1, 2));
 }
+
+
+float getCenterX_enemy(struct Enemy *enemy) {
+	return enemy->x + (enemy->width / 2);
+}
+
+float getCenterY_enemy(struct Enemy *enemy) {
+	return enemy->y + (enemy->height / 2);
+}
+
 

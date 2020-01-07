@@ -18,6 +18,8 @@ struct Bullet {
 	int iWeaponType;
 	int iDamage;
 	int iLevel;
+	float fSeekRadius;
+	struct Enemy *seekEnemy;
 };
 
 void init_bullet(struct Bullet *, int, int, int);
@@ -25,3 +27,5 @@ void update_bullet(struct Bullet *);
 void draw_bullet(struct Bullet *);
 float getCenterX_bullet(struct Bullet *bullet);
 float getCenterY_bullet(struct Bullet *bullet);
+void seekEnemy_bullet(struct Bullet *bullet);
+

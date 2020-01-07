@@ -97,7 +97,7 @@ int iLevelCount = -1;
 float fKeyPressDelay = 0;
 
 
-char *strWeaponNames[NUM_WEAPONS] = {"Normal", "Speed Shot", "Multi Shot", "Wave Shot", "Blast Shot", "Spin Shot", "Freeze Shot" };
+char *strWeaponNames[NUM_WEAPONS] = {"Normal", "Speed Shot", "Multi Shot", "Wave Shot", "Blast Shot", "Spin Shot", "Freeze Shot", "Seek Shot" };
 int iBackgroundPattern[BACKGROUND_ROWS][BACKGROUND_COLS];
 
 //time_t timeStartGame;
@@ -1214,6 +1214,12 @@ void getWeaponColor(int iWeaponType, SDL_Color *c) {
 			c->g = 0xd3;
 			c->b = 0xff;
 			break;
+		case 7:
+			c->r = 0xe3;
+			c->g = 0x51;
+			c->b = 0x00;
+			break;
+		
 	}
 }
 

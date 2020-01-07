@@ -22,7 +22,7 @@
 #define NUM_WORLDS 8
 #define NUM_POWERUPS 4
 #define NUM_SHIP_POWERUPS 2
-#define NUM_WEAPONS 7
+#define NUM_WEAPONS 8
 
 
 #endif

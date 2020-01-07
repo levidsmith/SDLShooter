@@ -1,15 +1,20 @@
 //2019 Levi D. Smith - levidsmith.com
 #include "globals.h"
+#include <stdio.h>
 #include <math.h>
 
 #include "linked_list.h"
 #include "bullet.h"
 #include "ship.h"
+#include "enemy.h"
 
 extern SDL_Renderer *renderer;
 extern SDL_Texture *imgBullet[6];
 extern SDL_Texture *imgBulletEnemy;
 extern struct Ship *ship;
+extern struct Node *listEnemy;
+
+
 
 void init_bullet(struct Bullet *bullet, int init_x, int init_y, int init_level) {
   bullet->x = (float) init_x;
@@ -33,6 +38,9 @@ void init_bullet(struct Bullet *bullet, int init_x, int init_y, int init_level) 
   bullet->iDamage = 1;
   bullet->iLevel = init_level;
   
+  bullet->fSeekRadius = 0;
+  bullet->seekEnemy = NULL;
+  
   if (ship->fAttackPowerupDelay > 0) {
 	  bullet->iDamage *= 2;
   }
@@ -49,7 +57,13 @@ void update_bullet(struct Bullet *bullet) {
           if (bullet->y < 0 || bullet->y > SCREEN_HEIGHT) {
               bullet->isAlive = FALSE;
           }
+		  
+		  if (bullet->fLifetime > 10) {
+			  bullet->isAlive = FALSE;
+		  }
+
       }
+	  
   }
   
   if (bullet->fWaveAmplitude != 0) {
@@ -61,6 +75,11 @@ void update_bullet(struct Bullet *bullet) {
         bullet->y = ship->y + (ship->width / 2) + 2.0 * UNIT_SIZE * sin(bullet->fLifetime * PI);
         
     }
+	
+	if (bullet->fSeekRadius > 0) {
+		//may not want to check on every update, since it has to loop through all of the enemies
+		seekEnemy_bullet(bullet);
+	}
 
 }
 
@@ -93,4 +112,65 @@ float getCenterX_bullet(struct Bullet *bullet) {
 
 float getCenterY_bullet(struct Bullet *bullet) {
 	return bullet->y + (bullet->height / 2);
+}
+
+void seekEnemy_bullet(struct Bullet *bullet) {
+	struct Enemy *closestEnemy = NULL;
+	float fClosestDistance = -1;
+	struct Node *current;
+	float fDistance;
+	
+	
+//	printf("seekEnemy_bullet start, seek radius %f\n", bullet->fSeekRadius * UNIT_SIZE);
+	
+	if (bullet->seekEnemy == NULL) {
+		
+		
+  current = listEnemy;
+  struct Enemy *enemy;
+  while(current != NULL) {
+    enemy = (struct Enemy *) current->data;
+	if (enemy->isAlive && enemy->fIntroDelay <= 0) {
+		fDistance = getDistance(bullet->x, bullet->y, enemy->x, enemy->y);
+//		printf("fDistance %f\n", fDistance);
+		
+		if (fDistance < bullet->fSeekRadius * UNIT_SIZE) {
+		
+			if (closestEnemy == NULL) {
+//				printf("found closest enemy (NULL)\n");
+				closestEnemy = enemy;
+				fClosestDistance = getDistance(bullet->x, bullet->y, enemy->x, enemy->y);
+			} else {
+				if (fDistance < fClosestDistance) {
+//					printf("found closest enemy (distance)\n");
+
+					closestEnemy = enemy;
+					fClosestDistance = fDistance;
+				
+				}
+			
+			}
+		}
+		
+	}
+    current = current->next;
+  }
+  
+ 
+	}
+	
+	bullet->seekEnemy = closestEnemy;
+
+	if (bullet->seekEnemy != NULL) {
+//					printf("Seek to enemy\n");
+
+
+//		fDistance	= getDistance(bullet->seekEnemy->x, bullet->seekEnemy->y, bullet->x, bullet->y);
+		fDistance	= getDistance(getCenterX_enemy(bullet->seekEnemy), getCenterY_enemy(bullet->seekEnemy), 
+						getCenterX_bullet(bullet), getCenterY_bullet(bullet));
+		bullet->vel_x = 5 * (getCenterX_enemy(bullet->seekEnemy) - getCenterX_bullet(bullet)) / fDistance;
+		bullet->vel_y = 5 * (getCenterY_enemy(bullet->seekEnemy) - getCenterY_bullet(bullet)) / fDistance;
+	}
+	
+	
 }
