@@ -31,6 +31,8 @@ extern Mix_Music *musicTitle;
 int iBackgroundOffsetTitle;
 SDL_Rect posTitle;
 int iTitleMenuChoice = 0;
+extern int iResetStats;
+extern int iCurrentWorld;
 int iGameContinue;
 int iCanContinue = FALSE;
 
@@ -127,10 +129,15 @@ void handleInput_screen_title(int iType, int iKey) {
     if (iKey == SDLK_SPACE) {
         if (iTitleMenuChoice == 0) {
             iGameContinue = FALSE;
+			iResetStats = TRUE;
             setCurrentScreen(2);
         } else if (iTitleMenuChoice == 1) {
             iGameContinue = TRUE;
-            setCurrentScreen(1);
+			if (iCurrentWorld == -1) {
+				setCurrentScreen(2);
+			} else {
+				setCurrentScreen(1);	
+			}
         } else if (iTitleMenuChoice == 2) {
             quit();
         }

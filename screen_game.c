@@ -117,6 +117,15 @@ void start_screen_game() {
   clear_list(&listPowerup);
   clear_list(&listExplosion);
 
+	if (!iGameContinue) {
+		timeStartGame = SDL_GetTicks();
+		timeElapsed = 0;
+		iCurrentLevel = 0;
+		
+	}
+
+
+
 	if (ship == NULL) {
 		ship = malloc(sizeof(struct Ship));
 	}
@@ -157,11 +166,6 @@ void start_screen_game() {
 //        printf("Initialize time\n");
 //        time(&timeStartGame);
 //    }
-	if (!iGameContinue) {
-		timeStartGame = SDL_GetTicks();
-		timeElapsed = 0;
-		
-	}
 	
 	timeCurrent = SDL_GetTicks();
 	timePrevious = SDL_GetTicks();
@@ -968,6 +972,7 @@ void handleInput_screen_game(int iType, int iKey) {
 
 	  if (iWorldComplete) {
 		if (fKeyPressDelay <= 0) {
+			iCurrentWorld = -1;
 			iCurrentLevel = 0;
 			setCurrentScreen(2);
 		}
@@ -980,8 +985,10 @@ void handleInput_screen_game(int iType, int iKey) {
 
 	  }
     } else if (iKey == SDLK_q || iKey == SDLK_ESCAPE) {
-        iTitleMenuChoice = 1;
-	  setCurrentScreen(0);
+		if (fKeyPressDelay <= 0 && !iGameOver && !iWorldComplete) {
+			iTitleMenuChoice = 1;
+			setCurrentScreen(0);
+		}
     } else if (iKey == SDLK_m) {
       Mix_VolumeMusic(0);
     } else if (iKey == SDLK_TAB) {

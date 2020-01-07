@@ -24,10 +24,13 @@ extern TTF_Font *fontLarge;
 extern SDL_Texture *imgBackground[NUM_WORLDS * 2];
 extern SDL_Texture *imgWorldSelectWorldText[NUM_WORLDS];
 extern int iCurrentWorld;
+extern int iGameContinue;
 extern struct Stats *stats;
 
 
+
 int iWorldSelectChoice = 0;
+int iResetStats = FALSE;
 char *strWorldNames[NUM_WORLDS] = { "Celeritas", "Multa", "Fluctus", "Crepitus", "Gelida", "Torqueo", "Quaerere", "Spatium" };
 int iBackgroundOffsetWorldSelect;
 
@@ -36,10 +39,15 @@ int iBackgroundOffsetWorldSelect;
 
 void start_screen_world_select() {
 	
+	printf("iResetStats: %d\n", iResetStats);
+	
 	if (stats == NULL) {
 		stats = malloc(sizeof(struct Stats));
 		init_stats(stats);
+	} else if (iResetStats) {
+		init_stats(stats);
 	}
+	iResetStats = FALSE;
 	
   SDL_Color colorText = {0, 0, 255, 0};
   SDL_Surface *sprText;
@@ -56,6 +64,7 @@ void start_screen_world_select() {
   updateText_screen_world_select();
 	
 }
+
 
 
 void update_screen_world_select() {
