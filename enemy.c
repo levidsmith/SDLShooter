@@ -33,6 +33,11 @@ extern SDL_Texture *imgEnemyEcho_L1_00;
 extern SDL_Texture *imgEnemyEcho_L1_01;
 extern SDL_Texture *imgEnemyEcho_L1_02;
 extern SDL_Texture *imgEnemyEcho_L1_03;
+extern SDL_Texture *imgEnemyFoxtrot_L1_00;
+extern SDL_Texture *imgEnemyFoxtrot_L1_01;
+extern SDL_Texture *imgEnemyFoxtrot_L2_00;
+extern SDL_Texture *imgEnemyFoxtrot_L2_01;
+
 extern SDL_Texture *imgEnemyWarp;
 
 
@@ -97,9 +102,100 @@ void init_enemy(struct Enemy *enemy, int init_x, int init_y, int init_iType, int
             //Echo
             setTargetPosition_enemy(enemy, (1 + (rand() % ((SCREEN_WIDTH / 64) - 2))) * 64, (1 + (rand() % ((SCREEN_HEIGHT / 64) - 2))) * 64);
             break;
+		case 5:
+			enemy->fChangeMovementCountdown = 0;
+			break;
             
     }
 
+}
+
+void configure_enemy(struct Enemy *enemy) {
+	switch(enemy->iType) {
+		//Alpha
+		case 0:
+			switch(enemy->iLevel) {
+				case 1:
+					enemy->iPoints = 50;
+					break;
+				case 2:
+					enemy->iPoints = 200;
+					enemy->iHealth = 3;
+					enemy->iPoints = 200;
+					break;
+			}
+		
+			break;
+		//Bravo
+		case 1:
+			switch(enemy->iLevel) {
+				case 1:
+					enemy->iPoints = 75;
+					break;
+				case 2:
+					enemy->iPoints = 200;
+					enemy->iHealth = 2;
+					break;
+			}
+			break;
+
+		//Charlie
+		case 2:
+			switch(enemy->iLevel) {
+				case 1:
+					enemy->iPoints = 250;
+					enemy->iHealth = 3;
+
+					break;
+				case 2:
+					enemy->iPoints = 500;
+					enemy->iHealth = 5;
+				
+					break;
+			}
+			break;
+
+		//Delta
+		case 3:
+			switch(enemy->iLevel) {
+				case 1:
+					enemy->iPoints = 500;
+					enemy->iHealth = 5;
+
+					break;
+				case 2:
+					break;
+			}
+			break;
+
+		//Echo
+		case 4:
+			switch(enemy->iLevel) {
+				case 1:
+					enemy->iPoints = 150;
+					enemy->iHealth = 3;
+				
+					break;
+				case 2:
+					break;
+			}
+			break;
+
+		//Foxtrot
+		case 5:
+			switch(enemy->iLevel) {
+				case 1:
+					enemy->iPoints = 150;
+					break;
+				case 2:
+					enemy->iPoints = 300;
+					enemy->iHealth = 4;
+					break;
+			}
+			break;
+
+
+	}
 }
 
 
@@ -245,6 +341,71 @@ void updateActive_enemy(struct Enemy *enemy) {
 		
 		break;
 
+      case 5:
+            //Foxtrot
+			
+		if (enemy->fWaitCountdown > 0) {
+			enemy->fWaitCountdown -= DELTA_TIME;
+		} else {
+			
+			enemy->fChangeMovementCountdown = enemy->fChangeMovementCountdown - (1 * DELTA_TIME);
+			if (enemy->fChangeMovementCountdown <= 0) {
+				int iRand = rand() % 4;
+				int iDirX = 0;
+				int iDirY = 0;
+				if (iRand == 0) {
+					iDirX = 1;
+				} else if (iRand == 1) {
+					iDirX = -1;
+				} else if (iRand == 2) {
+					iDirY = 1;
+				} else if (iRand == 3) {
+					iDirY = -1;
+				}
+				
+				float fSpeed = 0.5;
+				if (enemy->iLevel == 1) {
+					fSpeed = 0.5;
+				} else if (enemy->iLevel == 2) {
+					fSpeed = 2;
+				}
+			
+				enemy->vel_x = iDirX * fSpeed * UNIT_SIZE;
+				enemy->vel_y = iDirY * fSpeed * UNIT_SIZE;
+				enemy->fChangeMovementCountdown = 1 + (rand() % 2);
+		  
+				iRand = rand() % 2;
+				if (iRand == 0) {
+					if (enemy->iLevel == 1) {
+						enemy->fWaitCountdown = 1;
+					} else if (enemy->iLevel == 2) {
+						enemy->fWaitCountdown = 0.5;
+						
+					}
+				}
+			
+			}
+
+
+			if (enemy->x + enemy->vel_x * DELTA_TIME < 0 ||
+				enemy->x +  enemy->width + enemy->vel_x * DELTA_TIME > SCREEN_WIDTH
+				) {
+				enemy->vel_x *= -1;
+			}
+
+			
+			if (enemy->y + enemy->vel_y * DELTA_TIME < 0 ||
+				enemy->y + enemy->height + enemy->vel_y * DELTA_TIME > SCREEN_HEIGHT
+			) {
+				enemy->vel_y *= -1;
+			}
+			
+			enemy->x += enemy->vel_x * DELTA_TIME;
+			enemy->y += enemy->vel_y * DELTA_TIME;
+		}
+		
+		
+		break;
 
     }
 	
@@ -298,6 +459,7 @@ void draw_enemy(struct Enemy *enemy) {
 	  } else {
 
       switch(enemy->iType) {
+		  //Alpha
         case 0:
           if (iSpriteIndex == 0) {
 			  if (enemy->iLevel == 1) {
@@ -316,6 +478,7 @@ void draw_enemy(struct Enemy *enemy) {
 		  }
 
           break;
+		  //Bravo
         case 1:
 		  
           if (iSpriteIndex == 0) {
@@ -335,6 +498,7 @@ void draw_enemy(struct Enemy *enemy) {
 		  }
 
           break;
+		  //Charlie
         case 2:
 		  
           if (iSpriteIndex == 0) {
@@ -354,6 +518,7 @@ void draw_enemy(struct Enemy *enemy) {
 		  }
 
           break;
+		  //Delta
         case 3:
 		  
           if (iSpriteIndex == 0) {
@@ -366,6 +531,7 @@ void draw_enemy(struct Enemy *enemy) {
 
           break;
 		  
+		  //Echo
         case 4:
           if (iSpriteIndex == 0) {
 			  if (enemy->fWaitCountdown > 0) {
@@ -382,9 +548,28 @@ void draw_enemy(struct Enemy *enemy) {
 		  }
 
           break;
+		
+		//Foxtrot
+        case 5:
+          if (iSpriteIndex == 0) {
+			  if (enemy->iLevel == 1) {
+				img = imgEnemyFoxtrot_L1_00;
+			  } else if (enemy->iLevel == 2) {
+				img = imgEnemyFoxtrot_L2_00;
+			  }
+		  } else if (iSpriteIndex == 1) {
+			  if (enemy->iLevel == 1) {
+				img = imgEnemyFoxtrot_L1_01;
+
+			  } else if (enemy->iLevel == 2) {
+				img = imgEnemyFoxtrot_L2_01;
+
+			  }
+		  }
+
+          break;
 		  
-		  
-      }
+		}
 	  }
 	
 		if (img != NULL) {

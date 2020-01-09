@@ -680,9 +680,9 @@ void checkCollisions() {
 			updateDisplayText();
 
 			if (bullet->iWeaponType == 6) {
-				freeze_enemy(enemy, bullet->iLevel, bullet->iDamage);
+				freeze_enemy(enemy, bullet->iLevel, bullet->iDamage * bullet->iDamageMultiplier);
 			} else {
-				damage_enemy(enemy, bullet->iDamage);
+				damage_enemy(enemy, bullet->iDamage * bullet->iDamageMultiplier);
 				collidedEnemy = enemy;  //used to prevent the enemy from being hit twice from a blast shot
 				printf("set collided enemy\n");
 			}

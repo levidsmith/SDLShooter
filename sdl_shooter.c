@@ -38,6 +38,11 @@ SDL_Texture *imgEnemyEcho_L1_00;
 SDL_Texture *imgEnemyEcho_L1_01;
 SDL_Texture *imgEnemyEcho_L1_02;
 SDL_Texture *imgEnemyEcho_L1_03;
+SDL_Texture *imgEnemyFoxtrot_L1_00;
+SDL_Texture *imgEnemyFoxtrot_L1_01;
+SDL_Texture *imgEnemyFoxtrot_L2_00;
+SDL_Texture *imgEnemyFoxtrot_L2_01;
+
 SDL_Texture *imgEnemyWarp;
 SDL_Texture *imgExplosion_L2_00;
 SDL_Texture *imgExplosion_L2_01;
@@ -297,6 +302,12 @@ for (i = 0; i < NUM_WORLDS * 2; i++) {
   imgEnemyEcho_L1_03 = generateTexture("assets/images/enemy_echo_l1_4.bmp");
 
 
+  imgEnemyFoxtrot_L1_00 = generateTexture("assets/images/enemy_foxtrot_l1_1.bmp");
+  imgEnemyFoxtrot_L1_01 = generateTexture("assets/images/enemy_foxtrot_l1_2.bmp");
+  imgEnemyFoxtrot_L2_00 = generateTexture("assets/images/enemy_foxtrot_l2_1.bmp");
+  imgEnemyFoxtrot_L2_01 = generateTexture("assets/images/enemy_foxtrot_l2_2.bmp");
+
+
 	for (i = 0; i < NUM_WEAPONS; i++) {
 			sprintf(strFile, "assets/images/bullet%d.bmp", (i + 1));
 
@@ -478,6 +489,12 @@ for (i = 0; i < NUM_WORLDS * 2; i++) {
   SDL_DestroyTexture(imgEnemyEcho_L1_01);
   SDL_DestroyTexture(imgEnemyEcho_L1_02);
   SDL_DestroyTexture(imgEnemyEcho_L1_03);
+  SDL_DestroyTexture(imgEnemyFoxtrot_L1_00);
+  SDL_DestroyTexture(imgEnemyFoxtrot_L1_01);
+  SDL_DestroyTexture(imgEnemyFoxtrot_L2_00);
+  SDL_DestroyTexture(imgEnemyFoxtrot_L2_01);
+
+
   SDL_DestroyTexture(imgExplosion_L2_00);
   SDL_DestroyTexture(imgExplosion_L2_01);
   

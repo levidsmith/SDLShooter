@@ -42,6 +42,8 @@ void updatePosition_enemy(struct Enemy *enemy, int iType, int iLevel);
 void freeze_enemy(struct Enemy *enemy, int iFreezeLevel, int iDamageAmount);
 float getCenterX_enemy(struct Enemy *enemy);
 float getCenterY_enemy(struct Enemy *enemy);
+void configure_enemy(struct Enemy *enemy);
+
 
 
 

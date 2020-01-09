@@ -41,8 +41,10 @@ void init_bullet(struct Bullet *bullet, int init_x, int init_y, int init_level) 
   bullet->fSeekRadius = 0;
   bullet->seekEnemy = NULL;
   
+  bullet->iDamageMultiplier = 1;
   if (ship->fAttackPowerupDelay > 0) {
-	  bullet->iDamage *= 2;
+	  //bullet->iDamage *= 2;
+	  bullet->iDamageMultiplier = 2;
   }
 
 }
@@ -93,6 +95,20 @@ void draw_bullet(struct Bullet *bullet) {
 	pos.h = bullet->height;
 	
 	if (bullet->iHitsEnemy) {
+		
+		if (bullet->iDamageMultiplier > 1) {
+			if ((int) (bullet->fLifetime * 8) % 2 == 0) {
+				SDL_SetTextureColorMod(imgBullet[bullet->iWeaponType], 255, 0, 0);
+			} else {
+				SDL_SetTextureColorMod(imgBullet[bullet->iWeaponType], 255, 255, 255);
+				
+			}
+			SDL_RenderCopy(renderer, imgBullet[bullet->iWeaponType], NULL, &pos);
+
+			
+		} else {
+				SDL_SetTextureColorMod(imgBullet[bullet->iWeaponType], 255, 255, 255);
+		}
 		SDL_RenderCopy(renderer, imgBullet[bullet->iWeaponType], NULL, &pos);
 	} else if (bullet->iHitsPlayer) {
 		SDL_RenderCopy(renderer, imgBulletEnemy, NULL, &pos);

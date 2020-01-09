@@ -20,6 +20,7 @@ struct Bullet {
 	int iLevel;
 	float fSeekRadius;
 	struct Enemy *seekEnemy;
+  int iDamageMultiplier;
 };
 
 void init_bullet(struct Bullet *, int, int, int);

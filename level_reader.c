@@ -92,7 +92,8 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
 				struct Enemy *e1;
 				e1 = malloc(sizeof(struct Enemy));
 				init_enemy(e1, x, y, 0, 1);
-				e1->iPoints = 50;
+				configure_enemy(e1);
+				
 				if (iDropCountdown <= 0) {
 					e1->hasDrop = TRUE;
 					iDropCountdown = getDropCountdown();
@@ -109,9 +110,8 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
 				struct Enemy *e1;
 				e1 = malloc(sizeof(struct Enemy));
 				init_enemy(e1, x, y, 0, 2);
-				e1->iPoints = 200;
-				e1->iLevel = 2;
-				e1->iHealth = 3;
+				configure_enemy(e1);
+
 				if (iDropCountdown <= 0) {
 					e1->hasDrop = TRUE;
 					iDropCountdown = getDropCountdown();
@@ -128,7 +128,7 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
 				struct Enemy *e1;
 				e1 = malloc(sizeof(struct Enemy));
 				init_enemy(e1, x, y, 1, 1);
-				e1->iPoints = 100;
+				configure_enemy(e1);
 
 				if (iDropCountdown <= 0) {
 					e1->hasDrop = TRUE;
@@ -147,9 +147,7 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
 				struct Enemy *e1;
 				e1 = malloc(sizeof(struct Enemy));
 				init_enemy(e1, x, y, 1, 2);
-				e1->iPoints = 200;
-				e1->iLevel = 2;
-				e1->iHealth = 2;
+				configure_enemy(e1);
 
 				if (iDropCountdown <= 0) {
 					e1->hasDrop = TRUE;
@@ -169,9 +167,7 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
 				struct Enemy *e1;
 				e1 = malloc(sizeof(struct Enemy));
 				init_enemy(e1, x, y, 2, 1);
-				e1->iPoints = 250;
-				
-				e1->iHealth = 3;
+				configure_enemy(e1);
 
 				if (iDropCountdown <= 0) {
 					e1->hasDrop = TRUE;
@@ -189,9 +185,7 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
 				struct Enemy *e1;
 				e1 = malloc(sizeof(struct Enemy));
 				init_enemy(e1, x, y, 2, 2);
-				e1->iPoints = 500;
-				
-				e1->iHealth = 5;
+				configure_enemy(e1);
 
 				if (iDropCountdown <= 0) {
 					e1->hasDrop = TRUE;
@@ -214,9 +208,7 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
 					struct Enemy *e1;
 					e1 = malloc(sizeof(struct Enemy));
 					init_enemy(e1, x, y, 3, 1);
-					e1->iPoints = 500;
-					
-					e1->iHealth = 5;
+					configure_enemy(e1);
 
 					if (iDropCountdown <= 0) {
 						e1->hasDrop = TRUE;
@@ -239,8 +231,7 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
 				struct Enemy *e1;
 				e1 = malloc(sizeof(struct Enemy));
 				init_enemy(e1, x, y, 4, 1);
-				e1->iPoints = 150;
-				e1->iHealth = 3;
+				configure_enemy(e1);
 
 				if (iDropCountdown <= 0) {
 					e1->hasDrop = TRUE;
@@ -253,6 +244,41 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
 				add_node(&listEnemy, e1);
 				iEnemyCount++;
 
+			} else 	if (strLine[i] == 'A') {
+
+				struct Enemy *e1;
+				e1 = malloc(sizeof(struct Enemy));
+				init_enemy(e1, x, y, 5, 1);
+				configure_enemy(e1);
+
+				if (iDropCountdown <= 0) {
+					e1->hasDrop = TRUE;
+					iDropCountdown = getDropCountdown();
+				} else {
+					iDropCountdown--;
+				}
+
+
+				add_node(&listEnemy, e1);
+				iEnemyCount++;
+
+			} else 	if (strLine[i] == 'B') {
+
+				struct Enemy *e1;
+				e1 = malloc(sizeof(struct Enemy));
+				init_enemy(e1, x, y, 5, 2);
+				configure_enemy(e1);
+
+				if (iDropCountdown <= 0) {
+					e1->hasDrop = TRUE;
+					iDropCountdown = getDropCountdown();
+				} else {
+					iDropCountdown--;
+				}
+
+
+				add_node(&listEnemy, e1);
+				iEnemyCount++;
 
 			}
 
