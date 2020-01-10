@@ -184,13 +184,15 @@ void updateText_screen_world_select() {
   SDL_Surface *sprText;
   char *strWorld;
 	
+    /*
 	
 if (imgWorldSelectSelectedText != NULL) {
 	SDL_DestroyTexture(imgWorldSelectSelectedText);
 }
   sprText = TTF_RenderText_Solid(fontLarge, strWorld, colorText);
   imgWorldSelectSelectedText = SDL_CreateTextureFromSurface(renderer, sprText);
-  SDL_FreeSurface(sprText); 
+  SDL_FreeSurface(sprText);
+     */
 
 }
 
