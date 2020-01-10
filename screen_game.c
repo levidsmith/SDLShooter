@@ -1152,20 +1152,19 @@ void updateTimeText() {
     
     
        //time display
-//        time_t timeCurrent = difftime(time(NULL), timeStartGame);
-//		Uint32 timeCurrent = difftime(SDL_GetTicks(), timeStartGame);
          colorText.r = 255;
          colorText.g = 255;
          colorText.b = 255;
 
          char strTime[64];
 		 char strTimeValue[16];
-//		int iSeconds = (int) timeElapsed / 1000;
-//		int iHundredths = (timeElapsed / 10) % 100;
 	
-//         sprintf(strTime, "Time %d:%02d.%02d", iSeconds / 60, iSeconds % 60, iHundredths);
 		formatTime(strTimeValue, timeElapsed);
 		sprintf(strTime, "Time %s", strTimeValue);
+		
+		if (imgGameTimeText != NULL) {
+			SDL_DestroyTexture(imgGameTimeText);
+		}
 
          sprText = TTF_RenderText_Solid(fontDefault, strTime, colorText);
          imgGameTimeText = SDL_CreateTextureFromSurface(renderer, sprText);

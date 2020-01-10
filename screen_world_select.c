@@ -94,6 +94,11 @@ void update_screen_world_select() {
 		} else {
 			sprintf(strText, "%s", strWorldNames[i]);
 		}
+		
+		if (imgWorldSelectWorldText[i] != NULL) {
+			SDL_DestroyTexture(imgWorldSelectWorldText[i]);
+		}
+		
 		sprText = TTF_RenderText_Solid(fontDefault, strText, colorText);
 		imgWorldSelectWorldText[i] = SDL_CreateTextureFromSurface(renderer, sprText);
 		SDL_FreeSurface(sprText); 
@@ -180,6 +185,9 @@ void updateText_screen_world_select() {
   char *strWorld;
 	
 	
+if (imgWorldSelectSelectedText != NULL) {
+	SDL_DestroyTexture(imgWorldSelectSelectedText);
+}
   sprText = TTF_RenderText_Solid(fontLarge, strWorld, colorText);
   imgWorldSelectSelectedText = SDL_CreateTextureFromSurface(renderer, sprText);
   SDL_FreeSurface(sprText); 
