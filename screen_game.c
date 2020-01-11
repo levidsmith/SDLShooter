@@ -40,7 +40,7 @@ extern TTF_Font *fontDefault;
 extern TTF_Font *fontLarge;
 
 
-extern Mix_Music *musicGame; 
+extern Mix_Music *musicGame[NUM_WORLDS]; 
 extern SDL_Texture *imgBackground[2];
 extern SDL_Texture *imgScoreText;
 extern SDL_Texture *imgLevelCompleteText;
@@ -175,7 +175,7 @@ void start_screen_game() {
     iCanContinue = TRUE;
     
 //  Mix_VolumeMusic(MIX_MAX_VOLUME * 0.2);
-  Mix_PlayMusic(musicGame, -1);
+  Mix_PlayMusic(musicGame[iCurrentWorld], -1);
   
   printf("Finished start_screen_game\n");
 

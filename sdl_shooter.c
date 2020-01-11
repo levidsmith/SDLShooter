@@ -91,7 +91,7 @@ Mix_Chunk *soundEnemyShield;
 Mix_Chunk *soundPowerup;
 Mix_Chunk *soundWeaponSelect;
 
-Mix_Music *musicGame; 
+Mix_Music *musicGame[NUM_WORLDS]; 
 Mix_Music *musicTitle; 
 
 //VARIABLES
@@ -385,7 +385,10 @@ for (i = 0; i < 5; i++) {
   soundPowerup = Mix_LoadWAV("assets/audio/powerup.wav");
   soundWeaponSelect = Mix_LoadWAV("assets/audio/weapon_select.wav");
 
-  musicGame = Mix_LoadMUS("assets/audio/sdl-shooter-level.wav");
+  for (i = 0; i < NUM_WORLDS; i++) {
+	sprintf(strFile, "assets/audio/sdl-shooter-level-%d.wav", (i + 1));
+	musicGame[i] = Mix_LoadMUS(strFile);
+  }
   musicTitle = Mix_LoadMUS("assets/audio/sdl-shooter-title.wav");
 
 		
@@ -456,7 +459,11 @@ for (i = 0; i < 5; i++) {
   Mix_FreeChunk(soundPowerup);
   Mix_FreeChunk(soundWeaponSelect);
 
-  Mix_FreeMusic(musicGame);
+//  Mix_FreeMusic(musicGame);
+  for (i = 0; i < NUM_WORLDS; i++) {
+	Mix_FreeMusic(musicGame[i]);
+  }
+
   Mix_FreeMusic(musicTitle);
   
 

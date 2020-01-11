@@ -31,7 +31,7 @@ extern struct Stats *stats;
 
 int iWorldSelectChoice = 0;
 int iResetStats = FALSE;
-char *strWorldNames[NUM_WORLDS] = { "Celeritas", "Multa", "Fluctus", "Crepitus", "Gelida", "Torqueo", "Quaerere", "Spatium" };
+char *strWorldNames[NUM_WORLDS] = { "Celeritas", "Multa", "Fluctus", "Crepitus",  "Torqueo", "Gelida", "Quaerere", "Spatium" };
 int iBackgroundOffsetWorldSelect;
 
 
