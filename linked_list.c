@@ -36,10 +36,17 @@ void remove_node(struct Node **head, struct Node *node) {
 
       if (previous == NULL) {
         *head = current->next;
+		if (current->data != NULL) {
+			free(current->data);
+		}
         free(current);
         current = *head;
       } else {
         previous->next = current->next;
+		if (current->data != NULL) {
+			free(current->data);
+		}
+
         free(current);
         current = previous->next;
         

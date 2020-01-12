@@ -26,9 +26,10 @@ struct Enemy {
   float fIntroDelay;
   float fFreezeDelay;
   float fMaxFreezeDelay;
+  void *subtype;
 };
 
-void init_enemy(struct Enemy *, int, int, int, int);
+void init_enemy(struct Enemy *, int, int, int, int, int);
 void update_enemy(struct Enemy *);
 void draw_enemy(struct Enemy *);
 void shoot_enemy(struct Enemy *enemy);

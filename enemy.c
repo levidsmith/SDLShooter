@@ -13,6 +13,8 @@
 #include "ship.h"
 #include "stats.h"
 
+#include "enemy_golf.h"
+
 
 extern SDL_Renderer *renderer;
 extern SDL_Texture *imgEnemyAlpha_L1_00;
@@ -47,7 +49,7 @@ extern Mix_Chunk *soundEnemyHit;
 extern Mix_Chunk *soundEnemyDead;
 extern Mix_Chunk *soundEnemyShield;
 
-
+extern struct Node *listEnemy;
 extern struct Node *listBullet;
 extern struct Node *listPowerup;
 extern struct Node *listExplosion;
@@ -57,7 +59,7 @@ extern void remove_node(struct Node **head, struct Node *node);
 extern struct Stats *stats;
 extern struct Ship *ship;
 
-void init_enemy(struct Enemy *enemy, int init_x, int init_y, int init_iType, int init_iLevel) {
+void init_enemy(struct Enemy *enemy, int init_x, int init_y, int init_iType, int init_iLevel, int isRoot) {
   enemy->x = init_x;
   enemy->y = init_y;
   enemy->orig_x = init_x;
@@ -105,8 +107,16 @@ void init_enemy(struct Enemy *enemy, int init_x, int init_y, int init_iType, int
 		case 5:
 			enemy->fChangeMovementCountdown = 0;
 			break;
+		case 6:
+			if (isRoot) {
+				init_enemy_golf(enemy);
+			}
+			break;
             
     }
+	
+	add_node(&listEnemy, enemy);
+
 
 }
 
@@ -406,6 +416,9 @@ void updateActive_enemy(struct Enemy *enemy) {
 		
 		
 		break;
+      case 6:
+            //Golf
+			update_enemy_golf(enemy);
 
     }
 	
@@ -568,8 +581,17 @@ void draw_enemy(struct Enemy *enemy) {
 		  }
 
           break;
+
+		//Golf
+        case 6:
+			draw_enemy_golf(enemy);
+
+          break;
 		  
 		}
+		
+		
+		
 	  }
 	
 		if (img != NULL) {
@@ -675,17 +697,22 @@ void setShootDelay_enemy(struct Enemy *enemy) {
 
 void damage_enemy(struct Enemy *enemy, int iDamageAmount) {
     int iTotalDamage = 0;
+	int iCheckDestroy = TRUE;
 
 	if (enemy->iType == 4) {
 		if (enemy->fWaitCountdown > 0) {
 			iTotalDamage = iDamageAmount; //can only damage this enemy if it's waiting with eye open
 		}
+	} else if (enemy->iType == 6) {
+		damage_enemy_golf(enemy, iDamageAmount);
+		iCheckDestroy = FALSE;
 	} else {
 		iTotalDamage = iDamageAmount;
 
 	}
 
 
+	if (iCheckDestroy) {
 	if (iTotalDamage > 0) {
 		enemy->iHealth -= iTotalDamage;
 		if (enemy->iHealth <= 0) {
@@ -702,6 +729,7 @@ void damage_enemy(struct Enemy *enemy, int iDamageAmount) {
 	} else {
 		Mix_PlayChannel(-1, soundEnemyShield, 0);
 		
+	}
 	}
   
 

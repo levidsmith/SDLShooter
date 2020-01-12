@@ -1,0 +1,35 @@
+quick shot
+	- shoots faster
+wave shot
+	- shoots in sine wave
+tri shot
+	- shoots in three directions
+blast shot
+	-explodes on impact damaging nearby enemies
+
+	
+ring shield
+	- makes ring that circles around ship
+ice beam
+	-freezes enemy
+homing missiles
+
+power shot
+
+lunar
+space
+grassland
+ice land
+fire land
+spin land
+multi land
+
+
+"Celeritas" - speed
+ "Multa" - multi
+"Fluctus" - wave
+"Crepitus" - blast
+"Torqueo" - spin
+"Gelida" - freeze
+"Quaerere" - seek
+? - space

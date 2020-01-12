@@ -14,4 +14,6 @@ void update_stats(struct Stats *stats);
 void draw_stats(struct Stats *stats);
 int getShotsFired_stats(struct Stats *stats);
 int getHitRate(struct Stats *stats);
+Uint32 getTotalTime_stats(struct Stats *stats);
+
 

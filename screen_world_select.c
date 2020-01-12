@@ -101,6 +101,8 @@ void update_screen_world_select() {
 		if (imgWorldSelectWorldText[i] != NULL) {
 			SDL_DestroyTexture(imgWorldSelectWorldText[i]);
 		}
+
+
 		
 		sprText = TTF_RenderText_Solid(fontDefault, strText, colorText);
 		imgWorldSelectWorldText[i] = SDL_CreateTextureFromSurface(renderer, sprText);
@@ -111,6 +113,9 @@ void update_screen_world_select() {
     formatTime(strTimeValue, getTotalTime_stats(stats));
     sprintf(strText, "Total Time %s", strTimeValue);
     sprText = TTF_RenderText_Solid(fontDefault, strText, colorDefault);
+	if (imgWorldSelectTotalTimeText != NULL) {
+		SDL_DestroyTexture(imgWorldSelectTotalTimeText);
+	}
     imgWorldSelectTotalTimeText = SDL_CreateTextureFromSurface(renderer, sprText);
     SDL_FreeSurface(sprText);
 	
