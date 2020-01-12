@@ -76,6 +76,7 @@ SDL_Texture *imgBonusText[3];
 SDL_Texture *imgWorldSelectText;
 SDL_Texture *imgWorldSelectSelectedText;
 SDL_Texture *imgWorldSelectWorldText[NUM_WORLDS];
+SDL_Texture *imgWorldSelectTotalTimeText;
 
 
 TTF_Font *fontDefault;

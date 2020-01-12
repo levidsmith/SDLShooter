@@ -51,3 +51,16 @@ int getHitRate(struct Stats *stats) {
 	
 	return iHitRate;
 }
+
+Uint32 getTotalTime_stats(struct Stats *stats) {
+    Uint32 iTime = 0;
+    int i;
+    for (i = 0; i < NUM_WORLDS; i++) {
+        if (stats->iWorldCompleted[i]) {
+            iTime += stats->iWorldTime[i];
+        }
+        
+    }
+    
+    return iTime;
+}

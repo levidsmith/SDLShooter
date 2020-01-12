@@ -974,6 +974,7 @@ void handleInput_screen_game(int iType, int iKey) {
 		if (fKeyPressDelay <= 0) {
 			iCurrentWorld = -1;
 			iCurrentLevel = 0;
+            iGameContinue = FALSE;
 			setCurrentScreen(2);
 		}
 	  } else if (iGameOver) {

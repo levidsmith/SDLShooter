@@ -14,6 +14,7 @@ extern void quit();
 
 extern SDL_Texture *imgWorldSelectText;
 extern SDL_Texture *imgWorldSelectSelectedText;
+extern SDL_Texture *imgWorldSelectTotalTimeText;
 
 
 //Variables
@@ -73,6 +74,9 @@ void update_screen_world_select() {
   SDL_Color colorHighlight = { 0xFF, 0x00, 0x00, 0xFF };
   SDL_Color colorDefault = { 0x00, 0x00, 0xFF, 0xFF };
   SDL_Color colorCompleted = { 0x00, 0x00, 0x00, 0xFF };
+    
+            char strText[64];
+    char strTimeValue[16];
   
 	int i;
 	for (i = 0; i < NUM_WORLDS; i++) {
@@ -84,10 +88,9 @@ void update_screen_world_select() {
 			colorText = colorDefault;
 		}
 		
-		char strText[64];
 		
 		if (stats->iWorldCompleted[i]) {
-			char strTimeValue[16];
+
 			formatTime(strTimeValue, stats->iWorldTime[i]);
 
 			sprintf(strText, "%s - Completed %s", strWorldNames[i], strTimeValue);
@@ -104,6 +107,12 @@ void update_screen_world_select() {
 		SDL_FreeSurface(sprText); 
 
 	}
+
+    formatTime(strTimeValue, getTotalTime_stats(stats));
+    sprintf(strText, "Total Time %s", strTimeValue);
+    sprText = TTF_RenderText_Solid(fontDefault, strText, colorDefault);
+    imgWorldSelectTotalTimeText = SDL_CreateTextureFromSurface(renderer, sprText);
+    SDL_FreeSurface(sprText);
 	
   iBackgroundOffsetWorldSelect += 1 * UNIT_SIZE * DELTA_TIME;
   if (iBackgroundOffsetWorldSelect > 255) {
@@ -144,6 +153,11 @@ void draw_screen_world_select() {
 		SDL_QueryTexture(imgWorldSelectWorldText[i], NULL, NULL, &(posTitle.w), &(posTitle.h));
 		SDL_RenderCopy(renderer, imgWorldSelectWorldText[i], NULL, &posTitle);
 	}
+    
+    posTitle.x = 320;
+    posTitle.y = 300 + (32 * (NUM_WORLDS + 1));
+    SDL_QueryTexture(imgWorldSelectTotalTimeText, NULL, NULL, &(posTitle.w), &(posTitle.h));
+    SDL_RenderCopy(renderer, imgWorldSelectTotalTimeText, NULL, &posTitle);
 
 
 }
