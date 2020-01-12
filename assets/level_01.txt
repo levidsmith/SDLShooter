@@ -1,13 +1,15 @@
 
-
-
+        
+          C
 
   C
 =
 
         C
-  C
+  D
            C
+
+      D
 =
 
     A A A A A

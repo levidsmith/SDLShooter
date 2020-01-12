@@ -88,6 +88,8 @@ void init_enemy(struct Enemy *enemy, int init_x, int init_y, int init_iType, int
   
   setShootDelay_enemy(enemy);
     
+	add_node(&listEnemy, enemy);
+
     switch(enemy->iType) {
         case 2:
             //Charlie
@@ -115,7 +117,6 @@ void init_enemy(struct Enemy *enemy, int init_x, int init_y, int init_iType, int
             
     }
 	
-	add_node(&listEnemy, enemy);
 
 
 }
@@ -737,11 +738,21 @@ void damage_enemy(struct Enemy *enemy, int iDamageAmount) {
 
 void freeze_enemy(struct Enemy *enemy, int iFreezeLevel, int iDamageAmount) {
 	int iNewFreezeDelay;
-	
-	if (enemy->fFreezeDelay > 0) {
-		//if the enemy is already froze, then damage the enemy
-		damage_enemy(enemy, iDamageAmount);
+	int iCanFreeze;
+
+
+	iCanFreeze = TRUE;
+	if (enemy->iType == 6) {
+		//Golf
+		iCanFreeze = getCanFreeze_enemy_golf(enemy);
 	}
+		
+
+	if (iCanFreeze) {
+		if (enemy->fFreezeDelay > 0) {
+			//if the enemy is already froze, then damage the enemy
+			damage_enemy(enemy, iDamageAmount);
+		}
 
 	
 		switch(iFreezeLevel) {
@@ -760,6 +771,10 @@ void freeze_enemy(struct Enemy *enemy, int iFreezeLevel, int iDamageAmount) {
 			enemy->fFreezeDelay = iNewFreezeDelay;
 			enemy->fMaxFreezeDelay = iNewFreezeDelay;
 		}
+	} else {
+		damage_enemy(enemy, iDamageAmount);
+		
+	}
 		
 		
 		

@@ -14,9 +14,10 @@ struct EnemyGolf {
 void init_enemy_golf(struct Enemy *enemy);
 void update_enemy_golf(struct Enemy *enemy);
 void draw_enemy_golf(struct Enemy *enemy);
-void init_enemy_golf_tail(struct Enemy *enemy, struct Enemy *previous);
+//void init_enemy_golf_tail(struct Enemy *enemy, struct Enemy *previous);
 void damage_enemy_golf(struct Enemy *enemy, int iDamageAmount);
 int getIsTailDead(struct Enemy *enemy);
 void updateMinMaxValues(struct Enemy *enemy);
 void moveAll(struct Enemy *enemy, float x_move, float y_move);
+int getCanFreeze_enemy_golf(struct Enemy *enemy);
 

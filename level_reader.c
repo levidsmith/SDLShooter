@@ -298,6 +298,22 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
 //				add_node(&listEnemy, e1);
 				iEnemyCount++;
 
+			} else 	if (strLine[i] == 'D') {
+
+				struct Enemy *e1;
+				e1 = malloc(sizeof(struct Enemy));
+				init_enemy(e1, x, y, 6, 2, TRUE);
+				configure_enemy(e1);
+
+				if (iDropCountdown <= 0) {
+					e1->hasDrop = TRUE;
+					iDropCountdown = getDropCountdown();
+				} else {
+					iDropCountdown--;
+				}
+
+
+				iEnemyCount++;
 
 			}
 
