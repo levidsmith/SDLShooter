@@ -810,13 +810,13 @@ int getEnergyRequired(int iWeapon, int iLevel) {
 			//spin shot
 			switch(iLevel) {
 				case 0:
-					iEnergy = 20;
+					iEnergy = 32;
 					break;
 				case 1:
-					iEnergy = 40;
+					iEnergy = 64;
 					break;
 				case 2:
-					iEnergy = 60;
+					iEnergy = 128;
 					break;
 			}
 			break;
