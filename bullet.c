@@ -35,6 +35,7 @@ void init_bullet(struct Bullet *bullet, int init_x, int init_y, int init_level) 
   bullet->iWeaponType = 0;
   
   bullet->x -= bullet->width / 2;
+  bullet->y -= bullet->height / 2;
   bullet->iDamage = 1;
   bullet->iLevel = init_level;
   

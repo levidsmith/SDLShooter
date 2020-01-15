@@ -14,6 +14,7 @@
 #include "stats.h"
 
 #include "enemy_golf.h"
+#include "enemy_hotel.h"
 
 
 extern SDL_Renderer *renderer;
@@ -113,6 +114,9 @@ void init_enemy(struct Enemy *enemy, int init_x, int init_y, int init_iType, int
 			if (isRoot) {
 				init_enemy_golf(enemy);
 			}
+			break;
+		case 7:
+			init_enemy_hotel(enemy);
 			break;
             
     }
@@ -420,7 +424,12 @@ void updateActive_enemy(struct Enemy *enemy) {
       case 6:
             //Golf
 			update_enemy_golf(enemy);
+			break;
 
+      case 7:
+            //Hotel
+			update_enemy_hotel(enemy);
+			break;
     }
 	
 	if (enemy->fShootDelay > 0) {
@@ -588,6 +597,12 @@ void draw_enemy(struct Enemy *enemy) {
 			draw_enemy_golf(enemy);
 
           break;
+
+		//Hotel
+        case 7:
+			img = getTexture_enemy_hotel(enemy);
+
+          break;
 		  
 		}
 		
@@ -707,6 +722,9 @@ void damage_enemy(struct Enemy *enemy, int iDamageAmount) {
 	} else if (enemy->iType == 6) {
 		damage_enemy_golf(enemy, iDamageAmount);
 		iCheckDestroy = FALSE;
+	} else if (enemy->iType == 7) {
+		damage_enemy_hotel(enemy, iDamageAmount);
+		
 	} else {
 		iTotalDamage = iDamageAmount;
 

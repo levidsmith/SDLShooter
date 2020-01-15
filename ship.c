@@ -515,6 +515,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
               float    fDistance    = getDistance(ship->x, ship->y, bullet->x, bullet->y);
               bullet->vel_x = -5 * (getCenterX_ship(ship) - getCenterX_bullet(bullet)) / fDistance;
               bullet->vel_y = -5 * (getCenterY_ship(ship) - getCenterY_bullet(bullet)) / fDistance;
+			  bullet->fLifetime = 0;
               
           }
           current = current->next;

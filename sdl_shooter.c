@@ -54,6 +54,12 @@ SDL_Texture *imgEnemyGolf_L2_02;
 SDL_Texture *imgEnemyGolf_L2_03;
 SDL_Texture *imgEnemyGolf_L2_04;
 SDL_Texture *imgEnemyGolf_L2_05;
+SDL_Texture *imgEnemyHotel_L1_00;
+SDL_Texture *imgEnemyHotel_L1_01;
+SDL_Texture *imgEnemyHotel_L2_00;
+SDL_Texture *imgEnemyHotel_L2_01;
+
+
 
 SDL_Texture *imgEnemyWarp;
 SDL_Texture *imgExplosion_L2_00;
@@ -335,6 +341,11 @@ for (i = 0; i < NUM_WORLDS * 2; i++) {
   imgEnemyGolf_L2_04 = generateTexture("assets/images/enemy_golf_l2_5.bmp");
   imgEnemyGolf_L2_05 = generateTexture("assets/images/enemy_golf_l2_6.bmp");
 
+  imgEnemyHotel_L1_00 = generateTexture("assets/images/enemy_hotel_l1_1.bmp");
+  imgEnemyHotel_L1_01 = generateTexture("assets/images/enemy_hotel_l1_2.bmp");
+  imgEnemyHotel_L2_00 = generateTexture("assets/images/enemy_hotel_l2_1.bmp");
+  imgEnemyHotel_L2_01 = generateTexture("assets/images/enemy_hotel_l2_2.bmp");
+
 
 	for (i = 0; i < NUM_WEAPONS; i++) {
 			sprintf(strFile, "assets/images/bullet%d.bmp", (i + 1));
@@ -540,6 +551,10 @@ for (i = 0; i < NUM_WORLDS * 2; i++) {
   SDL_DestroyTexture(imgEnemyGolf_L2_03);
   SDL_DestroyTexture(imgEnemyGolf_L2_04);
   SDL_DestroyTexture(imgEnemyGolf_L2_05);
+  SDL_DestroyTexture(imgEnemyHotel_L1_00);
+  SDL_DestroyTexture(imgEnemyHotel_L1_01);
+  SDL_DestroyTexture(imgEnemyHotel_L2_00);
+  SDL_DestroyTexture(imgEnemyHotel_L2_01);
 
 
   SDL_DestroyTexture(imgExplosion_L2_00);
