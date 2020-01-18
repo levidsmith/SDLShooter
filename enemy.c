@@ -86,6 +86,8 @@ void init_enemy(struct Enemy *enemy, int init_x, int init_y, int init_iType, int
   enemy->fIntroDelay = 1;
   enemy->fFreezeDelay = 0;
   enemy->fMaxFreezeDelay = 0;
+  enemy->fDeathDelay = 0;
+  enemy->fMaxDeathDelay = 0.5;
   
   setShootDelay_enemy(enemy);
     
@@ -226,6 +228,9 @@ void update_enemy(struct Enemy *enemy) {
 			//unfreeze
 			enemy->fFreezeDelay = 0;
 		}
+
+	} else if (!enemy->isAlive) {
+		enemy->fDeathDelay += DELTA_TIME;
 		
 	} else {
 		updateActive_enemy(enemy);
@@ -470,7 +475,7 @@ void draw_enemy(struct Enemy *enemy) {
 	int iSpriteIndex = ((int) (enemy->fLifetime * 2)) % 2; //change sprite every 0.5 seconds
 	
 
-    if (enemy->isAlive) {
+//    if (enemy->isAlive) {
       pos.x = enemy->x;
       pos.y = enemy->y;
 	  pos.w = enemy->width;
@@ -594,7 +599,8 @@ void draw_enemy(struct Enemy *enemy) {
 
 		//Golf
         case 6:
-			draw_enemy_golf(enemy);
+			//draw_enemy_golf(enemy);
+			img = getTexture_enemy_golf(enemy);
 
           break;
 
@@ -611,14 +617,92 @@ void draw_enemy(struct Enemy *enemy) {
 	  }
 	
 		if (img != NULL) {
+			SDL_SetTextureAlphaMod(img, 0xFF);
+
 			
 			if (enemy->fIntroDelay > 0) {
 				SDL_RenderCopyEx(renderer, img, NULL, &pos, enemy->fIntroDelay * 720, NULL, SDL_FLIP_NONE);
+			} else if (!enemy->isAlive) {
+				SDL_Rect rectParts;
+				float fBreakApartSpeed = 2;
+//				int iAlpha = 0xFF - (enemy->fDeathDelay * 256 / enemy->fMaxDeathDelay);
+				float fDeathPercent = enemy->fDeathDelay / enemy->fMaxDeathDelay;
+				//full transperancy for half of death delay, then fade linearly
+				int iAlpha = 255;
+				if (fDeathPercent > 0.5) {
+					iAlpha = 256 * (-((fDeathPercent - 0.5) / 0.5) + 1);
+//					iAlpha = 256 * (-(fDeathPercent) + 1);
+				}
+				if (iAlpha < 0) {
+					iAlpha = 0;
+				}
+
+				float fAngle = enemy->fDeathDelay * 360;
+
+				SDL_SetTextureAlphaMod(img, iAlpha);
+
+				
+				//upper left part
+			    pos.x = enemy->x - (enemy->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
+				pos.y = enemy->y - (enemy->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
+				pos.w = enemy->width / 2;
+				pos.h = enemy->height / 2;
+
+				rectParts.x = 0;
+				rectParts.y = 0;
+				rectParts.w = pos.w;
+				rectParts.h = pos.h;
+
+//				SDL_RenderCopyEx(renderer, img, &rectParts, &pos, 0, NULL, SDL_FLIP_NONE);
+				SDL_RenderCopyEx(renderer, img, &rectParts, &pos, -fAngle, NULL, SDL_FLIP_NONE);
+
+
+				//upper right part
+			    pos.x = enemy->x + (enemy->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
+				pos.y = enemy->y - (enemy->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
+				pos.w = enemy->width / 2;
+				pos.h = enemy->height / 2;
+
+				rectParts.x = enemy->width / 2;
+				rectParts.y = 0;
+				rectParts.w = pos.w;
+				rectParts.h = pos.h;
+
+				SDL_RenderCopyEx(renderer, img, &rectParts, &pos, fAngle, NULL, SDL_FLIP_NONE);
+
+
+				//lower left part
+			    pos.x = enemy->x - (enemy->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
+				pos.y = enemy->y + (enemy->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
+				pos.w = enemy->width / 2;
+				pos.h = enemy->height / 2;
+
+				rectParts.x = 0;
+				rectParts.y = enemy->width / 2;
+				rectParts.w = pos.w;
+				rectParts.h = pos.h;
+
+				SDL_RenderCopyEx(renderer, img, &rectParts, &pos, -fAngle, NULL, SDL_FLIP_NONE);
+				
+				//lower right part
+			    pos.x = enemy->x + (enemy->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
+				pos.y = enemy->y + (enemy->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
+				pos.w = enemy->width / 2;
+				pos.h = enemy->height / 2;
+
+				rectParts.x = enemy->width / 2;
+				rectParts.y = enemy->height / 2;
+				rectParts.w = pos.w;
+				rectParts.h = pos.h;
+
+				SDL_RenderCopyEx(renderer, img, &rectParts, &pos, fAngle, NULL, SDL_FLIP_NONE);
+
+				
 				
 			} else {
 				
 			
-				if (enemy->fDamagedCountdown > 0) {
+				if (enemy->fDamagedCountdown > 0 || enemy->iHealth <= 0) {
 						SDL_SetTextureColorMod(img, 255, 0, 0);
 				} else {
 					SDL_SetTextureColorMod(img, 255, 255, 255);
@@ -645,7 +729,7 @@ void draw_enemy(struct Enemy *enemy) {
 			}
 		}
 
-    }
+  //  }
 
 }
 
@@ -724,6 +808,7 @@ void damage_enemy(struct Enemy *enemy, int iDamageAmount) {
 		iCheckDestroy = FALSE;
 	} else if (enemy->iType == 7) {
 		damage_enemy_hotel(enemy, iDamageAmount);
+		iCheckDestroy = FALSE;
 		
 	} else {
 		iTotalDamage = iDamageAmount;
@@ -770,24 +855,30 @@ void freeze_enemy(struct Enemy *enemy, int iFreezeLevel, int iDamageAmount) {
 		if (enemy->fFreezeDelay > 0) {
 			//if the enemy is already froze, then damage the enemy
 			damage_enemy(enemy, iDamageAmount);
-		}
+		} 
+		
+		
+		//don't need to reset the freeze dealy, if the enemy is already dead
+		//refreezing a dead enemy will cause weird things to happen in the death animation
+		if (enemy->isAlive) {
 
 	
-		switch(iFreezeLevel) {
-			case 0:
-				iNewFreezeDelay = 1;
+			switch(iFreezeLevel) {
+				case 0:
+					iNewFreezeDelay = 1;
+					break;
+				case 1:
+					iNewFreezeDelay = 4;
 				break;
-			case 1:
-				iNewFreezeDelay = 4;
-				break;
-			case 2:
-				iNewFreezeDelay = 20;
-				break;
-		}
+				case 2:	
+					iNewFreezeDelay = 20;
+					break;
+			}
 		
-		if (enemy->fFreezeDelay < iNewFreezeDelay) {
-			enemy->fFreezeDelay = iNewFreezeDelay;
-			enemy->fMaxFreezeDelay = iNewFreezeDelay;
+			if (enemy->fFreezeDelay < iNewFreezeDelay) {
+				enemy->fFreezeDelay = iNewFreezeDelay;
+				enemy->fMaxFreezeDelay = iNewFreezeDelay;
+			}
 		}
 	} else {
 		damage_enemy(enemy, iDamageAmount);
@@ -801,6 +892,8 @@ void freeze_enemy(struct Enemy *enemy, int iFreezeLevel, int iDamageAmount) {
 
 void destroy_enemy(struct Enemy *enemy) {
 				enemy->isAlive = FALSE;
+				enemy->fDeathDelay = 0;
+				enemy->fFreezeDelay = 0;
 				stats->iScore += enemy->iPoints;
 				
 				Mix_PlayChannel(-1, soundEnemyDead, 0);
@@ -814,7 +907,8 @@ void destroy_enemy(struct Enemy *enemy) {
 					init_powerup(powerup, enemy->x, enemy->y, iType);
 					add_node(&listPowerup, powerup);
 				}
-				
+
+/*				
 				struct Explosion *explosion = malloc(sizeof(struct Explosion));
 				init_explosion(explosion, enemy->x + (enemy->width / 2), enemy->y + (enemy->height / 2), enemy->width / 2);
 				explosion->c.r = 255;
@@ -822,6 +916,7 @@ void destroy_enemy(struct Enemy *enemy) {
 				explosion->c.b = 128;
 				
 				add_node(&listExplosion, explosion);
+*/
 				
 			  updateDisplayText();
 
@@ -864,6 +959,16 @@ float getCenterX_enemy(struct Enemy *enemy) {
 
 float getCenterY_enemy(struct Enemy *enemy) {
 	return enemy->y + (enemy->height / 2);
+}
+
+int getDelete_enemy(struct Enemy *enemy) {
+	int iCanDelete = FALSE;
+	if (!enemy->isAlive && enemy->fDeathDelay > enemy->fMaxDeathDelay) {
+		iCanDelete = TRUE;
+		
+	}
+	
+	return iCanDelete;
 }
 
 

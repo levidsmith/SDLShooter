@@ -130,6 +130,10 @@ void damage_enemy_hotel(struct Enemy *enemy, int iDamageAmount) {
 	enemy->iHealth -= iDamageAmount;
 	if (enemy->iHealth <= 0) {
 		destroy_enemy(enemy);
+	} else {
+		Mix_PlayChannel(-1, soundEnemyHit, 0);
+
+		
 	}
 	
 	enemy->fDamagedCountdown = 0.2;

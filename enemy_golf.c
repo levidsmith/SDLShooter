@@ -180,7 +180,8 @@ void update_enemy_golf(struct Enemy *enemy) {
 }
 
 
-void draw_enemy_golf(struct Enemy *enemy) {
+//void draw_enemy_golf(struct Enemy *enemy) {
+SDL_Texture *getTexture_enemy_golf(struct Enemy *enemy) {
 		SDL_Texture *img = NULL;
 		int iIsTailDead;
 
@@ -251,13 +252,14 @@ void draw_enemy_golf(struct Enemy *enemy) {
 			
 		}
 		
-
+/*
 				if (enemy->fDamagedCountdown > 0 || enemy->iHealth <= 0) {
 						SDL_SetTextureColorMod(img, 255, 0, 0);
 				} else {
 					SDL_SetTextureColorMod(img, 255, 255, 255);
 
 				}
+				*/
 				
 				//draw enemy sprite
 			    SDL_Rect pos;
@@ -267,7 +269,7 @@ void draw_enemy_golf(struct Enemy *enemy) {
 	  pos.h = enemy->height;
 				
 
-				SDL_RenderCopy(renderer, img, NULL, &pos);
+//				SDL_RenderCopy(renderer, img, NULL, &pos);
 
 
 		
@@ -300,6 +302,8 @@ void draw_enemy_golf(struct Enemy *enemy) {
 
 	
 	}
+	
+	return img;
 
 }
 

@@ -240,7 +240,8 @@ void update_screen_game() {
   while(current != NULL) {
     enemy = (struct Enemy *) current->data;
 	update_enemy(enemy);
-	if (!enemy->isAlive) {
+//	if (!enemy->isAlive) {
+	if (getDelete_enemy(enemy)) {
 		deleteNode = current;
 	}
     current = current->next;

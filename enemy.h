@@ -26,6 +26,8 @@ struct Enemy {
   float fIntroDelay;
   float fFreezeDelay;
   float fMaxFreezeDelay;
+  float fDeathDelay;
+  float fMaxDeathDelay;
   void *subtype;
 };
 
@@ -44,6 +46,7 @@ void freeze_enemy(struct Enemy *enemy, int iFreezeLevel, int iDamageAmount);
 float getCenterX_enemy(struct Enemy *enemy);
 float getCenterY_enemy(struct Enemy *enemy);
 void configure_enemy(struct Enemy *enemy);
+int getDelete_enemy(struct Enemy *enemy);
 
 
 
