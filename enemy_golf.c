@@ -463,4 +463,6 @@ int getCanFreeze_enemy_golf(struct Enemy *enemy) {
 		iCanFreeze = TRUE;
 		
 	}
+    
+    return iCanFreeze;
 }
