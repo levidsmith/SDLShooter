@@ -650,63 +650,67 @@ void draw_enemy(struct Enemy *enemy) {
 					iAlpha = 0;
 				}
 
-				float fAngle = enemy->fDeathDelay * 360;
+                float fAngle = enemy->fDeathDelay * 180;
+                
 
 				SDL_SetTextureAlphaMod(img, iAlpha);
+                
+                int img_w, img_h;
+                SDL_QueryTexture(img, NULL, NULL, &img_w, &img_h);
 
 				
 				//upper left part
-			    pos.x = enemy->x - (enemy->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
-				pos.y = enemy->y - (enemy->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
+			    pos.x = enemy->x + (enemy->width / 2) - (enemy->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
+				pos.y = enemy->y + (enemy->height / 2) - (enemy->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
 				pos.w = enemy->width / 2;
 				pos.h = enemy->height / 2;
 
 				rectParts.x = 0;
 				rectParts.y = 0;
-				rectParts.w = pos.w;
-				rectParts.h = pos.h;
+                rectParts.w = img_w / 2;
+				rectParts.h = img_h / 2;
 
 //				SDL_RenderCopyEx(renderer, img, &rectParts, &pos, 0, NULL, SDL_FLIP_NONE);
 				SDL_RenderCopyEx(renderer, img, &rectParts, &pos, -fAngle, NULL, SDL_FLIP_NONE);
 
 
 				//upper right part
-			    pos.x = enemy->x + (enemy->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
-				pos.y = enemy->y - (enemy->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
+			    pos.x = enemy->x + (enemy->width / 2) + (enemy->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
+				pos.y = enemy->y + (enemy->height / 2) - (enemy->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
 				pos.w = enemy->width / 2;
 				pos.h = enemy->height / 2;
 
-				rectParts.x = enemy->width / 2;
+				rectParts.x = img_w / 2;
 				rectParts.y = 0;
-				rectParts.w = pos.w;
-				rectParts.h = pos.h;
+				rectParts.w = img_w / 2;
+				rectParts.h = img_h / 2;
 
 				SDL_RenderCopyEx(renderer, img, &rectParts, &pos, fAngle, NULL, SDL_FLIP_NONE);
 
 
 				//lower left part
-			    pos.x = enemy->x - (enemy->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
-				pos.y = enemy->y + (enemy->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
+			    pos.x = enemy->x + (enemy->width / 2) - (enemy->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
+				pos.y = enemy->y + (enemy->height / 2) + (enemy->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
 				pos.w = enemy->width / 2;
 				pos.h = enemy->height / 2;
 
 				rectParts.x = 0;
-				rectParts.y = enemy->width / 2;
-				rectParts.w = pos.w;
-				rectParts.h = pos.h;
+				rectParts.y = img_h / 2;
+				rectParts.w = img_w / 2;
+				rectParts.h = img_h / 2;
 
 				SDL_RenderCopyEx(renderer, img, &rectParts, &pos, -fAngle, NULL, SDL_FLIP_NONE);
 				
 				//lower right part
-			    pos.x = enemy->x + (enemy->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
-				pos.y = enemy->y + (enemy->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
+			    pos.x = enemy->x + (enemy->width / 2) + (enemy->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
+				pos.y = enemy->y + (enemy->height / 2) + (enemy->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
 				pos.w = enemy->width / 2;
 				pos.h = enemy->height / 2;
 
-				rectParts.x = enemy->width / 2;
-				rectParts.y = enemy->height / 2;
-				rectParts.w = pos.w;
-				rectParts.h = pos.h;
+				rectParts.x = img_w / 2;
+				rectParts.y = img_h / 2;
+				rectParts.w = img_w / 2;
+				rectParts.h = img_h / 2;
 
 				SDL_RenderCopyEx(renderer, img, &rectParts, &pos, fAngle, NULL, SDL_FLIP_NONE);
 

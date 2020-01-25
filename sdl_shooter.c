@@ -354,10 +354,10 @@ for (i = 0; i < NUM_WORLDS * 2; i++) {
     
   imgEnemyIndia_L1_00 = generateTexture("assets/images/enemy_india_l1_1.bmp");
   imgEnemyIndia_L1_01 = generateTexture("assets/images/enemy_india_l1_2.bmp");
-  imgEnemyIndia_L2_00 = generateTexture("assets/images/enemy_india_l1_1.bmp");
-  imgEnemyIndia_L2_01 = generateTexture("assets/images/enemy_india_l1_2.bmp");
-  imgEnemyIndia_L3_00 = generateTexture("assets/images/enemy_india_l1_1.bmp");
-  imgEnemyIndia_L3_01 = generateTexture("assets/images/enemy_india_l1_2.bmp");
+  imgEnemyIndia_L2_00 = generateTexture("assets/images/enemy_india_l2_1.bmp");
+  imgEnemyIndia_L2_01 = generateTexture("assets/images/enemy_india_l2_2.bmp");
+  imgEnemyIndia_L3_00 = generateTexture("assets/images/enemy_india_l3_1.bmp");
+  imgEnemyIndia_L3_01 = generateTexture("assets/images/enemy_india_l3_2.bmp");
 
 
 	for (i = 0; i < NUM_WEAPONS; i++) {
