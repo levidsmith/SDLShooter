@@ -1,4 +1,7 @@
 //2019 Levi D. Smith - levidsmith.com
+
+
+
 struct Enemy {
   int iLevel;
   int iHealth;
@@ -31,6 +34,9 @@ struct Enemy {
   void *subtype;
 };
 
+
+
+
 void init_enemy(struct Enemy *, int, int, int, int, int);
 void update_enemy(struct Enemy *);
 void draw_enemy(struct Enemy *);
@@ -47,8 +53,6 @@ float getCenterX_enemy(struct Enemy *enemy);
 float getCenterY_enemy(struct Enemy *enemy);
 void configure_enemy(struct Enemy *enemy);
 int getDelete_enemy(struct Enemy *enemy);
-
-
 
 
 

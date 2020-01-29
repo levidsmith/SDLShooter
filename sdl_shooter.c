@@ -64,6 +64,10 @@ SDL_Texture *imgEnemyIndia_L2_00;
 SDL_Texture *imgEnemyIndia_L2_01;
 SDL_Texture *imgEnemyIndia_L3_00;
 SDL_Texture *imgEnemyIndia_L3_01;
+SDL_Texture *imgEnemyJuliett_L1_00;
+SDL_Texture *imgEnemyJuliett_L1_01;
+SDL_Texture *imgEnemyJuliett_L2_00;
+SDL_Texture *imgEnemyJuliett_L2_01;
 
 
 
@@ -359,6 +363,11 @@ for (i = 0; i < NUM_WORLDS * 2; i++) {
   imgEnemyIndia_L3_00 = generateTexture("assets/images/enemy_india_l3_1.bmp");
   imgEnemyIndia_L3_01 = generateTexture("assets/images/enemy_india_l3_2.bmp");
 
+  imgEnemyJuliett_L1_00 = generateTexture("assets/images/enemy_juliett_l1_1.bmp");
+  imgEnemyJuliett_L1_01 = generateTexture("assets/images/enemy_juliett_l1_2.bmp");
+  imgEnemyJuliett_L2_00 = generateTexture("assets/images/enemy_juliett_l2_1.bmp");
+  imgEnemyJuliett_L2_01 = generateTexture("assets/images/enemy_juliett_l2_2.bmp");
+
 
 	for (i = 0; i < NUM_WEAPONS; i++) {
 			sprintf(strFile, "assets/images/bullet%d.bmp", (i + 1));
@@ -574,6 +583,10 @@ for (i = 0; i < NUM_WORLDS * 2; i++) {
   SDL_DestroyTexture(imgEnemyIndia_L2_01);
   SDL_DestroyTexture(imgEnemyIndia_L3_00);
   SDL_DestroyTexture(imgEnemyIndia_L3_01);
+  SDL_DestroyTexture(imgEnemyJuliett_L1_00);
+  SDL_DestroyTexture(imgEnemyJuliett_L1_01);
+  SDL_DestroyTexture(imgEnemyJuliett_L2_00);
+  SDL_DestroyTexture(imgEnemyJuliett_L2_01);
 
 
   SDL_DestroyTexture(imgExplosion_L2_00);

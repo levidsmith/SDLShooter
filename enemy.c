@@ -1,11 +1,12 @@
 //2019 Levi D. Smith - levidsmith.com
+#include "enemy.h"
+
 #include "globals.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "screen_game.h"
-#include "enemy.h"
 #include "bullet.h"
 #include "powerup.h"
 #include "explosion.h"
@@ -13,9 +14,12 @@
 #include "ship.h"
 #include "stats.h"
 
+
 #include "enemy_golf.h"
 #include "enemy_hotel.h"
 #include "enemy_india.h"
+#include "enemy_juliett.h"
+
 
 
 extern SDL_Renderer *renderer;
@@ -123,6 +127,9 @@ void init_enemy(struct Enemy *enemy, int init_x, int init_y, int init_iType, int
 			break;
         case 8:
             init_enemy_india(enemy);
+            break;
+        case 9:
+            init_enemy_juliett(enemy);
             break;
 
     }
@@ -444,6 +451,10 @@ void updateActive_enemy(struct Enemy *enemy) {
             //India
             update_enemy_india(enemy);
             break;
+      case 9:
+            //Juliett
+            update_enemy_juliett(enemy);
+            break;
     }
 	
 	if (enemy->fShootDelay > 0) {
@@ -623,8 +634,13 @@ void draw_enemy(struct Enemy *enemy) {
             img = getTexture_enemy_india(enemy);
             break;
 
-		}
 		
+        //Juliett
+        case 9:
+            img = getTexture_enemy_juliett(enemy);
+            break;
+
+		}
 		
 		
 	  }
@@ -830,6 +846,9 @@ void damage_enemy(struct Enemy *enemy, int iDamageAmount) {
         damage_enemy_india(enemy, iDamageAmount);
         iCheckDestroy = FALSE;
         
+    } else if (enemy->iType == 9) {
+        damage_enemy_juliett(enemy, iDamageAmount);
+        iCheckDestroy = FALSE;
 		
 	} else {
 		iTotalDamage = iDamageAmount;

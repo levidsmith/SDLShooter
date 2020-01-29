@@ -6,9 +6,13 @@
 //  Copyright © 2020 Levi D. Smith. All rights reserved.
 //
 
+#include <stdlib.h>
+#include <math.h>
+
 #include "globals.h"
 #include "enemy.h"
 #include "enemy_india.h"
+
 
 extern SDL_Texture *imgEnemyIndia_L1_00;
 extern SDL_Texture *imgEnemyIndia_L1_01;
