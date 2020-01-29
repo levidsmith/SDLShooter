@@ -128,7 +128,7 @@ void set_target_enemy_juliett(struct Enemy *enemy) {
 				enemyjuliett->fTargetXUnits *= -1;
 			}
 			
-			if (enemy->orig_x + (enemyjuliett->fTargetXUnits * UNIT_SIZE) > SCREEN_WIDTH) {
+			if (enemy->orig_x + enemy->width + (enemyjuliett->fTargetXUnits * UNIT_SIZE) > SCREEN_WIDTH) {
 				enemyjuliett->fTargetXUnits = -4;
 			} else if (enemy->orig_x + (enemyjuliett->fTargetXUnits * UNIT_SIZE) < 0) {
 				enemyjuliett->fTargetXUnits = 4;
