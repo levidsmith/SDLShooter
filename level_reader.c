@@ -34,14 +34,14 @@ void loadGameData() {
         f = SDL_RWFromFile(strFile, "r");
         Sint64 iFileSize = SDL_RWsize(f);
 //        printf("File size: %d\n", iFileSize);
-        char strFileContents[iFileSize];
+        char strFileContents[iFileSize + 1];
             SDL_RWread( f, strFileContents, sizeof(char), iFileSize );
 //        printf("*** File Contents: %s\n", strFileContents);
         
         SDL_RWclose(f);
       printf("End Reading file\n");
 
-		strWorldData[i] = malloc(sizeof(char) * strlen(strFileContents));
+		strWorldData[i] = malloc(sizeof(char) * (iFileSize + 1));
 		strcpy(strWorldData[i], strFileContents);
 //	  strWorldData[i] = strFileContents;
 //        printf("World %d - %s\n", i, strWorldData[i]);
@@ -49,7 +49,7 @@ void loadGameData() {
 	}
 
 
-        printf("World 0 - %s\n", strWorldData[0]);
+   //     printf("World 0 - %s\n", strWorldData[0]);
 	
 }
 

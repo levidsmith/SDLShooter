@@ -1,4 +1,5 @@
 //2020 Levi D. Smith
+#include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
@@ -12,18 +13,18 @@ extern SDL_Texture *imgEnemyKilo_L1_00;
 extern SDL_Texture *imgEnemyKilo_L1_01;
 extern SDL_Texture *imgEnemyKilo_L2_00;
 extern SDL_Texture *imgEnemyKilo_L2_01;
+extern SDL_Texture *imgEnemyKiloZero;
+extern SDL_Texture *imgEnemyKiloOne;
 
 //SDL_Texture *imgNumberValue;
-SDL_Texture *imgNumberZero;
-SDL_Texture *imgNumberOne;
+//SDL_Texture *imgNumberZero;
+//SDL_Texture *imgNumberOne;
 
 extern TTF_Font *fontDefault;
 
 void init_enemy_kilo(struct Enemy *enemy) {
+	printf("init_enemy_kilo\n");
 
-    SDL_Color colorGreenText = {0, 128, 0};
-    generateTextTexture(&imgNumberZero, "0", colorGreenText, fontDefault);
-    generateTextTexture(&imgNumberOne, "1", colorGreenText, fontDefault);
 
     
     struct EnemyKiloHead *enemykilohead = malloc(sizeof(struct EnemyKiloHead));
@@ -34,14 +35,13 @@ void init_enemy_kilo(struct Enemy *enemy) {
     char strText[8];
     sprintf(strText, "%d", iTargetValue);
     SDL_Color colorRedText = {255, 0, 0};
-    SDL_Texture *imgNumberValue;
-    generateTextTexture(&imgNumberValue, strText, colorRedText, fontDefault);
-    enemykilohead->imgNumberValue = imgNumberValue;
+    SDL_Texture *imgText;
+    generateTextTexture(&imgText, strText, colorRedText, fontDefault);
+    enemykilohead->imgNumberValue = imgText;
 
     
     struct Enemy *enemyPart;
     struct EnemyKiloBody *enemykilobody;
-    
     
     int iWidth = 64;
     int iHeight = 64;
@@ -50,6 +50,7 @@ void init_enemy_kilo(struct Enemy *enemy) {
     init_enemy(enemyPart, enemy->x - (iWidth * 1.5), enemy->y + 64, 10, 2, FALSE);
     enemykilobody = malloc(sizeof(struct EnemyKiloBody));
     enemykilobody->head = enemy;
+	enemykilobody->iValue = 0;
     enemyPart->subtype = enemykilobody;
     enemyPart->width = iWidth;
     enemyPart->height = iHeight;
@@ -60,6 +61,7 @@ void init_enemy_kilo(struct Enemy *enemy) {
     init_enemy(enemyPart, enemy->x - (iWidth * 0.5), enemy->y + 64, 10, 2, FALSE);
     enemykilobody = malloc(sizeof(struct EnemyKiloBody));
     enemykilobody->head = enemy;
+	enemykilobody->iValue = 0;
     enemyPart->subtype = enemykilobody;
     enemyPart->width = iWidth;
     enemyPart->height = iHeight;
@@ -70,6 +72,7 @@ void init_enemy_kilo(struct Enemy *enemy) {
     init_enemy(enemyPart, enemy->x + (iWidth * 0.5), enemy->y + 64, 10, 2, FALSE);
     enemykilobody = malloc(sizeof(struct EnemyKiloBody));
     enemykilobody->head = enemy;
+	enemykilobody->iValue = 0;
     enemyPart->subtype = enemykilobody;
     enemyPart->width = iWidth;
     enemyPart->height = iHeight;
@@ -80,12 +83,11 @@ void init_enemy_kilo(struct Enemy *enemy) {
     init_enemy(enemyPart, enemy->x + (iWidth * 1.5), enemy->y + 64, 10, 2, FALSE);
     enemykilobody = malloc(sizeof(struct EnemyKiloBody));
     enemykilobody->head = enemy;
+	enemykilobody->iValue = 0;
     enemyPart->subtype = enemykilobody;
     enemyPart->width = iWidth;
     enemyPart->height = iHeight;
     enemykilohead->body[3] = enemyPart;
-
-    
 }
 
 void update_enemy_kilo(struct Enemy *enemy) {
@@ -140,7 +142,7 @@ SDL_Texture *getTexture_enemy_kilo(struct Enemy *enemy) {
        int iSpriteIndex = ((int) (enemy->fLifetime * 2)) % 2; //change sprite every 0.5 seconds
        
        
-       if (iSpriteIndex == 0) {
+     if (iSpriteIndex == 0) {
            if (enemy->iLevel == 1) {
                img = imgEnemyKilo_L1_00;
            } else if (enemy->iLevel == 2) {
@@ -157,14 +159,14 @@ SDL_Texture *getTexture_enemy_kilo(struct Enemy *enemy) {
     
     if (enemy->iLevel == 1) {
         struct EnemyKiloHead *enemykilohead = (struct EnemyKiloHead *) enemy->subtype;
-      img = enemykilohead->imgNumberValue;
+		img = enemykilohead->imgNumberValue;
     } else {
         struct EnemyKiloBody *enemykilobody = (struct EnemyKiloBody *) enemy->subtype;
         if (enemykilobody->iValue == 0) {
-            img = imgNumberZero;
+            img = imgEnemyKiloZero;
 
         } else if (enemykilobody->iValue == 1) {
-            img = imgNumberOne;
+            img = imgEnemyKiloOne;
 
         }
     }
