@@ -69,6 +69,12 @@ SDL_Texture *imgEnemyJuliett_L1_01;
 SDL_Texture *imgEnemyJuliett_L2_00;
 SDL_Texture *imgEnemyJuliett_L2_01;
 
+SDL_Texture *imgEnemyKilo_L1_00;
+SDL_Texture *imgEnemyKilo_L1_01;
+SDL_Texture *imgEnemyKilo_L2_00;
+SDL_Texture *imgEnemyKilo_L2_01;
+
+
 
 
 SDL_Texture *imgEnemyWarp;
@@ -367,6 +373,11 @@ for (i = 0; i < NUM_WORLDS * 2; i++) {
   imgEnemyJuliett_L1_01 = generateTexture("assets/images/enemy_juliett_l1_2.bmp");
   imgEnemyJuliett_L2_00 = generateTexture("assets/images/enemy_juliett_l2_1.bmp");
   imgEnemyJuliett_L2_01 = generateTexture("assets/images/enemy_juliett_l2_2.bmp");
+    
+    imgEnemyKilo_L1_00 = generateTexture("assets/images/enemy_default_1.bmp");
+    imgEnemyKilo_L1_01 = generateTexture("assets/images/enemy_default_2.bmp");
+    imgEnemyKilo_L2_00 = generateTexture("assets/images/enemy_default_1.bmp");
+    imgEnemyKilo_L2_01 = generateTexture("assets/images/enemy_default_2.bmp");
 
 
 	for (i = 0; i < NUM_WEAPONS; i++) {
@@ -587,6 +598,10 @@ for (i = 0; i < NUM_WORLDS * 2; i++) {
   SDL_DestroyTexture(imgEnemyJuliett_L1_01);
   SDL_DestroyTexture(imgEnemyJuliett_L2_00);
   SDL_DestroyTexture(imgEnemyJuliett_L2_01);
+    SDL_DestroyTexture(imgEnemyKilo_L1_00);
+    SDL_DestroyTexture(imgEnemyKilo_L1_01);
+    SDL_DestroyTexture(imgEnemyKilo_L2_00);
+    SDL_DestroyTexture(imgEnemyKilo_L2_01);
 
 
   SDL_DestroyTexture(imgExplosion_L2_00);

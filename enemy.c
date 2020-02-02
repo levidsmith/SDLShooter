@@ -19,6 +19,7 @@
 #include "enemy_hotel.h"
 #include "enemy_india.h"
 #include "enemy_juliett.h"
+#include "enemy_kilo.h"
 
 
 
@@ -130,6 +131,11 @@ void init_enemy(struct Enemy *enemy, int init_x, int init_y, int init_iType, int
             break;
         case 9:
             init_enemy_juliett(enemy);
+            break;
+        case 10:
+            if (isRoot) {
+                init_enemy_kilo(enemy);
+            }
             break;
 
     }
@@ -455,6 +461,10 @@ void updateActive_enemy(struct Enemy *enemy) {
             //Juliett
             update_enemy_juliett(enemy);
             break;
+        case 10:
+            //Kilo
+            update_enemy_kilo(enemy);
+            break;
     }
 	
 	if (enemy->fShootDelay > 0) {
@@ -639,6 +649,11 @@ void draw_enemy(struct Enemy *enemy) {
         case 9:
             img = getTexture_enemy_juliett(enemy);
             break;
+              
+        //Kilo
+          case 10:
+              img = getTexture_enemy_kilo(enemy);
+              break;
 
 		}
 		
@@ -849,7 +864,11 @@ void damage_enemy(struct Enemy *enemy, int iDamageAmount) {
     } else if (enemy->iType == 9) {
         damage_enemy_juliett(enemy, iDamageAmount);
         iCheckDestroy = FALSE;
-		
+    } else if (enemy->iType == 10) {
+            damage_enemy_kilo(enemy, iDamageAmount);
+            iCheckDestroy = FALSE;
+            
+
 	} else {
 		iTotalDamage = iDamageAmount;
 

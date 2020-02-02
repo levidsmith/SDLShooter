@@ -407,7 +407,8 @@ void draw_screen_game() {
 //Draw energy meter
   x_offset = 1000;
   SDL_Rect rectMeter;
-  SDL_Color colorMeter;
+    SDL_Color colorMeter;
+  
   SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
   getWeaponColor(ship->iWeaponType, &colorMeter);
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 128);
