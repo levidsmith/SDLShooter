@@ -8,13 +8,15 @@
 struct EnemyKiloBody {
     int iValue;
     struct Enemy *head;
+	struct Enemy *next;
     
 };
 
 
 struct EnemyKiloHead {
     int iTargetValue;
-    struct Enemy *body[4];
+//    struct Enemy *body[4];
+	struct Enemy *bodyFirst;
     SDL_Texture *imgNumberValue;
 
 };

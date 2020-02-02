@@ -24,11 +24,16 @@ extern TTF_Font *fontDefault;
 
 void init_enemy_kilo(struct Enemy *enemy) {
 	printf("init_enemy_kilo\n");
+	
+	int iBodyParts;
+//	iBodyParts = 5;
+	iBodyParts = (rand() % 3) + 3;
 
 
     
     struct EnemyKiloHead *enemykilohead = malloc(sizeof(struct EnemyKiloHead));
-    int iTargetValue = (rand() % 14) + 1;
+//    int iTargetValue = (rand() % 14) + 1;
+    int iTargetValue = (rand() % (int) (pow(2, iBodyParts) - 1)) + 1;
     enemykilohead->iTargetValue = iTargetValue;
     enemy->subtype = enemykilohead;
 
@@ -42,9 +47,45 @@ void init_enemy_kilo(struct Enemy *enemy) {
     
     struct Enemy *enemyPart;
     struct EnemyKiloBody *enemykilobody;
-    
+
+
+
+
     int iWidth = 64;
     int iHeight = 64;
+	int x_pos = enemy->x + (((iBodyParts - 1) * iWidth) / 2);
+	int y_pos = enemy->y + 64;
+	
+	int i;
+	i = 0;
+	struct Enemy *enemyPrevious = NULL;
+	while (i < iBodyParts) {
+
+		//new body part
+		enemyPart = malloc(sizeof(struct Enemy));
+//		init_enemy(enemyPart, enemy->x - (iWidth * 1.5), enemy->y + 64, 10, 2, FALSE);
+		init_enemy(enemyPart, x_pos, y_pos, 10, 2, FALSE);
+		enemykilobody = malloc(sizeof(struct EnemyKiloBody));
+		enemykilobody->head = enemy;
+		enemykilobody->iValue = 0;
+		enemykilobody->next = NULL;
+		enemyPart->subtype = enemykilobody;
+		enemyPart->width = iWidth;
+		enemyPart->height = iHeight;
+		
+		if (i == 0) {
+			enemykilohead->bodyFirst = enemyPart;
+		} else {
+			((struct EnemyKiloBody *) enemyPrevious->subtype)->next = enemyPart;
+		}
+		
+		enemyPrevious = enemyPart;
+		x_pos -= 64;
+
+		
+		i++;
+	}
+/*    
     //first part
     enemyPart = malloc(sizeof(struct Enemy));
     init_enemy(enemyPart, enemy->x - (iWidth * 1.5), enemy->y + 64, 10, 2, FALSE);
@@ -88,6 +129,7 @@ void init_enemy_kilo(struct Enemy *enemy) {
     enemyPart->width = iWidth;
     enemyPart->height = iHeight;
     enemykilohead->body[3] = enemyPart;
+	*/
 }
 
 void update_enemy_kilo(struct Enemy *enemy) {
@@ -110,6 +152,20 @@ void check_destroy_enemy_kilo(struct Enemy *enemy) {
     int iAttackValue = 0;
     
     struct EnemyKiloHead *enemykilohead = (struct EnemyKiloHead *) enemy->subtype;
+	
+	struct Enemy *enemyPart = (struct Enemy *) enemykilohead->bodyFirst;
+	int iBitValue = 1;
+	while (enemyPart != NULL) {
+		struct EnemyKiloBody *enemykilobody = (struct EnemyKiloBody *) enemyPart->subtype;
+		printf("%d\n", enemykilobody->iValue);
+		iAttackValue += (iBitValue * enemykilobody->iValue);
+		iBitValue *= 2;
+		enemyPart = enemykilobody->next;
+	}
+	printf("finished loop\n");
+	
+	
+	/*
     struct Enemy *enemyPart1 = (struct Enemy *) enemykilohead->body[0];
     struct Enemy *enemyPart2 = (struct Enemy *) enemykilohead->body[1];
     struct Enemy *enemyPart3 = (struct Enemy *) enemykilohead->body[2];
@@ -118,9 +174,26 @@ void check_destroy_enemy_kilo(struct Enemy *enemy) {
     struct EnemyKiloBody *enemykilobody2 = (struct EnemyKiloBody *) enemyPart2->subtype;
     struct EnemyKiloBody *enemykilobody3 = (struct EnemyKiloBody *) enemyPart3->subtype;
     struct EnemyKiloBody *enemykilobody4 = (struct EnemyKiloBody *) enemyPart4->subtype;
+	
     
     iAttackValue = (enemykilobody1->iValue * 8) + (enemykilobody2->iValue * 4) +
     (enemykilobody3->iValue * 2) + (enemykilobody4->iValue * 1);
+*/
+
+    if (iAttackValue == enemykilohead->iTargetValue) {
+		enemyPart = (struct Enemy *) enemykilohead->bodyFirst;
+		while (enemyPart != NULL) {
+			struct EnemyKiloBody *enemykilobody = (struct EnemyKiloBody *) enemyPart->subtype;
+			destroy_enemy(enemyPart);
+			enemyPart = enemykilobody->next;
+		}
+		
+		destroy_enemy(enemy);
+
+
+	}
+
+/*	
     
     if (iAttackValue == enemykilohead->iTargetValue) {
         destroy_enemy(enemyPart1);
@@ -130,7 +203,7 @@ void check_destroy_enemy_kilo(struct Enemy *enemy) {
         destroy_enemy(enemy);
 
     }
-    
+*/    
     
     
 }

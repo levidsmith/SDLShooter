@@ -391,7 +391,7 @@ for (i = 0; i < NUM_WORLDS * 2; i++) {
     imgEnemyKilo_L1_01 = generateTexture("assets/images/enemy_default_2.bmp");
     imgEnemyKilo_L2_00 = generateTexture("assets/images/enemy_default_1.bmp");
     imgEnemyKilo_L2_01 = generateTexture("assets/images/enemy_default_2.bmp");
-    SDL_Color colorGreenText = {0, 128, 0};
+    SDL_Color colorGreenText = {64, 255, 64};
     generateTextTexture(&imgEnemyKiloZero, "0", colorGreenText, fontDefault);
     generateTextTexture(&imgEnemyKiloOne, "1", colorGreenText, fontDefault);
 
