@@ -68,10 +68,10 @@ SDL_Texture *imgEnemyJuliett_L1_00;
 SDL_Texture *imgEnemyJuliett_L1_01;
 SDL_Texture *imgEnemyJuliett_L2_00;
 SDL_Texture *imgEnemyJuliett_L2_01;
-SDL_Texture *imgEnemyKilo_L1_00;
-SDL_Texture *imgEnemyKilo_L1_01;
-SDL_Texture *imgEnemyKilo_L2_00;
-SDL_Texture *imgEnemyKilo_L2_01;
+SDL_Surface *surfaceEnemyKilo_L1_00;
+SDL_Surface *surfaceEnemyKilo_L1_01;
+SDL_Surface *surfaceEnemyKilo_L2_00;
+SDL_Surface *surfaceEnemyKilo_L2_01;
 SDL_Texture *imgEnemyKiloZero;
 SDL_Texture *imgEnemyKiloOne;
 
@@ -264,6 +264,19 @@ SDL_Texture *generateTexture(char *strFile) {
 
 }
 
+SDL_Surface *generateSurface(char *strFile) {
+	SDL_Surface *spr;
+  spr = SDL_LoadBMP(strFile);
+  if (spr == NULL) {
+	  printf("Error on loading file %s: %s\n", strFile, SDL_GetError());
+  }
+  SDL_SetColorKey(spr, SDL_TRUE, SDL_MapRGB(spr->format, 255, 0, 255));
+  
+  return spr;
+
+}
+
+
 
 int main(int argc, char* args[]) {
 
@@ -387,10 +400,10 @@ for (i = 0; i < NUM_WORLDS * 2; i++) {
   imgEnemyJuliett_L2_00 = generateTexture("assets/images/enemy_juliett_l2_1.bmp");
   imgEnemyJuliett_L2_01 = generateTexture("assets/images/enemy_juliett_l2_2.bmp");
     
-    imgEnemyKilo_L1_00 = generateTexture("assets/images/enemy_default_1.bmp");
-    imgEnemyKilo_L1_01 = generateTexture("assets/images/enemy_default_2.bmp");
-    imgEnemyKilo_L2_00 = generateTexture("assets/images/enemy_default_1.bmp");
-    imgEnemyKilo_L2_01 = generateTexture("assets/images/enemy_default_2.bmp");
+    surfaceEnemyKilo_L1_00 = generateSurface("assets/images/enemy_kilo_l1_1.bmp");
+    surfaceEnemyKilo_L1_01 = generateSurface("assets/images/enemy_kilo_l1_2.bmp");
+    surfaceEnemyKilo_L2_00 = generateSurface("assets/images/enemy_kilo_l2_1.bmp");
+    surfaceEnemyKilo_L2_01 = generateSurface("assets/images/enemy_kilo_l2_2.bmp");
     SDL_Color colorGreenText = {64, 255, 64};
     generateTextTexture(&imgEnemyKiloZero, "0", colorGreenText, fontDefault);
     generateTextTexture(&imgEnemyKiloOne, "1", colorGreenText, fontDefault);
@@ -605,10 +618,10 @@ for (i = 0; i < NUM_WORLDS * 2; i++) {
   SDL_DestroyTexture(imgEnemyJuliett_L1_01);
   SDL_DestroyTexture(imgEnemyJuliett_L2_00);
   SDL_DestroyTexture(imgEnemyJuliett_L2_01);
-    SDL_DestroyTexture(imgEnemyKilo_L1_00);
-    SDL_DestroyTexture(imgEnemyKilo_L1_01);
-    SDL_DestroyTexture(imgEnemyKilo_L2_00);
-    SDL_DestroyTexture(imgEnemyKilo_L2_01);
+    SDL_FreeSurface(surfaceEnemyKilo_L1_00);
+    SDL_FreeSurface(surfaceEnemyKilo_L1_01);
+    SDL_FreeSurface(surfaceEnemyKilo_L2_00);
+    SDL_FreeSurface(surfaceEnemyKilo_L2_01);
     SDL_DestroyTexture(imgEnemyKiloZero);
     SDL_DestroyTexture(imgEnemyKiloOne);
 
