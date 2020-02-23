@@ -20,6 +20,7 @@
 #include "enemy_india.h"
 #include "enemy_juliett.h"
 #include "enemy_kilo.h"
+#include "enemy_lima.h"
 
 
 
@@ -137,6 +138,9 @@ void init_enemy(struct Enemy *enemy, int init_x, int init_y, int init_iType, int
             if (isRoot) {
                 init_enemy_kilo(enemy);
             }
+            break;
+        case 11:
+            init_enemy_lima(enemy);
             break;
 
     }
@@ -466,6 +470,10 @@ void updateActive_enemy(struct Enemy *enemy) {
             //Kilo
             update_enemy_kilo(enemy);
             break;
+        case 11:
+            //Lima
+            update_enemy_lima(enemy);
+            break;
     }
 	
 	if (enemy->fShootDelay > 0) {
@@ -654,6 +662,11 @@ void draw_enemy(struct Enemy *enemy) {
         //Kilo
           case 10:
               img = getTexture_enemy_kilo(enemy);
+              break;
+              
+        //Lima
+          case 11:
+              img = getTexture_enemy_lima(enemy);
               break;
 
 		}
@@ -868,7 +881,9 @@ void damage_enemy(struct Enemy *enemy, int iDamageAmount) {
     } else if (enemy->iType == 10) {
             damage_enemy_kilo(enemy, iDamageAmount);
             iCheckDestroy = FALSE;
-            
+    } else if (enemy->iType == 11) {
+        damage_enemy_lima(enemy, iDamageAmount);
+        iCheckDestroy = FALSE;
 
 	} else {
 		iTotalDamage = iDamageAmount;

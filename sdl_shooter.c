@@ -74,6 +74,14 @@ SDL_Surface *surfaceEnemyKilo_L2_00;
 SDL_Surface *surfaceEnemyKilo_L2_01;
 SDL_Texture *imgEnemyKiloZero;
 SDL_Texture *imgEnemyKiloOne;
+SDL_Texture *imgEnemyLima_L1_00;
+SDL_Texture *imgEnemyLima_L1_01;
+SDL_Texture *imgEnemyLima_L1_02;
+SDL_Texture *imgEnemyLima_L1_03;
+SDL_Texture *imgEnemyLima_L2_00;
+SDL_Texture *imgEnemyLima_L2_01;
+SDL_Texture *imgEnemyLima_L2_02;
+SDL_Texture *imgEnemyLima_L2_03;
 
 
 
@@ -407,6 +415,15 @@ for (i = 0; i < NUM_WORLDS * 2; i++) {
     SDL_Color colorGreenText = {64, 255, 64};
     generateTextTexture(&imgEnemyKiloZero, "0", colorGreenText, fontDefault);
     generateTextTexture(&imgEnemyKiloOne, "1", colorGreenText, fontDefault);
+    
+    imgEnemyLima_L1_00 = generateTexture("assets/images/enemy_default_1.bmp");
+    imgEnemyLima_L1_01 = generateTexture("assets/images/enemy_default_2.bmp");
+    imgEnemyLima_L1_02 = generateTexture("assets/images/enemy_default_1.bmp");
+    imgEnemyLima_L1_03 = generateTexture("assets/images/enemy_default_2.bmp");
+    imgEnemyLima_L2_00 = generateTexture("assets/images/enemy_default_1.bmp");
+    imgEnemyLima_L2_01 = generateTexture("assets/images/enemy_default_2.bmp");
+    imgEnemyLima_L2_02 = generateTexture("assets/images/enemy_default_1.bmp");
+    imgEnemyLima_L2_03 = generateTexture("assets/images/enemy_default_2.bmp");
 
 
 
@@ -624,6 +641,14 @@ for (i = 0; i < NUM_WORLDS * 2; i++) {
     SDL_FreeSurface(surfaceEnemyKilo_L2_01);
     SDL_DestroyTexture(imgEnemyKiloZero);
     SDL_DestroyTexture(imgEnemyKiloOne);
+    SDL_DestroyTexture(imgEnemyLima_L1_00);
+    SDL_DestroyTexture(imgEnemyLima_L1_01);
+    SDL_DestroyTexture(imgEnemyLima_L1_02);
+    SDL_DestroyTexture(imgEnemyLima_L1_03);
+    SDL_DestroyTexture(imgEnemyLima_L2_00);
+    SDL_DestroyTexture(imgEnemyLima_L2_01);
+    SDL_DestroyTexture(imgEnemyLima_L2_02);
+    SDL_DestroyTexture(imgEnemyLima_L2_03);
 
 
   SDL_DestroyTexture(imgExplosion_L2_00);
