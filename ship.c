@@ -10,6 +10,7 @@
 #include "bullet.h"
 #include "enemy.h"
 #include "stats.h"
+#include "util.h"
 #include "screen_game.h"
 
 #define NUM_HEALTH_UNITS 3

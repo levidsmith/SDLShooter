@@ -1,4 +1,7 @@
 //2019 Levi D. Smith - levidsmith.com
+
+#ifndef linked_list_h
+#define linked_list_h
 struct Node {
   void *data;
   struct Node *next;
@@ -10,3 +13,7 @@ void remove_node(struct Node **head, struct Node *node);
 void print_list(struct Node *head);
 void clear_list(struct Node **head);
 int count_list(struct Node *head);
+
+
+#endif
+

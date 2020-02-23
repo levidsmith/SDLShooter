@@ -7,6 +7,7 @@
 #include "bullet.h"
 #include "ship.h"
 #include "enemy.h"
+#include "util.h"
 
 extern SDL_Renderer *renderer;
 extern SDL_Texture *imgBullet[6];

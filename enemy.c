@@ -13,6 +13,7 @@
 #include "linked_list.h"
 #include "ship.h"
 #include "stats.h"
+#include "util.h"
 
 
 #include "enemy_golf.h"
@@ -895,8 +896,8 @@ void damage_enemy(struct Enemy *enemy, int iDamageAmount) {
 	if (iTotalDamage > 0) {
 		enemy->iHealth -= iTotalDamage;
 		if (enemy->iHealth <= 0) {
-			enemy->isAlive = FALSE;
-			destroy_enemy(enemy);
+//			enemy->isAlive = FALSE;
+			kill_enemy(enemy);
 		
 		} else {
 			Mix_PlayChannel(-1, soundEnemyHit, 0);
@@ -965,7 +966,7 @@ void freeze_enemy(struct Enemy *enemy, int iFreezeLevel, int iDamageAmount) {
 
 }
 
-//kill_enemy set the enemy to no alive, but does not free the associated memory
+//kill_enemy set the enemy to not alive, but does not free the associated memory
 //sets fDeathDelay to give time to display the explosion animation
 void kill_enemy(struct Enemy *enemy) {
 				enemy->isAlive = FALSE;
@@ -1027,9 +1028,6 @@ void setTargetPosition_enemy(struct Enemy *enemy, float x, float y) {
 	
 }
 
-float getDistance(float x1, float y1, float x2, float y2) {
-	return sqrt(pow(x2-x1, 2) + pow(y2-y1, 2));
-}
 
 
 float getCenterX_enemy(struct Enemy *enemy) {

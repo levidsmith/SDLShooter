@@ -15,6 +15,7 @@
 #include "explosion.h"
 #include "stats.h"
 #include "options.h"
+#include "util.h"
 
 #define BACKGROUND_ROWS 4
 #define BACKGROUND_COLS 5
@@ -1270,10 +1271,6 @@ void generateTextTexture(SDL_Texture **imgText, char *strText, SDL_Color colorTe
 
 }
 
-int getRandomInt(int iMin, int iMax) {
-    return iMin + (rand() % (iMax - iMin));
-    
-}
 
 void formatTime(char *strTime, Uint32 timeValue) {
         

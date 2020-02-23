@@ -416,14 +416,14 @@ for (i = 0; i < NUM_WORLDS * 2; i++) {
     generateTextTexture(&imgEnemyKiloZero, "0", colorGreenText, fontDefault);
     generateTextTexture(&imgEnemyKiloOne, "1", colorGreenText, fontDefault);
     
-    imgEnemyLima_L1_00 = generateTexture("assets/images/enemy_default_1.bmp");
-    imgEnemyLima_L1_01 = generateTexture("assets/images/enemy_default_2.bmp");
-    imgEnemyLima_L1_02 = generateTexture("assets/images/enemy_default_1.bmp");
-    imgEnemyLima_L1_03 = generateTexture("assets/images/enemy_default_2.bmp");
-    imgEnemyLima_L2_00 = generateTexture("assets/images/enemy_default_1.bmp");
-    imgEnemyLima_L2_01 = generateTexture("assets/images/enemy_default_2.bmp");
-    imgEnemyLima_L2_02 = generateTexture("assets/images/enemy_default_1.bmp");
-    imgEnemyLima_L2_03 = generateTexture("assets/images/enemy_default_2.bmp");
+    imgEnemyLima_L1_00 = generateTexture("assets/images/enemy_lima_l1_1.bmp");
+    imgEnemyLima_L1_01 = generateTexture("assets/images/enemy_lima_l1_2.bmp");
+    imgEnemyLima_L1_02 = generateTexture("assets/images/enemy_lima_l1_3.bmp");
+    imgEnemyLima_L1_03 = generateTexture("assets/images/enemy_lima_l1_4.bmp");
+    imgEnemyLima_L2_00 = generateTexture("assets/images/enemy_lima_l2_1.bmp");
+    imgEnemyLima_L2_01 = generateTexture("assets/images/enemy_lima_l2_2.bmp");
+    imgEnemyLima_L2_02 = generateTexture("assets/images/enemy_lima_l2_3.bmp");
+    imgEnemyLima_L2_03 = generateTexture("assets/images/enemy_lima_l2_4.bmp");
 
 
 
