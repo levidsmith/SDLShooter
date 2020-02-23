@@ -320,12 +320,12 @@ void damage_enemy_golf(struct Enemy *enemy, int iDamageAmount) {
 			enemy->iHealth -= iDamageAmount;
 			
 			if (enemy->iHealth <= 0) {
-				destroy_enemy(enemy);
+				kill_enemy(enemy);
 				//delete the head and all tail segments
 				struct Enemy *current = ((struct EnemyGolf * ) enemy->subtype)->next;
 				while (current != NULL) {
 					
-					destroy_enemy(current);
+					kill_enemy(current);
 
 					current = ((struct EnemyGolf * )current->subtype)->next;
 				}

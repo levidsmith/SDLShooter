@@ -31,6 +31,7 @@ struct Enemy {
   float fMaxFreezeDelay;
   float fDeathDelay;
   float fMaxDeathDelay;
+    int isRoot;
   void *subtype;
 };
 
@@ -45,6 +46,7 @@ void setShootDelay_enemy(struct Enemy *);
 void setTargetPosition_enemy(struct Enemy *enemy, float x, float y);
 float getDistance(float x1, float y1, float x2, float y2);
 void damage_enemy(struct Enemy *enemy, int iDamageAmount);
+void kill_enemy(struct Enemy *enemy);
 void destroy_enemy(struct Enemy *enemy);
 void updateActive_enemy(struct Enemy *enemy);
 void updatePosition_enemy(struct Enemy *enemy, int iType, int iLevel);
@@ -52,7 +54,7 @@ void freeze_enemy(struct Enemy *enemy, int iFreezeLevel, int iDamageAmount);
 float getCenterX_enemy(struct Enemy *enemy);
 float getCenterY_enemy(struct Enemy *enemy);
 void configure_enemy(struct Enemy *enemy);
-int getDelete_enemy(struct Enemy *enemy);
+int canDestroy_enemy(struct Enemy *enemy);
 
 
 

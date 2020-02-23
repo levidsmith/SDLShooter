@@ -86,8 +86,8 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
 		
 		if (iLevel == iLevelToSpawn) {
 	
-		
 			if (strLine[i] == '0') {
+                //Alpha L1
 
 				struct Enemy *e1;
 				e1 = malloc(sizeof(struct Enemy));
@@ -106,6 +106,7 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
 				iEnemyCount++;
 
 			} else 	if (strLine[i] == '1') {
+                //Alpha L2
 
 				struct Enemy *e1;
 				e1 = malloc(sizeof(struct Enemy));
@@ -124,6 +125,7 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
 				iEnemyCount++;
 
 			} else if (strLine[i] == '2') {
+                //Bravo L1
 
 				struct Enemy *e1;
 				e1 = malloc(sizeof(struct Enemy));
@@ -143,6 +145,7 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
 				iEnemyCount++;
 
 			} else if (strLine[i] == '3') {
+                //Bravo L2
 
 				struct Enemy *e1;
 				e1 = malloc(sizeof(struct Enemy));
@@ -161,8 +164,8 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
 
 				iEnemyCount++;
 
-
 			} else if (strLine[i] == '4') {
+                //Charlie L1
 
 				struct Enemy *e1;
 				e1 = malloc(sizeof(struct Enemy));
@@ -181,7 +184,8 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
 				iEnemyCount++;
 
 			} else if (strLine[i] == '5') {
-
+                //Charlie L2
+                
 				struct Enemy *e1;
 				e1 = malloc(sizeof(struct Enemy));
 				init_enemy(e1, x, y, 2, 2, TRUE);
@@ -200,7 +204,7 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
 
 
 			} else if (strLine[i] == '6') {
-				
+				//Delta L1
 				int j;
 				
 				for (j = 0; j < 4; j++) {
@@ -227,7 +231,7 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
 				}
 
 			} else 	if (strLine[i] == '8') {
-
+                //Delta L2
 				struct Enemy *e1;
 				e1 = malloc(sizeof(struct Enemy));
 				init_enemy(e1, x, y, 4, 1, TRUE);
@@ -245,7 +249,7 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
 				iEnemyCount++;
 
 			} else 	if (strLine[i] == 'A') {
-
+                //Echo L1
 				struct Enemy *e1;
 				e1 = malloc(sizeof(struct Enemy));
 				init_enemy(e1, x, y, 5, 1, TRUE);
@@ -263,7 +267,7 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
 				iEnemyCount++;
 
 			} else 	if (strLine[i] == 'B') {
-
+                //Echo L2
 				struct Enemy *e1;
 				e1 = malloc(sizeof(struct Enemy));
 				init_enemy(e1, x, y, 5, 2, TRUE);
@@ -281,7 +285,7 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
 				iEnemyCount++;
 
 			} else 	if (strLine[i] == 'C') {
-
+                //Foxtrot L1
 				struct Enemy *e1;
 				e1 = malloc(sizeof(struct Enemy));
 				init_enemy(e1, x, y, 6, 1, TRUE);
@@ -299,7 +303,7 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
 				iEnemyCount++;
 
 			} else 	if (strLine[i] == 'D') {
-
+                //Foxtrot L2
 				struct Enemy *e1;
 				e1 = malloc(sizeof(struct Enemy));
 				init_enemy(e1, x, y, 6, 2, TRUE);
@@ -315,7 +319,7 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
 
 				iEnemyCount++;
 			} else 	if (strLine[i] == 'E') {
-
+                //Golf L1
 				struct Enemy *e1;
 				e1 = malloc(sizeof(struct Enemy));
 				init_enemy(e1, x, y, 7, 1, TRUE);
@@ -332,7 +336,7 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
 				iEnemyCount++;
 
 			} else 	if (strLine[i] == 'F') {
-
+                //Golf L2
 				struct Enemy *e1;
 				e1 = malloc(sizeof(struct Enemy));
 				init_enemy(e1, x, y, 7, 2, TRUE);
@@ -348,7 +352,7 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
 
 				iEnemyCount++;
             } else if (strLine[i] == 'G') {
-
+                    //Hotel L1
                     struct Enemy *e1;
                     e1 = malloc(sizeof(struct Enemy));
                     init_enemy(e1, x, y, 8, 1, TRUE);
@@ -364,7 +368,7 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
 
                     iEnemyCount++;
             } else if (strLine[i] == 'I') {
-
+                //Juliett L1
                     struct Enemy *e1;
                     e1 = malloc(sizeof(struct Enemy));
                     init_enemy(e1, x, y, 9, 1, TRUE);
@@ -380,7 +384,7 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
 
                     iEnemyCount++;
             } else if (strLine[i] == 'J') {
-
+                //Juliett L2
                     struct Enemy *e1;
                     e1 = malloc(sizeof(struct Enemy));
                     init_enemy(e1, x, y, 9, 2, TRUE);
@@ -396,7 +400,7 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
 
                     iEnemyCount++;
                 } else if (strLine[i] == 'K') {
-
+                    //Kilo L1
                         struct Enemy *e1;
                         e1 = malloc(sizeof(struct Enemy));
                         init_enemy(e1, x, y, 10, 1, TRUE);

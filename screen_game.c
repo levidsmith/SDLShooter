@@ -241,7 +241,8 @@ void update_screen_game() {
     enemy = (struct Enemy *) current->data;
 	update_enemy(enemy);
 //	if (!enemy->isAlive) {
-	if (getDelete_enemy(enemy)) {
+	if (canDestroy_enemy(enemy)) {
+        destroy_enemy(enemy);
 		deleteNode = current;
 	}
     current = current->next;

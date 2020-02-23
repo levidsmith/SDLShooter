@@ -23,10 +23,10 @@ void init_enemy_juliett(struct Enemy *enemy) {
 	
 	switch(enemy->iLevel) {
 		case 1:
-			enemy->iHealth = 2;
+			enemy->iHealth = 1;
 			break;
 		case 2:
-			enemy->iHealth = 4;
+			enemy->iHealth = 3;
 			break;
 		default:
 			enemy->iHealth = 2;
@@ -176,7 +176,7 @@ void damage_enemy_juliett(struct Enemy *enemy, int iDamageAmount) {
 	enemy->iHealth -= iDamageAmount;
 	
     if (enemy->iHealth <= 0) {
-		destroy_enemy(enemy);
+		kill_enemy(enemy);
 	} else {
 
 	

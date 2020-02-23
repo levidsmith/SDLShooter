@@ -109,8 +109,8 @@ void damage_enemy_india(struct Enemy *enemy, int iDamageAmount) {
                     init_enemy(e1, enemy->x + (enemy->width / 2) - (e1->width / 2),
                                     enemy->y + (enemy->height / 2) - (e1->height / 2), 8, 3, TRUE);
                     configure_enemy(e1);
-                    e1->vel_x = 4 * fNormalizedX;
-                    e1->vel_y = 4 * fNormalizedY;
+                    e1->vel_x = 2 * fNormalizedX;
+                    e1->vel_y = 2 * fNormalizedY;
                 }
                 /*
                 e1 = malloc(sizeof(struct Enemy));
@@ -134,7 +134,7 @@ void damage_enemy_india(struct Enemy *enemy, int iDamageAmount) {
             case 3:
                 break;
         }
-        destroy_enemy(enemy);
+        kill_enemy(enemy);
     
     }
     

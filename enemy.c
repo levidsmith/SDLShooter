@@ -94,6 +94,7 @@ void init_enemy(struct Enemy *enemy, int init_x, int init_y, int init_iType, int
   enemy->fMaxFreezeDelay = 0;
   enemy->fDeathDelay = 0;
   enemy->fMaxDeathDelay = 0.5;
+    enemy->isRoot = isRoot;
   
   setShootDelay_enemy(enemy);
     
@@ -949,7 +950,9 @@ void freeze_enemy(struct Enemy *enemy, int iFreezeLevel, int iDamageAmount) {
 
 }
 
-void destroy_enemy(struct Enemy *enemy) {
+//kill_enemy set the enemy to no alive, but does not free the associated memory
+//sets fDeathDelay to give time to display the explosion animation
+void kill_enemy(struct Enemy *enemy) {
 				enemy->isAlive = FALSE;
 				enemy->fDeathDelay = 0;
 				enemy->fFreezeDelay = 0;
@@ -966,6 +969,8 @@ void destroy_enemy(struct Enemy *enemy) {
 					init_powerup(powerup, enemy->x, enemy->y, iType);
 					add_node(&listPowerup, powerup);
 				}
+    
+ 
 
 /*				
 				struct Explosion *explosion = malloc(sizeof(struct Explosion));
@@ -1020,7 +1025,7 @@ float getCenterY_enemy(struct Enemy *enemy) {
 	return enemy->y + (enemy->height / 2);
 }
 
-int getDelete_enemy(struct Enemy *enemy) {
+int canDestroy_enemy(struct Enemy *enemy) {
 	int iCanDelete = FALSE;
 	if (!enemy->isAlive && enemy->fDeathDelay > enemy->fMaxDeathDelay) {
 		iCanDelete = TRUE;
@@ -1030,4 +1035,16 @@ int getDelete_enemy(struct Enemy *enemy) {
 	return iCanDelete;
 }
 
+//destroy_enemy - frees the memory associated with the enemy
+void destroy_enemy(struct Enemy *enemy) {
+    
+    switch (enemy->iType) {
+             //Kilo
+         case 10:
+             destroy_enemy_kilo(enemy);
+             
+             break;
+     
+     }
+}
 

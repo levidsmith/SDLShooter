@@ -36,45 +36,9 @@ void init_enemy_kilo(struct Enemy *enemy) {
 //    int iTargetValue = (rand() % 14) + 1;
     int iTargetValue = (rand() % (int) (pow(2, iBodyParts) - 1)) + 1;
     enemykilohead->iTargetValue = iTargetValue;
+    enemykilohead->iAttackValue = 0;
     enemy->subtype = enemykilohead;
-
-    char strText[8];
-    sprintf(strText, "%d", iTargetValue);
-    SDL_Color colorRedText = {255, 0, 0};
-//    generateTextTexture(&imgText, strText, colorRedText, fontDefault);
-
-	SDL_Surface *sprText;
-//	sprText = TTF_RenderText_Solid(font, strText, colorText);
-
-/*
-	if (*imgText != NULL) {
-	  SDL_DestroyTexture(*imgText);
-	}
-	*imgText = SDL_CreateTextureFromSurface(renderer, sprText);
-    SDL_FreeSurface(sprText); 
-*/
-
-	SDL_Surface *surfaceHead;
-	SDL_Surface *surfaceNumber;
-	SDL_Rect rect = {32, 32, 64, 64};
-	SDL_Texture *imgHead;
-
-	surfaceNumber = TTF_RenderText_Solid(fontDefault, strText, colorRedText);
-
-    surfaceHead = generateSurface("assets/images/enemy_kilo_l1_1.bmp");
-	rect.x = (64 - surfaceNumber->w) / 2;
-	rect.y = (64 - surfaceNumber->h) / 2;
-	SDL_BlitSurface(surfaceNumber, NULL, surfaceHead, &rect);
-	imgHead = SDL_CreateTextureFromSurface(renderer, surfaceHead);
-	SDL_FreeSurface(surfaceHead);
-    enemykilohead->imgEnemyKilo_L1_00 = imgHead;
-
-    surfaceHead = generateSurface("assets/images/enemy_kilo_l1_2.bmp");
-	SDL_BlitSurface(surfaceNumber, NULL, surfaceHead, &rect);
-	imgHead = SDL_CreateTextureFromSurface(renderer, surfaceHead);
-	SDL_FreeSurface(surfaceHead);
-    enemykilohead->imgEnemyKilo_L1_01 = imgHead;
-
+    reloadHeadTexture_enemy_kilo(enemykilohead);
 
 
 
@@ -107,7 +71,7 @@ void init_enemy_kilo(struct Enemy *enemy) {
 		enemyPart->width = iWidth;
 		enemyPart->height = iHeight;
 		
-		reloadBodyTexture(enemykilobody);
+		reloadBodyTexture_enemy_kilo(enemykilobody);
 
 
 		
@@ -123,55 +87,84 @@ void init_enemy_kilo(struct Enemy *enemy) {
 		
 		i++;
 	}
-/*    
-    //first part
-    enemyPart = malloc(sizeof(struct Enemy));
-    init_enemy(enemyPart, enemy->x - (iWidth * 1.5), enemy->y + 64, 10, 2, FALSE);
-    enemykilobody = malloc(sizeof(struct EnemyKiloBody));
-    enemykilobody->head = enemy;
-	enemykilobody->iValue = 0;
-    enemyPart->subtype = enemykilobody;
-    enemyPart->width = iWidth;
-    enemyPart->height = iHeight;
-    enemykilohead->body[0] = enemyPart;
 
-    //second part
-    enemyPart = malloc(sizeof(struct Enemy));
-    init_enemy(enemyPart, enemy->x - (iWidth * 0.5), enemy->y + 64, 10, 2, FALSE);
-    enemykilobody = malloc(sizeof(struct EnemyKiloBody));
-    enemykilobody->head = enemy;
-	enemykilobody->iValue = 0;
-    enemyPart->subtype = enemykilobody;
-    enemyPart->width = iWidth;
-    enemyPart->height = iHeight;
-    enemykilohead->body[1] = enemyPart;
-
-    //third part
-    enemyPart = malloc(sizeof(struct Enemy));
-    init_enemy(enemyPart, enemy->x + (iWidth * 0.5), enemy->y + 64, 10, 2, FALSE);
-    enemykilobody = malloc(sizeof(struct EnemyKiloBody));
-    enemykilobody->head = enemy;
-	enemykilobody->iValue = 0;
-    enemyPart->subtype = enemykilobody;
-    enemyPart->width = iWidth;
-    enemyPart->height = iHeight;
-    enemykilohead->body[2] = enemyPart;
-
-    //fourth part
-    enemyPart = malloc(sizeof(struct Enemy));
-    init_enemy(enemyPart, enemy->x + (iWidth * 1.5), enemy->y + 64, 10, 2, FALSE);
-    enemykilobody = malloc(sizeof(struct EnemyKiloBody));
-    enemykilobody->head = enemy;
-	enemykilobody->iValue = 0;
-    enemyPart->subtype = enemykilobody;
-    enemyPart->width = iWidth;
-    enemyPart->height = iHeight;
-    enemykilohead->body[3] = enemyPart;
-	*/
 }
 
+void reloadHeadTexture_enemy_kilo(struct EnemyKiloHead *enemykilohead) {
+        char strText[8];
+        SDL_Color colorRedText = {255, 0, 0};
+    SDL_Color colorBlackText = { 128, 0, 0};
+    //    generateTextTexture(&imgText, strText, colorRedText, fontDefault);
 
-void reloadBodyTexture(struct EnemyKiloBody *enemykilobody) {
+        SDL_Surface *sprText;
+    //    sprText = TTF_RenderText_Solid(font, strText, colorText);
+
+    /*
+        if (*imgText != NULL) {
+          SDL_DestroyTexture(*imgText);
+        }
+        *imgText = SDL_CreateTextureFromSurface(renderer, sprText);
+        SDL_FreeSurface(sprText);
+    */
+
+        SDL_Surface *surfaceHead;
+        SDL_Surface *surfaceNumber;
+        SDL_Rect rect = {32, 32, 64, 64};
+        SDL_Texture *imgHead;
+
+        //first sprite
+        surfaceHead = generateSurface("assets/images/enemy_kilo_l1_1.bmp");
+
+        sprintf(strText, "%d", enemykilohead->iTargetValue);
+        surfaceNumber = TTF_RenderText_Solid(fontDefault, strText, colorRedText);
+        rect.x = (64 - surfaceNumber->w) / 2;
+        rect.y = ((64 - surfaceNumber->h) / 2) - 4;
+        SDL_BlitSurface(surfaceNumber, NULL, surfaceHead, &rect);
+        SDL_FreeSurface(surfaceNumber);
+        sprintf(strText, "%d", enemykilohead->iAttackValue);
+        surfaceNumber = TTF_RenderText_Solid(fontDefault, strText, colorBlackText);
+        rect.x = (64 - surfaceNumber->w) / 2;
+        rect.y = ((64 - surfaceNumber->h) / 2) + 16;
+        SDL_BlitSurface(surfaceNumber, NULL, surfaceHead, &rect);
+        SDL_FreeSurface(surfaceNumber);
+    
+        imgHead = SDL_CreateTextureFromSurface(renderer, surfaceHead);
+        SDL_FreeSurface(surfaceHead);
+        enemykilohead->imgEnemyKilo_L1_00 = imgHead;
+
+    
+        //second sprite
+        surfaceHead = generateSurface("assets/images/enemy_kilo_l1_2.bmp");
+
+        sprintf(strText, "%d", enemykilohead->iTargetValue);
+        surfaceNumber = TTF_RenderText_Solid(fontDefault, strText, colorRedText);
+        rect.x = (64 - surfaceNumber->w) / 2;
+        rect.y = ((64 - surfaceNumber->h) / 2) - 4;
+        SDL_BlitSurface(surfaceNumber, NULL, surfaceHead, &rect);
+        SDL_FreeSurface(surfaceNumber);
+        sprintf(strText, "%d", enemykilohead->iAttackValue);
+        surfaceNumber = TTF_RenderText_Solid(fontDefault, strText, colorBlackText);
+        rect.x = (64 - surfaceNumber->w) / 2;
+        rect.y = ((64 - surfaceNumber->h) / 2) + 16;
+        SDL_BlitSurface(surfaceNumber, NULL, surfaceHead, &rect);
+        SDL_FreeSurface(surfaceNumber);
+    
+        imgHead = SDL_CreateTextureFromSurface(renderer, surfaceHead);
+        SDL_FreeSurface(surfaceHead);
+        enemykilohead->imgEnemyKilo_L1_01 = imgHead;
+
+    
+    /*
+        surfaceHead = generateSurface("assets/images/enemy_kilo_l1_2.bmp");
+        SDL_BlitSurface(surfaceNumber, NULL, surfaceHead, &rect);
+        imgHead = SDL_CreateTextureFromSurface(renderer, surfaceHead);
+        SDL_FreeSurface(surfaceHead);
+        enemykilohead->imgEnemyKilo_L1_01 = imgHead;
+*/
+
+}
+
+void reloadBodyTexture_enemy_kilo(struct EnemyKiloBody *enemykilobody) {
     char strText[8];
 
 
@@ -216,14 +209,15 @@ void damage_enemy_kilo(struct Enemy *enemy, int iDamageAmount) {
         if (enemykilobody->iValue < 0) {
             enemykilobody->iValue = 1;
         }
-		reloadBodyTexture(enemykilobody);
-        check_destroy_enemy_kilo(enemykilobody->head);
-		
+		reloadBodyTexture_enemy_kilo(enemykilobody);
+        check_dead_enemy_kilo(enemykilobody->head);
+        reloadHeadTexture_enemy_kilo(enemykilobody->head->subtype);
+
     }
     
 }
 
-void check_destroy_enemy_kilo(struct Enemy *enemy) {
+void check_dead_enemy_kilo(struct Enemy *enemy) {
     int iAttackValue = 0;
     
     struct EnemyKiloHead *enemykilohead = (struct EnemyKiloHead *) enemy->subtype;
@@ -255,15 +249,16 @@ void check_destroy_enemy_kilo(struct Enemy *enemy) {
     (enemykilobody3->iValue * 2) + (enemykilobody4->iValue * 1);
 */
 
+    enemykilohead->iAttackValue = iAttackValue;
     if (iAttackValue == enemykilohead->iTargetValue) {
 		enemyPart = (struct Enemy *) enemykilohead->bodyFirst;
 		while (enemyPart != NULL) {
 			struct EnemyKiloBody *enemykilobody = (struct EnemyKiloBody *) enemyPart->subtype;
-			destroy_enemy(enemyPart);
+			kill_enemy(enemyPart);
 			enemyPart = enemykilobody->next;
 		}
 		
-		destroy_enemy(enemy);
+		kill_enemy(enemy);
 
 
 	}
@@ -324,5 +319,37 @@ SDL_Texture *getTexture_enemy_kilo(struct Enemy *enemy) {
     }
     
     return img;
+
+}
+
+void destroy_enemy_kilo(struct Enemy *enemy) {
+    if (enemy->isRoot) {
+        destroy_enemy_kilo_head((struct EnemyKiloHead *) enemy->subtype);
+    } else {
+        destroy_enemy_kilo_body((struct EnemyKiloBody *) enemy->subtype);
+    }
+
+}
+
+void destroy_enemy_kilo_head(struct EnemyKiloHead *enemykilohead) {
+    if (enemykilohead->imgEnemyKilo_L1_00 != NULL) {
+        SDL_DestroyTexture(enemykilohead->imgEnemyKilo_L1_00);
+    }
+
+    if (enemykilohead->imgEnemyKilo_L1_01 != NULL) {
+        SDL_DestroyTexture(enemykilohead->imgEnemyKilo_L1_01);
+    }
+
+}
+
+
+void destroy_enemy_kilo_body(struct EnemyKiloBody *enemykilobody) {
+    if (enemykilobody->imgEnemyKilo_L2_00 != NULL) {
+        SDL_DestroyTexture(enemykilobody->imgEnemyKilo_L2_00);
+    }
+
+    if (enemykilobody->imgEnemyKilo_L2_01 != NULL) {
+        SDL_DestroyTexture(enemykilobody->imgEnemyKilo_L2_01);
+    }
 
 }
