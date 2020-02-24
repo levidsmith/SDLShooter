@@ -1,5 +1,20 @@
 
 
+
+        N   N  
+    N           N
+
+=
+
+
+          O
+
+  N     O   O     N
+
+          O
+
+=
+
     M  M    M  M
 
     L  L    L  L

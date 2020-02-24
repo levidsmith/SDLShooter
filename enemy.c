@@ -22,6 +22,7 @@
 #include "enemy_juliett.h"
 #include "enemy_kilo.h"
 #include "enemy_lima.h"
+#include "enemy_mike.h"
 
 
 
@@ -143,6 +144,11 @@ void init_enemy(struct Enemy *enemy, int init_x, int init_y, int init_iType, int
         case 11:
             init_enemy_lima(enemy);
             break;
+		case 12:
+			if (isRoot) {
+				init_enemy_mike(enemy);
+			}
+			break;
 
     }
 	
@@ -475,6 +481,10 @@ void updateActive_enemy(struct Enemy *enemy) {
             //Lima
             update_enemy_lima(enemy);
             break;
+		case 12:
+			//Mike
+			update_enemy_mike(enemy);
+			break;
     }
 	
 	if (enemy->fShootDelay > 0) {
@@ -512,7 +522,7 @@ void draw_enemy(struct Enemy *enemy) {
     SDL_Rect pos;
 	SDL_Texture *img = NULL;
 	
-	int iSpriteIndex = ((int) (enemy->fLifetime * 2)) % 2; //change sprite every 0.5 seconds
+	int iSpriteIndex = ((int) (enemy->fLifetime * 2)) % 2; //change sprite every 0.5 secondsDL_SetTextureColorMod
 	
 
 //    if (enemy->isAlive) {
@@ -670,6 +680,11 @@ void draw_enemy(struct Enemy *enemy) {
               img = getTexture_enemy_lima(enemy);
               break;
 
+		//Mike
+			case 12:
+				img = getTexture_enemy_mike(enemy);
+				break;
+
 		}
 		
 		
@@ -764,12 +779,14 @@ void draw_enemy(struct Enemy *enemy) {
 				
 			} else {
 				
+				if (enemy->iType != 12) {
 			
-				if (enemy->fDamagedCountdown > 0 || enemy->iHealth <= 0) {
+					if (enemy->fDamagedCountdown > 0 || enemy->iHealth <= 0) {
 						SDL_SetTextureColorMod(img, 255, 0, 0);
-				} else {
-					SDL_SetTextureColorMod(img, 255, 255, 255);
-
+					} else {
+						SDL_SetTextureColorMod(img, 255, 255, 255);
+				
+					}
 				}
 				
 				//draw enemy sprite
@@ -885,6 +902,9 @@ void damage_enemy(struct Enemy *enemy, int iDamageAmount) {
     } else if (enemy->iType == 11) {
         damage_enemy_lima(enemy, iDamageAmount);
         iCheckDestroy = FALSE;
+	} else if (enemy->iType == 12) {
+		damage_enemy_mike(enemy, iDamageAmount);
+		iCheckDestroy = FALSE;
 
 	} else {
 		iTotalDamage = iDamageAmount;

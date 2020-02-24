@@ -82,6 +82,10 @@ SDL_Texture *imgEnemyLima_L2_00;
 SDL_Texture *imgEnemyLima_L2_01;
 SDL_Texture *imgEnemyLima_L2_02;
 SDL_Texture *imgEnemyLima_L2_03;
+SDL_Texture *imgEnemyMike_L1_00;
+SDL_Texture *imgEnemyMike_L1_01;
+SDL_Texture *imgEnemyMike_L1_02;
+SDL_Texture *imgEnemyMike_L1_03;
 
 
 
@@ -425,6 +429,11 @@ for (i = 0; i < NUM_WORLDS * 2; i++) {
     imgEnemyLima_L2_02 = generateTexture("assets/images/enemy_lima_l2_3.bmp");
     imgEnemyLima_L2_03 = generateTexture("assets/images/enemy_lima_l2_4.bmp");
 
+    imgEnemyMike_L1_00 = generateTexture("assets/images/enemy_mike_l1_1.bmp");
+    imgEnemyMike_L1_01 = generateTexture("assets/images/enemy_mike_l1_2.bmp");
+    imgEnemyMike_L1_02 = generateTexture("assets/images/enemy_mike_l1_3.bmp");
+    imgEnemyMike_L1_03 = generateTexture("assets/images/enemy_mike_l1_4.bmp");
+
 
 
 	for (i = 0; i < NUM_WEAPONS; i++) {
@@ -649,6 +658,10 @@ for (i = 0; i < NUM_WORLDS * 2; i++) {
     SDL_DestroyTexture(imgEnemyLima_L2_01);
     SDL_DestroyTexture(imgEnemyLima_L2_02);
     SDL_DestroyTexture(imgEnemyLima_L2_03);
+    SDL_DestroyTexture(imgEnemyMike_L1_00);
+    SDL_DestroyTexture(imgEnemyMike_L1_01);
+    SDL_DestroyTexture(imgEnemyMike_L1_02);
+    SDL_DestroyTexture(imgEnemyMike_L1_03);
 
 
   SDL_DestroyTexture(imgExplosion_L2_00);

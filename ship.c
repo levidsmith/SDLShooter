@@ -173,6 +173,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
 	float bullet_x, bullet_y;
 
   if (ship->iWeaponType == 0) {
+	  //Normal Weapon
 
 //      iEnergyRequired = 5;
 	iEnergyRequired = getEnergyRequired(ship->iWeaponType, iLevel);
@@ -199,6 +200,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
 		Mix_PlayChannel(-1, soundShoot, 0);
 	}
   } else if (ship->iWeaponType == 1) {
+	  //Speed Shot
       float fShootDelay = 0.5;
 		iEnergyRequired = getEnergyRequired(ship->iWeaponType, iLevel);
 
@@ -240,6 +242,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
 	
 	
   } else if (ship->iWeaponType == 2) {
+	  //Multi Shot
 	  
 	  	iEnergyRequired = getEnergyRequired(ship->iWeaponType, iLevel);
       
@@ -359,6 +362,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
 		Mix_PlayChannel(-1, soundShoot, 0);
 	}
   } else if (ship->iWeaponType == 3) {
+	  //Wave Shot
 	  
 	  	iEnergyRequired = getEnergyRequired(ship->iWeaponType, iLevel);
 
@@ -450,6 +454,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
 	}
 		
   } else if (ship->iWeaponType == 4) {
+	  //Blast Shot
 	  
 	  	iEnergyRequired = getEnergyRequired(ship->iWeaponType, iLevel);
 
@@ -499,6 +504,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
     }
 	  
   } else if (ship->iWeaponType == 5) {
+	  //Spin Shot
 	  	iEnergyRequired = getEnergyRequired(ship->iWeaponType, iLevel);
 
     if (ship->fEnergy >= iEnergyRequired) {
@@ -586,8 +592,8 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
     }
 	
 	
-	//freeze ray
 	} else if (ship->iWeaponType == 6) {
+	//Freeze Shot
 		iEnergyRequired = getEnergyRequired(ship->iWeaponType, iLevel);
 
       switch(iLevel) {
@@ -623,8 +629,8 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
 	
 	
 	
-	//seek shot
 	} else if (ship->iWeaponType == 7) {
+		//Seek Shot
 		iEnergyRequired = getEnergyRequired(ship->iWeaponType, iLevel);
 
 
@@ -798,13 +804,13 @@ int getEnergyRequired(int iWeapon, int iLevel) {
 			//blast shot
 			switch(iLevel) {
 				case 0:
-					iEnergy = 12;
+					iEnergy = 100;
 					break;
 				case 1:
-					iEnergy = 24;
+					iEnergy = 150;
 					break;
 				case 2:
-					iEnergy = 48;
+					iEnergy = 200;
 					break;
 			}
 			break;

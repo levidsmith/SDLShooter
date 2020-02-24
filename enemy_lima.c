@@ -54,7 +54,7 @@ void update_enemy_lima(struct Enemy *enemy) {
     if (enemylima->isAsleep && getDistance(enemy_CenterX, enemy_CenterY, ship_CenterX, ship_CenterY) < enemylima->fWakeUpRadius * UNIT_SIZE) {
         enemylima->isAsleep = FALSE;
 		enemy->orig_x = enemy->x;
-		enemylima->fWakeDelay = 1 + getRandomInt(0, 2);
+		enemylima->fWakeDelay = (1 + getRandomInt(0, 4)) * 0.2;
 		
     }
     
