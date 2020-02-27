@@ -779,7 +779,7 @@ void draw_enemy(struct Enemy *enemy) {
 				
 			} else {
 				
-				if (enemy->iType != 12) {
+				if (enemy->iType != 12) {//enemy mike
 			
 					if (enemy->fDamagedCountdown > 0 || enemy->iHealth <= 0) {
 						SDL_SetTextureColorMod(img, 255, 0, 0);

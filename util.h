@@ -8,6 +8,7 @@
 
 int getRandomInt(int iMin, int iMax);
 float getDistance(float x1, float y1, float x2, float y2);
+float getRandomFloat(float fMin, float fMax);
 
 
 #endif

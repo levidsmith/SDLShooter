@@ -1,4 +1,8 @@
 //2019 Levi D. Smith - levidsmith.com
+
+#ifndef ship_h
+#define ship_h
+
 struct Ship {
   float vel_x;
   float vel_y;
@@ -36,5 +40,6 @@ void setAccelerationY(struct Ship *ship, float fAccel);
 */
 void setVelocity_ship(struct Ship *ship, float fMagnitudeX, float fMagnitudeY);
 
+#endif
 
 
