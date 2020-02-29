@@ -1,4 +1,10 @@
 //2019 Levi D. Smith - levidsmith.com
+
+#ifndef explosion_h
+#define explosion_h
+
+
+
 struct Explosion {
   float x;
   float y;
@@ -14,3 +20,5 @@ struct Explosion {
 void init_explosion(struct Explosion *explosion, float init_x, float init_y, float init_radius);
 void update_explosion(struct Explosion *explosion);
 void draw_explosion(struct Explosion *explosion);
+
+#endif

@@ -1,3 +1,5 @@
+//2020 Levi D. Smith - levidsmith.com
+
 #ifndef enemy_juliett_h
 #define enemy_juliett_h
 
@@ -10,11 +12,14 @@ struct EnemyJuliett {
 
 
 
-#endif
+
 
 void init_enemy_juliett(struct Enemy *enemy);
 void update_enemy_juliett(struct Enemy *enemy);
 SDL_Texture *getTexture_enemy_juliett(struct Enemy *enemy);
 void damage_enemy_juliett(struct Enemy *enemy, int iDamageAmount);
 void set_target_enemy_juliett(struct Enemy *enemy);
+
+
+#endif
 

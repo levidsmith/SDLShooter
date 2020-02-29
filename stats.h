@@ -1,3 +1,8 @@
+#ifndef stats_h
+#define stats_h
+
+
+
 struct Stats {
 	int iScore;
 	int iShotsFired[NUM_WEAPONS];
@@ -16,4 +21,4 @@ int getShotsFired_stats(struct Stats *stats);
 int getHitRate(struct Stats *stats);
 Uint32 getTotalTime_stats(struct Stats *stats);
 
-
+#endif

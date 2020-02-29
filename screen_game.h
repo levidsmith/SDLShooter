@@ -1,4 +1,10 @@
 //2019 Levi D. Smith
+
+#ifndef screen_game_h
+#define screen_game_h
+
+
+
 void start_screen_game();
 void update_screen_game();
 void draw_screen_game();
@@ -17,4 +23,4 @@ void loadWorld();
 void generateTextTexture(SDL_Texture **imgText, char *strText, SDL_Color colorText, TTF_Font *font);
 void formatTime(char *strTime, Uint32 timeValue);
 
-
+#endif

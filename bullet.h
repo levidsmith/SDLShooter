@@ -1,4 +1,8 @@
 //2019 Levi D. Smith - levidsmith.com
+
+#ifndef bullet_h
+#define bullet_h
+
 struct Bullet {
   float x;
   float y;
@@ -30,3 +34,4 @@ float getCenterX_bullet(struct Bullet *bullet);
 float getCenterY_bullet(struct Bullet *bullet);
 void seekEnemy_bullet(struct Bullet *bullet);
 
+#endif

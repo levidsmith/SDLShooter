@@ -1,9 +1,9 @@
-//enemy_kilo.h
+//2020 Levi D. Smith - levidsmith.com
+
 #ifndef enemy_kilo_h
 #define enemy_kilo_h
 
 
-#endif
 
 struct EnemyKiloBody {
     int iValue;
@@ -38,3 +38,5 @@ void reloadBodyTexture_enemy_kilo(struct EnemyKiloBody *enemykilobody);
 void destroy_enemy_kilo(struct Enemy *enemy);
 void destroy_enemy_kilo_head(struct EnemyKiloHead *enemykilohead);
 void destroy_enemy_kilo_body(struct EnemyKiloBody *enemykilobody);
+
+#endif

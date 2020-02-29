@@ -11,9 +11,10 @@
 
 #include <stdio.h>
 
-#endif /* enemy_india_h */
 
 void init_enemy_india(struct Enemy *enemy);
 void update_enemy_india(struct Enemy *enemy);
 void damage_enemy_india(struct Enemy *enemy, int iDamageAmount);
 SDL_Texture *getTexture_enemy_india(struct Enemy *enemy);
+
+#endif
