@@ -248,7 +248,7 @@ void damage_enemy_mike(struct Enemy *enemy, int iDamageAmount) {
 				kill_enemy(enemy);
 //				enemy->isAlive = FALSE;
 				enemymikehead->body[enemymikebody->iIndex] = NULL;
-				check_head_kill(enemyhead);
+				check_head_kill_enemy_mike(enemyhead);
 			}
 		} else {
 			enemymikehead->fRotSpeed = enemymikehead->fErrorRotSpeed;
@@ -290,7 +290,7 @@ void shoot_enemy_mike(struct Enemy *enemy) {
 	
 }
 
-void check_head_kill(struct Enemy *enemy) {
+void check_head_kill_enemy_mike(struct Enemy *enemy) {
 	struct EnemyMikeHead *enemymikehead = (struct EnemyMikeHead *) enemy->subtype;
 	int isKilled = TRUE;
 	int i;

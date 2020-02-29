@@ -30,7 +30,7 @@ void update_enemy_mike(struct Enemy *enemy);
 SDL_Texture *getTexture_enemy_mike(struct Enemy *enemy);
 void destroy_enemy_mike(struct Enemy *enemy);
 void damage_enemy_mike(struct Enemy *enemy, int iDamageAmount);
-void check_head_kill(struct Enemy *enemy);
+void check_head_kill_enemy_mike(struct Enemy *enemy);
 void update_enemy_mike_body(struct Enemy *enemy);
 void shoot_enemy_mike(struct Enemy *enemy);
 void attack_mode_enemy_mike(struct Enemy *enemy);

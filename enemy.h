@@ -1,5 +1,7 @@
 //2019 Levi D. Smith - levidsmith.com
 
+#ifndef enemy_h
+#define enemy_h
 
 
 struct Enemy {
@@ -54,6 +56,6 @@ float getCenterX_enemy(struct Enemy *enemy);
 float getCenterY_enemy(struct Enemy *enemy);
 void configure_enemy(struct Enemy *enemy);
 int canDestroy_enemy(struct Enemy *enemy);
+void draw_explosion_enemy(struct Enemy *enemy, SDL_Texture *img);
 
-
-
+#endif

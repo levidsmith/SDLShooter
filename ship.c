@@ -48,6 +48,7 @@ void init_ship(struct Ship *ship) {
   ship->fDefensePowerupDelay = 0;
   ship->fAttackPowerupDelay = 0;
   ship->fMaxSpeed = UNIT_SIZE * 5;
+  ship->fMaxDeathDelay = 0.5;
 
 printf("*** init ship complete\n");
 
@@ -77,6 +78,8 @@ void update_ship(struct Ship *ship) {
     if (ship->y > SCREEN_HEIGHT - (ship->height * 2)) {
       ship->y = SCREEN_HEIGHT - (ship->height * 2);
     }
+  } else {
+		ship->fDeathDelay += DELTA_TIME;
   }
   
   if (ship->fShootDelay > 0) {
@@ -125,6 +128,10 @@ void draw_ship(struct Ship *ship) {
 	
 	SDL_Rect pos;
 	SDL_Texture *img;
+	
+		img = imgShip[ship->iWeaponType];
+
+	
   //Draw the ship
   if (ship->isAlive) {
 	pos.x = ship->x;
@@ -133,7 +140,6 @@ void draw_ship(struct Ship *ship) {
 	pos.h = ship->height;
 	
 	
-	img = imgShip[ship->iWeaponType];
 	
 	if (ship->fInvincibleDelay > 0) {
 		SDL_SetTextureAlphaMod(img, 0x40);
@@ -163,10 +169,97 @@ void draw_ship(struct Ship *ship) {
 		
 	}
 	
+  } else {
+	  draw_explosion_ship(ship, img);
   }
 
 	
 }
+
+
+void draw_explosion_ship(struct Ship *ship, SDL_Texture *img) {
+    SDL_Rect pos;
+				SDL_Rect rectParts;
+
+				float fBreakApartSpeed = 2;
+				float fDeathPercent = ship->fDeathDelay / ship->fMaxDeathDelay;
+
+				//full transperancy for half of death delay, then fade linearly
+				int iAlpha = 255;
+				if (fDeathPercent > 0.5) {
+					iAlpha = 256 * (-((fDeathPercent - 0.5) / 0.5) + 1);
+				}
+				if (iAlpha < 0) {
+					iAlpha = 0;
+				}
+
+                float fAngle = ship->fDeathDelay * 180;
+                
+
+				SDL_SetTextureAlphaMod(img, iAlpha);
+                
+                int img_w, img_h;
+                SDL_QueryTexture(img, NULL, NULL, &img_w, &img_h);
+
+				
+				//upper left part
+
+			    pos.x = ship->x + 0 - (ship->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
+				pos.y = ship->y + 0 - (ship->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
+				pos.w = ship->width / 2;
+				pos.h = ship->height / 2;
+
+				rectParts.x = 0;
+				rectParts.y = 0;
+                rectParts.w = img_w / 2;
+				rectParts.h = img_h / 2;
+
+				SDL_RenderCopyEx(renderer, img, &rectParts, &pos, -fAngle, NULL, SDL_FLIP_NONE);
+
+
+				//upper right part
+			    pos.x = ship->x + (ship->width / 2) + (ship->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
+				pos.y = ship->y + 0 - (ship->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
+				pos.w = ship->width / 2;
+				pos.h = ship->height / 2;
+
+				rectParts.x = img_w / 2;
+				rectParts.y = 0;
+				rectParts.w = img_w / 2;
+				rectParts.h = img_h / 2;
+
+				SDL_RenderCopyEx(renderer, img, &rectParts, &pos, fAngle, NULL, SDL_FLIP_NONE);
+
+
+				//lower left part
+			    pos.x = ship->x + 0 - (ship->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
+				pos.y = ship->y + (ship->height / 2) + (ship->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
+				pos.w = ship->width / 2;
+				pos.h = ship->height / 2;
+
+				rectParts.x = 0;
+				rectParts.y = img_h / 2;
+				rectParts.w = img_w / 2;
+				rectParts.h = img_h / 2;
+
+				SDL_RenderCopyEx(renderer, img, &rectParts, &pos, -fAngle, NULL, SDL_FLIP_NONE);
+				
+				//lower right part
+			    pos.x = ship->x + (ship->width / 2) + (ship->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
+				pos.y = ship->y + (ship->height / 2) + (ship->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
+				pos.w = ship->width / 2;
+				pos.h = ship->height / 2;
+
+				rectParts.x = img_w / 2;
+				rectParts.y = img_h / 2;
+				rectParts.w = img_w / 2;
+				rectParts.h = img_h / 2;
+
+				SDL_RenderCopyEx(renderer, img, &rectParts, &pos, fAngle, NULL, SDL_FLIP_NONE);
+
+}
+
+
 
 void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
     int iEnergyRequired = 5;
@@ -688,6 +781,7 @@ void damage_ship(struct Ship *ship, int iDamage) {
 		ship->fInvincibleDelay = 1;
 	
 		if (ship->iHealth <= 0) {
+			ship->fDeathDelay = 0;
 			ship->isAlive = FALSE;
 		    Mix_PlayChannel(-1, soundShipDead, 0);
 		} else {

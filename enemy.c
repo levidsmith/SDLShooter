@@ -1,7 +1,8 @@
 //2019 Levi D. Smith - levidsmith.com
-#include "enemy.h"
 
 #include "globals.h"
+#include "enemy.h"
+
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -697,6 +698,9 @@ void draw_enemy(struct Enemy *enemy) {
 			if (enemy->fIntroDelay > 0) {
 				SDL_RenderCopyEx(renderer, img, NULL, &pos, enemy->fIntroDelay * 720, NULL, SDL_FLIP_NONE);
 			} else if (!enemy->isAlive) {
+				draw_explosion_enemy(enemy, img);
+				/*
+				
 				SDL_Rect rectParts;
 				float fBreakApartSpeed = 2;
 //				int iAlpha = 0xFF - (enemy->fDeathDelay * 256 / enemy->fMaxDeathDelay);
@@ -774,7 +778,7 @@ void draw_enemy(struct Enemy *enemy) {
 				rectParts.h = img_h / 2;
 
 				SDL_RenderCopyEx(renderer, img, &rectParts, &pos, fAngle, NULL, SDL_FLIP_NONE);
-
+*/
 				
 				
 			} else {
@@ -810,6 +814,95 @@ void draw_enemy(struct Enemy *enemy) {
 		}
 
   //  }
+
+}
+
+void draw_explosion_enemy(struct Enemy *enemy, SDL_Texture *img) {
+    SDL_Rect pos;
+				SDL_Rect rectParts;
+				float fBreakApartSpeed = 2;
+				float fDeathPercent = enemy->fDeathDelay / enemy->fMaxDeathDelay;
+
+				//full transperancy for half of death delay, then fade linearly
+				int iAlpha = 255;
+				if (fDeathPercent > 0.5) {
+					iAlpha = 256 * (-((fDeathPercent - 0.5) / 0.5) + 1);
+				}
+				if (iAlpha < 0) {
+					iAlpha = 0;
+				}
+
+                float fAngle = enemy->fDeathDelay * 180;
+                
+
+				SDL_SetTextureAlphaMod(img, iAlpha);
+                
+                int img_w, img_h;
+                SDL_QueryTexture(img, NULL, NULL, &img_w, &img_h);
+
+				
+				//upper left part
+//			    pos.x = enemy->x + (enemy->width / 2) - (enemy->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
+//				pos.y = enemy->y + (enemy->height / 2) - (enemy->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
+
+			    pos.x = enemy->x + 0 - (enemy->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
+				pos.y = enemy->y + 0 - (enemy->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
+				pos.w = enemy->width / 2;
+				pos.h = enemy->height / 2;
+
+				rectParts.x = 0;
+				rectParts.y = 0;
+                rectParts.w = img_w / 2;
+				rectParts.h = img_h / 2;
+
+				SDL_RenderCopyEx(renderer, img, &rectParts, &pos, -fAngle, NULL, SDL_FLIP_NONE);
+
+
+				//upper right part
+//			    pos.x = enemy->x + (enemy->width / 2) + (enemy->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
+//				pos.y = enemy->y + (enemy->height / 2) - (enemy->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
+			    pos.x = enemy->x + (enemy->width / 2) + (enemy->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
+				pos.y = enemy->y + 0 - (enemy->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
+				pos.w = enemy->width / 2;
+				pos.h = enemy->height / 2;
+
+				rectParts.x = img_w / 2;
+				rectParts.y = 0;
+				rectParts.w = img_w / 2;
+				rectParts.h = img_h / 2;
+
+				SDL_RenderCopyEx(renderer, img, &rectParts, &pos, fAngle, NULL, SDL_FLIP_NONE);
+
+
+				//lower left part
+//			    pos.x = enemy->x + (enemy->width / 2) - (enemy->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
+//				pos.y = enemy->y + (enemy->height / 2) + (enemy->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
+			    pos.x = enemy->x + 0 - (enemy->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
+				pos.y = enemy->y + (enemy->height / 2) + (enemy->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
+				pos.w = enemy->width / 2;
+				pos.h = enemy->height / 2;
+
+				rectParts.x = 0;
+				rectParts.y = img_h / 2;
+				rectParts.w = img_w / 2;
+				rectParts.h = img_h / 2;
+
+				SDL_RenderCopyEx(renderer, img, &rectParts, &pos, -fAngle, NULL, SDL_FLIP_NONE);
+				
+				//lower right part
+//			    pos.x = enemy->x + (enemy->width / 2) + (enemy->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
+//				pos.y = enemy->y + (enemy->height / 2) + (enemy->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
+			    pos.x = enemy->x + (enemy->width / 2) + (enemy->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
+				pos.y = enemy->y + (enemy->height / 2) + (enemy->fDeathDelay * fBreakApartSpeed * UNIT_SIZE);
+				pos.w = enemy->width / 2;
+				pos.h = enemy->height / 2;
+
+				rectParts.x = img_w / 2;
+				rectParts.y = img_h / 2;
+				rectParts.w = img_w / 2;
+				rectParts.h = img_h / 2;
+
+				SDL_RenderCopyEx(renderer, img, &rectParts, &pos, fAngle, NULL, SDL_FLIP_NONE);
 
 }
 

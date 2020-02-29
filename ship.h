@@ -22,6 +22,8 @@ struct Ship {
   float fDefensePowerupDelay;
   float fAttackPowerupDelay;
   float fMaxSpeed;
+  float fDeathDelay;
+  float fMaxDeathDelay;
 };
 
 void init_ship(struct Ship *);
@@ -39,6 +41,7 @@ void setAccelerationX(struct Ship *ship, float fAccel);
 void setAccelerationY(struct Ship *ship, float fAccel);
 */
 void setVelocity_ship(struct Ship *ship, float fMagnitudeX, float fMagnitudeY);
+void draw_explosion_ship(struct Ship *ship, SDL_Texture *img);
 
 #endif
 

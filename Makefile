@@ -1,7 +1,15 @@
 CC=gcc
 EXE=sdl_shooter
+OBJS = sdl_shooter.o enemy.o level_reader.o ship.o bullet.o linked_list.o powerup.o screen_game.o screen_title.o explosion.o screen_world_select.o stats.o util.o enemy_golf.o enemy_hotel.o enemy_india.o enemy_juliett.o enemy_kilo.o enemy_lima.o enemy_mike.o
+DEPS = globals.h util.h
 
-$(EXE): sdl_shooter.c enemy.c level_reader.c ship.c bullet.c linked_list.c powerup.c screen_game.c screen_title.c explosion.c screen_world_select.c stats.c util.c enemy_golf.c enemy_hotel.c enemy_india.c enemy_juliett.c enemy_kilo.c enemy_lima.c enemy_mike.c globals.h
+%.o: %.c $(DEPS)
+	$(CC) `sdl2-config --cflags --libs` -lSDL2_ttf -lSDL2_mixer -lm -mconsole -c -o $@ $<
+
+$(EXE): $(OBJS)
+	$(CC) -o $@ $^ `sdl2-config --cflags --libs` -lSDL2_ttf -lSDL2_mixer -lm -mconsole
+
+all: sdl_shooter.c enemy.c level_reader.c ship.c bullet.c linked_list.c powerup.c screen_game.c screen_title.c explosion.c screen_world_select.c stats.c util.c enemy_golf.c enemy_hotel.c enemy_india.c enemy_juliett.c enemy_kilo.c enemy_lima.c enemy_mike.c globals.h
 	$(CC) -o $(EXE) sdl_shooter.c enemy.c level_reader.c ship.c bullet.c linked_list.c powerup.c screen_game.c screen_title.c explosion.c screen_world_select.c stats.c util.c enemy_golf.c enemy_hotel.c enemy_india.c enemy_juliett.c enemy_kilo.c enemy_lima.c enemy_mike.c `sdl2-config --cflags --libs` -lSDL2_ttf -lSDL2_mixer -lm -mconsole
 
 release:
