@@ -9,11 +9,16 @@
 #include "screen_game.h"
 #include "screen_world_select.h"
 
+#define JOYSTICK_DEAD_ZONE 8000
+
 int iKeepLooping = TRUE;
 
 //SDL variables
 SDL_Window *window = NULL;
 SDL_Renderer *renderer = NULL;
+
+SDL_Joystick *joystick = NULL;
+int iJoystickXPrevious = 0;
 
 SDL_Surface *screenSurface = NULL;
 
@@ -213,6 +218,36 @@ void handleInput(int iType, int iKey) {
     }
 }
 
+void handleJoystick(SDL_Event *theEvent) {
+//    printf("Handle joystick\n");
+    if (theEvent->jaxis.which == 0) {
+        if (theEvent->jaxis.axis == 0) {
+            if ((theEvent->jaxis.value < -JOYSTICK_DEAD_ZONE) && (iJoystickXPrevious > -1)) {
+                printf("Joystick left pressed\n");
+                //handleInput(SDL_KEYDOWN, SDLK_a);
+                iJoystickXPrevious = -1;
+            } else if ((theEvent->jaxis.value > JOYSTICK_DEAD_ZONE) && (iJoystickXPrevious < 1)) {
+                printf("Joystick Right pressed\n");
+                //handleInput(SDL_KEYDOWN, SDLK_d);
+                iJoystickXPrevious = 1;
+            } else {
+                if (iJoystickXPrevious > 0) {
+                    printf("Joystick right released\n");
+
+                    //handleInput(SDL_KEYUP, SDLK_d);
+                } else if (iJoystickXPrevious < 0) {
+                    printf("Joystick left released\n");
+                    //handleInput(SDL_KEYUP, SDLK_a);
+                }
+                iJoystickXPrevious = 0;
+            }
+
+
+        }
+    }
+
+}
+
 void setCurrentScreen(int iScreen) {
     iCurrentScreen = iScreen;
 
@@ -273,7 +308,8 @@ int main(int argc, char *args[]) {
 
     //  if (SDL_Init( SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0) {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        printf("Error: %s\n", SDL_GetError());
+//    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0) {
+    printf("Error: %s\n", SDL_GetError());
         return 1;
     }
 
@@ -283,6 +319,18 @@ int main(int argc, char *args[]) {
         return 1;
     }
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+
+    //load joysticks
+    /*
+    if (SDL_NumJoysticks() < 1) {
+        printf("No joysticks\n");
+    } else {
+        joystick = SDL_JoystickOpen(0);
+        if (joystick == NULL) {
+            printf("Error loading joystick\n");
+        }
+    }
+    */
 
     //handle loading fonts
     if (TTF_Init() == -1) {
@@ -459,13 +507,15 @@ int main(int argc, char *args[]) {
     while (1) {
         SDL_Event theEvent;
 
+        Uint32 iStartTicks = SDL_GetTicks();
+
         update();
 
         draw();
         SDL_RenderPresent(renderer);
 
         if (SDL_PollEvent(&theEvent)) {
-            //			printf("SDL_PollEvent\n");
+//            			printf("SDL_PollEvent\n");
 
             if (theEvent.type == SDL_QUIT) {
                 printf("Close button pressed\n");
@@ -474,14 +524,30 @@ int main(int argc, char *args[]) {
                 printf("Shouldn't get here\n");
             } else if ((theEvent.type == SDL_KEYDOWN || theEvent.type == SDL_KEYUP) && (theEvent.key.repeat == 0)) {
                 handleInput(theEvent.type, theEvent.key.keysym.sym);
+//            } else if (theEvent.type == SDL_JOYAXISMOTION) {
+                //handleJoystick(&theEvent);
+                /*
+                if (theEvent.type == SDL_JOYAXISMOTION) {
+                    if (theEvent.jaxis.which == 0) {
+                        printf("x axis: %d\n", theEvent.jaxis.value);
+
+                    }
+
+                }
+                */
             }
         }
 
         if (!iKeepLooping) {
             break;
         }
-
+         
         //Set target frame rate
+        Uint32 iTicks = SDL_GetTicks() - iStartTicks;
+        if (iTicks < DELAY_MILLIS) {
+//            printf("Time remaining: %d\n", DELAY_MILLIS - iTicks);
+            SDL_Delay(DELAY_MILLIS - iTicks);
+        }
         /*
         iDelay = (1000 * DELTA_TIME) - (SDL_GetTicks() - iTime);
         if (iDelay < 0) {
@@ -491,13 +557,22 @@ int main(int argc, char *args[]) {
         iFPS = 1000 / (SDL_GetTicks() - iTime);
         iTime = SDL_GetTicks();
         */
-        SDL_Delay(16); //just set this to a constant for now.  seems to resolve freezes
+
+//        SDL_Delay(16); //just set this to a constant for now.  seems to resolve freezes
     }
 
     //  printf("Stopped looping\n");
 
     TTF_Quit();
 
+    //close joystick
+    /*
+    if (joystick != NULL) {
+        SDL_JoystickClose(joystick);
+    }
+    */
+
+    //free music
     Mix_FreeChunk(soundShoot);
     Mix_FreeChunk(soundEnemyDead);
     Mix_FreeChunk(soundEnemyShoot);

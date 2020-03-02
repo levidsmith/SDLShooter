@@ -9,7 +9,8 @@
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
 
-#define FPS 60.0
+#define FPS 60
+#define DELAY_MILLIS (1000 / FPS)
 #define DELTA_TIME (1.0 / FPS)
 #define UNIT_SIZE 64
 #define PI 3.14159265
@@ -21,6 +22,8 @@
 #define NUM_POWERUPS 4
 #define NUM_SHIP_POWERUPS 2
 #define NUM_WEAPONS 8
+
+
 #endif
 #ifdef MAC
 
