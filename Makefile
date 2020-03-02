@@ -5,12 +5,12 @@ DEPS = globals.h util.h
 
 $(EXE): $(OBJS)
 	@echo "compiling executable" $@
-	$(CC) -o $@ $^ `sdl2-config --cflags --libs` -lSDL2_ttf -lSDL2_mixer -lm -mconsole
+	$(CC) -o $@ $^ `sdl2-config --cflags --libs` -lSDL2_ttf -lSDL2_mixer -lm -mconsole -D MINGW
 
 
 %.o: %.c
 	@echo "compiling object file" $@
-	$(CC) `sdl2-config --cflags --libs` -lSDL2_ttf -lSDL2_mixer -lm -mconsole -c -o $@ $<
+	$(CC) `sdl2-config --cflags --libs` -lSDL2_ttf -lSDL2_mixer -lm -mconsole -c -o $@ $< -D MINGW
 
 hello:
 	#Hello World

@@ -11,8 +11,6 @@
 
 #define FPS 60.0
 #define DELTA_TIME (1.0 / FPS)
-
-
 #define UNIT_SIZE 64
 #define PI 3.14159265
 
@@ -23,19 +21,16 @@
 #define NUM_POWERUPS 4
 #define NUM_SHIP_POWERUPS 2
 #define NUM_WEAPONS 8
-
-
 #endif
-
-
 #ifdef MAC
 
 //MacOS - XCode Style
 #include <SDL2/SDL.h>
 #include <SDL2_ttf/SDL_ttf.h>
 #include <SDL2_mixer/SDL_mixer.h>
+#endif
 
-#else
+#ifdef MINGW
 
 //MinGW style
 #include "SDL.h"
@@ -43,4 +38,11 @@
 #include "SDL_mixer.h"
 
 #endif
+#ifdef VISUALSTUDIO
 
+//Visual Studio style
+#include "SDL.h"
+#include "SDL_ttf.h"
+#include "SDL_mixer.h"
+
+#endif

@@ -2,104 +2,98 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "linked_list.h"
-
-
 struct Node *add_node(struct Node **head, void *value) {
-//  printf("Address of list head is %x\n", head);
-  struct Node *newNode = malloc(sizeof(struct Node));
+    //  printf("Address of list head is %x\n", head);
+    struct Node *newNode = malloc(sizeof(struct Node));
 
-  newNode->data = value;
-  newNode->next = *head;
-  *head = newNode;
+    newNode->data = value;
+    newNode->next = *head;
+    *head = newNode;
 
-  return newNode;
+    return newNode;
 }
 
 void remove_first(struct Node **head) {
-  struct Node *current = *head;  
+    struct Node *current = *head;
 
     *head = current->next;
     free(current);
 }
 
 void remove_node(struct Node **head, struct Node *node) {
-  struct Node *current;
-  struct Node *previous;
+    struct Node *current;
+    struct Node *previous;
 
-  current = *head;
-  previous = NULL;
+    current = *head;
+    previous = NULL;
 
-  while(current != NULL) {
-//    printf("  Checking value %d, address %x\n", *((int *) current->data), current);
-    if (current == node) {
-//      printf("  Found node to remove: %d, address %x\n", *((int *) current->data), current);
+    while (current != NULL) {
+        //    printf("  Checking value %d, address %x\n", *((int *) current->data), current);
+        if (current == node) {
+            //      printf("  Found node to remove: %d, address %x\n", *((int *) current->data), current);
 
-      if (previous == NULL) {
-        *head = current->next;
-		if (current->data != NULL) {
-			free(current->data);
-		}
-        free(current);
-        current = *head;
-      } else {
-        previous->next = current->next;
-		if (current->data != NULL) {
-			free(current->data);
-		}
+            if (previous == NULL) {
+                *head = current->next;
+                if (current->data != NULL) {
+                    free(current->data);
+                }
+                free(current);
+                current = *head;
+            } else {
+                previous->next = current->next;
+                if (current->data != NULL) {
+                    free(current->data);
+                }
 
-        free(current);
-        current = previous->next;
-        
-      }  
-    } else {
-      previous = current;
-      current = current->next;
+                free(current);
+                current = previous->next;
+
+            }
+        } else {
+            previous = current;
+            current = current->next;
+        }
     }
-  }
 
 }
 
 void print_list(struct Node *head) {
-  struct Node *current = head;
+    struct Node *current = head;
 
-//  printf("start print_list\n");
-//  printf("  head address: %x\n", head);
-  while(current != NULL) {
-//    printf("  value: %d, address: %x\n", *((int *) current->data), current);
-    current = current->next;
-  }
-//  printf("end print_list\n");
+    //  printf("start print_list\n");
+    //  printf("  head address: %x\n", head);
+    while (current != NULL) {
+        //    printf("  value: %d, address: %x\n", *((int *) current->data), current);
+        current = current->next;
+    }
+    //  printf("end print_list\n");
 }
 
 void clear_list(struct Node **head) {
-  struct Node *currentNode;
-  
-  currentNode = *head;
+    struct Node *currentNode;
 
-  while(currentNode != NULL) {
+    currentNode = *head;
+
+    while (currentNode != NULL) {
         *head = currentNode->next;
         free(currentNode);
         currentNode = *head;
-	
-  }
+
+    }
 }
-
-
 int count_list(struct Node *head) {
-	int iCount;
-	struct Node *current = head;
+    int iCount;
+    struct Node *current = head;
 
-	iCount = 0;
-	while(current != NULL) {
-		iCount++;
-		current = current->next;
-	}
-	
-	return iCount;
+    iCount = 0;
+    while (current != NULL) {
+        iCount++;
+        current = current->next;
+    }
+
+    return iCount;
 
 }
-
-
 /*
 int main(void) {
   int *p1;
@@ -133,15 +127,13 @@ int main(void) {
   printf("added three nodes\n");
   print_list(listNumbers);
 
-  struct Node *n4 = add_node(&listNumbers, p4); 
+  struct Node *n4 = add_node(&listNumbers, p4);
   printf("added fourth node\n");
   print_list(listNumbers);
 
   printf("Remove node n2, address %x\n", n2);
   remove_node(&listNumbers, n2);
   print_list(listNumbers);
-
-
   printf("Remove node n2, address %x\n", n2);
   remove_node(&listNumbers, n2);
   print_list(listNumbers);
@@ -153,7 +145,7 @@ int main(void) {
   printf("removed item - n3\n");
   print_list(listNumbers);
 
-  struct Node *n5 = add_node(&listNumbers, p5); 
+  struct Node *n5 = add_node(&listNumbers, p5);
   printf("Added another node with value 42\n");
   print_list(listNumbers);
 
@@ -164,8 +156,6 @@ int main(void) {
   printf("remove first node\n");
   remove_first(&listNumbers);
   print_list(listNumbers);
-
-
   return 0;
 }
 */
