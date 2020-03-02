@@ -152,10 +152,10 @@ void handleInput_screen_world_select(int iType, int iKey) {
                 //can't replay level
             }
 
-        } else if (iKey == SDLK_UP) {
+        } else if (iKey == SDLK_UP || iKey == SDLK_w) {
             decreaseSelectedOption_screen_world_select();
 
-        } else if (iKey == SDLK_DOWN) {
+        } else if (iKey == SDLK_DOWN || iKey == SDLK_s) {
             increaseSelectedOption_screen_world_select();
         } else if (iKey == SDLK_q || iKey == SDLK_ESCAPE) {
             setCurrentScreen(0);

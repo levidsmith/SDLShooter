@@ -19,6 +19,7 @@ SDL_Renderer *renderer = NULL;
 
 SDL_Joystick *joystick = NULL;
 int iJoystickXPrevious = 0;
+int iJoystickYPrevious = 0;
 
 SDL_Surface *screenSurface = NULL;
 
@@ -224,26 +225,52 @@ void handleJoystick(SDL_Event *theEvent) {
         if (theEvent->jaxis.axis == 0) {
             if ((theEvent->jaxis.value < -JOYSTICK_DEAD_ZONE) && (iJoystickXPrevious > -1)) {
                 printf("Joystick left pressed\n");
-                //handleInput(SDL_KEYDOWN, SDLK_a);
+                handleInput(SDL_KEYDOWN, SDLK_a);
                 iJoystickXPrevious = -1;
             } else if ((theEvent->jaxis.value > JOYSTICK_DEAD_ZONE) && (iJoystickXPrevious < 1)) {
                 printf("Joystick Right pressed\n");
-                //handleInput(SDL_KEYDOWN, SDLK_d);
+                handleInput(SDL_KEYDOWN, SDLK_d);
                 iJoystickXPrevious = 1;
-            } else {
+            } else if ((theEvent->jaxis.value < JOYSTICK_DEAD_ZONE) && (theEvent->jaxis.value > -JOYSTICK_DEAD_ZONE)){
                 if (iJoystickXPrevious > 0) {
                     printf("Joystick right released\n");
 
-                    //handleInput(SDL_KEYUP, SDLK_d);
+                    handleInput(SDL_KEYUP, SDLK_d);
+                    iJoystickXPrevious = 0;
                 } else if (iJoystickXPrevious < 0) {
                     printf("Joystick left released\n");
-                    //handleInput(SDL_KEYUP, SDLK_a);
+                    handleInput(SDL_KEYUP, SDLK_a);
+                    iJoystickXPrevious = 0;
                 }
-                iJoystickXPrevious = 0;
+            }
+
+
+        } else if (theEvent->jaxis.axis == 1) {
+            if ((theEvent->jaxis.value < -JOYSTICK_DEAD_ZONE) && (iJoystickYPrevious > -1)) {
+                printf("Joystick up pressed\n");
+                handleInput(SDL_KEYDOWN, SDLK_w);
+                iJoystickYPrevious = -1;
+            } else if ((theEvent->jaxis.value > JOYSTICK_DEAD_ZONE) && (iJoystickYPrevious < 1)) {
+                printf("Joystick down pressed\n");
+                handleInput(SDL_KEYDOWN, SDLK_s);
+                iJoystickYPrevious = 1;
+            } else if ((theEvent->jaxis.value < JOYSTICK_DEAD_ZONE) && (theEvent->jaxis.value > -JOYSTICK_DEAD_ZONE)) {
+                if (iJoystickYPrevious > 0) {
+                    printf("Joystick down released\n");
+
+                    handleInput(SDL_KEYUP, SDLK_s);
+                    iJoystickYPrevious = 0;
+                } else if (iJoystickYPrevious < 0) {
+                    printf("Joystick up released\n");
+                    handleInput(SDL_KEYUP, SDLK_w);
+                    iJoystickYPrevious = 0;
+                }
             }
 
 
         }
+
+
     }
 
 }
@@ -307,9 +334,17 @@ int main(int argc, char *args[]) {
     srand(time(NULL));
 
     //  if (SDL_Init( SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0) {
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-//    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0) {
-    printf("Error: %s\n", SDL_GetError());
+
+    int iSDLReturn;
+    if (JOYSTICK_ENABLED) {
+        iSDLReturn = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK);
+
+    } else {
+        iSDLReturn = SDL_Init(SDL_INIT_VIDEO);
+    }
+
+    if (iSDLReturn < 0) {
+        printf("Error: %s\n", SDL_GetError());
         return 1;
     }
 
@@ -321,16 +356,16 @@ int main(int argc, char *args[]) {
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
     //load joysticks
-    /*
-    if (SDL_NumJoysticks() < 1) {
-        printf("No joysticks\n");
-    } else {
-        joystick = SDL_JoystickOpen(0);
-        if (joystick == NULL) {
-            printf("Error loading joystick\n");
+    if (JOYSTICK_ENABLED) {
+        if (SDL_NumJoysticks() < 1) {
+            printf("No joysticks\n");
+        } else {
+            joystick = SDL_JoystickOpen(0);
+            if (joystick == NULL) {
+                printf("Error loading joystick\n");
+            }
         }
     }
-    */
 
     //handle loading fonts
     if (TTF_Init() == -1) {
@@ -514,7 +549,7 @@ int main(int argc, char *args[]) {
         draw();
         SDL_RenderPresent(renderer);
 
-        if (SDL_PollEvent(&theEvent)) {
+        while (SDL_PollEvent(&theEvent) > 0) {
 //            			printf("SDL_PollEvent\n");
 
             if (theEvent.type == SDL_QUIT) {
@@ -524,7 +559,30 @@ int main(int argc, char *args[]) {
                 printf("Shouldn't get here\n");
             } else if ((theEvent.type == SDL_KEYDOWN || theEvent.type == SDL_KEYUP) && (theEvent.key.repeat == 0)) {
                 handleInput(theEvent.type, theEvent.key.keysym.sym);
-//            } else if (theEvent.type == SDL_JOYAXISMOTION) {
+            } else if (JOYSTICK_ENABLED && theEvent.type == SDL_JOYAXISMOTION) {
+                handleJoystick(&theEvent);
+                /*
+                printf("axis: %d\n", theEvent.jaxis.which);
+                if (theEvent.jaxis.which == 0) {
+                    if (theEvent.jaxis.axis == 0) {
+
+//                        if ((theEvent.jaxis.value < -3200) || (theEvent.jaxis.value > 3200)) {
+//                            printf("Joystick x %d\n", theEvent.jaxis.value);
+                        if (theEvent.jaxis.value < -JOYSTICK_DEAD_ZONE) {
+                            handleInput(SDL_KEYDOWN, SDLK_a);
+                        } else (theEvent.jaxis.value > JOYSTICK_DEAD_ZONE) {
+                            handleInput(SDL_KEYDOWN, SDLK_d);
+
+                        }
+                    } else if (theEvent.jaxis.axis == 1) {
+                        if ((theEvent.jaxis.value < -3200) || (theEvent.jaxis.value > 3200)) {
+                            printf("Joystick y %d\n", theEvent.jaxis.value);
+                        }
+
+                    }
+                }
+                */
+//                SDL_FlushEvents(SDL_JOYAXISMOTION, SDL_JOYAXISMOTION);
                 //handleJoystick(&theEvent);
                 /*
                 if (theEvent.type == SDL_JOYAXISMOTION) {
@@ -535,6 +593,44 @@ int main(int argc, char *args[]) {
 
                 }
                 */
+            } else if (JOYSTICK_ENABLED && theEvent.type == SDL_JOYBUTTONDOWN) {
+                printf("Joystick button %d\n", theEvent.jbutton.button);
+                if (theEvent.jbutton.button == 3) {
+                    handleInput(SDL_KEYDOWN, SDLK_q);
+                } else if (theEvent.jbutton.button == 0) {
+                    handleInput(SDL_KEYDOWN, SDLK_SPACE);
+                    handleInput(SDL_KEYDOWN, SDLK_x);
+                } else if (theEvent.jbutton.button == 1) {
+                    handleInput(SDL_KEYDOWN, SDLK_c);
+                } else if (theEvent.jbutton.button == 2) {
+                    handleInput(SDL_KEYDOWN, SDLK_z);
+                } else if (theEvent.jbutton.button == 4) {
+                    handleInput(SDL_KEYDOWN, SDLK_TAB);
+                } else if (theEvent.jbutton.button == 5) {
+                    handleInput(SDL_KEYDOWN, SDLK_TAB);
+
+                }
+
+            } else if (JOYSTICK_ENABLED && theEvent.type == SDL_JOYBUTTONUP) {
+                printf("Joystick button %d\n", theEvent.jbutton.button);
+                if (theEvent.jbutton.button == 3) {
+                    handleInput(SDL_KEYUP, SDLK_q);
+                } else if (theEvent.jbutton.button == 0) {
+                    handleInput(SDL_KEYUP, SDLK_SPACE);
+                    handleInput(SDL_KEYUP, SDLK_x);
+                } else if (theEvent.jbutton.button == 1) {
+                    handleInput(SDL_KEYUP, SDLK_c);
+                } else if (theEvent.jbutton.button == 2) {
+                    handleInput(SDL_KEYUP, SDLK_z);
+                } else if (theEvent.jbutton.button == 4) {
+                    handleInput(SDL_KEYUP, SDLK_TAB);
+                } else if (theEvent.jbutton.button == 5) {
+                    handleInput(SDL_KEYUP, SDLK_TAB);
+
+                }
+
+
+
             }
         }
 

@@ -23,6 +23,8 @@
 #define NUM_SHIP_POWERUPS 2
 #define NUM_WEAPONS 8
 
+#define JOYSTICK_ENABLED 1
+
 
 #endif
 #ifdef MAC

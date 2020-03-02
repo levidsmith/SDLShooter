@@ -141,10 +141,10 @@ void handleInput_screen_title(int iType, int iKey) {
         } else if (iTitleMenuChoice == 2) {
             quit();
         }
-    } else if (iKey == SDLK_UP) {
+    } else if (iKey == SDLK_UP || iKey == SDLK_w) {
         decreaseSelectedOption_screen_title();
         updateText_screen_title();
-    } else if (iKey == SDLK_DOWN) {
+    } else if (iKey == SDLK_DOWN || iKey == SDLK_s) {
         increaseSelectedOption_screen_title();
         updateText_screen_title();
 
