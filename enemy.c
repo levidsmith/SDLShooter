@@ -99,7 +99,7 @@ void init_enemy(struct Enemy *enemy, int init_x, int init_y, int init_iType, int
     add_node(&listEnemy, enemy);
 
     switch (enemy->iType) {
-        case 2:
+        case id_charlie:
             //Charlie
             if (enemy->iLevel == 1) {
                 enemy->vel_y = (UNIT_SIZE / 2);
@@ -110,36 +110,36 @@ void init_enemy(struct Enemy *enemy, int init_x, int init_y, int init_iType, int
             }
             break;
 
-        case 4:
+        case id_echo:
             //Echo
             setTargetPosition_enemy(enemy, (1 + (rand() % ((SCREEN_WIDTH / 64) - 2))) * 64, (1 + (rand() % ((SCREEN_HEIGHT / 64) - 2))) * 64);
             break;
-        case 5:
+        case id_foxtrot:
             enemy->fChangeMovementCountdown = 0;
             break;
-        case 6:
+        case id_golf:
             if (isRoot) {
                 init_enemy_golf(enemy);
             }
             break;
-        case 7:
+        case id_hotel:
             init_enemy_hotel(enemy);
             break;
-        case 8:
+        case id_india:
             init_enemy_india(enemy);
             break;
-        case 9:
+        case id_juliett:
             init_enemy_juliett(enemy);
             break;
-        case 10:
+        case id_kilo:
             if (isRoot) {
                 init_enemy_kilo(enemy);
             }
             break;
-        case 11:
+        case id_lima:
             init_enemy_lima(enemy);
             break;
-        case 12:
+        case id_mike:
             if (isRoot) {
                 init_enemy_mike(enemy);
             }
@@ -152,7 +152,7 @@ void init_enemy(struct Enemy *enemy, int init_x, int init_y, int init_iType, int
 void configure_enemy(struct Enemy *enemy) {
     switch (enemy->iType) {
         //Alpha
-        case 0:
+        case id_alpha:
             switch (enemy->iLevel) {
                 case 1:
                     enemy->iPoints = 50;
@@ -166,7 +166,7 @@ void configure_enemy(struct Enemy *enemy) {
 
             break;
             //Bravo
-        case 1:
+        case id_bravo:
             switch (enemy->iLevel) {
                 case 1:
                     enemy->iPoints = 75;
@@ -179,7 +179,7 @@ void configure_enemy(struct Enemy *enemy) {
             break;
 
             //Charlie
-        case 2:
+        case id_charlie:
             switch (enemy->iLevel) {
                 case 1:
                     enemy->iPoints = 250;
@@ -195,7 +195,7 @@ void configure_enemy(struct Enemy *enemy) {
             break;
 
             //Delta
-        case 3:
+        case id_delta:
             switch (enemy->iLevel) {
                 case 1:
                     enemy->iPoints = 500;
@@ -208,7 +208,7 @@ void configure_enemy(struct Enemy *enemy) {
             break;
 
             //Echo
-        case 4:
+        case id_echo:
             switch (enemy->iLevel) {
                 case 1:
                     enemy->iPoints = 150;
@@ -221,7 +221,7 @@ void configure_enemy(struct Enemy *enemy) {
             break;
 
             //Foxtrot
-        case 5:
+        case id_foxtrot:
             switch (enemy->iLevel) {
                 case 1:
                     enemy->iPoints = 150;
@@ -269,7 +269,7 @@ void updateActive_enemy(struct Enemy *enemy) {
     enemy->fLifetime += DELTA_TIME;
 
     switch (enemy->iType) {
-        case 0:
+        case id_alpha:
             //Alpha
             enemy->fChangeMovementCountdown = enemy->fChangeMovementCountdown - (1 * DELTA_TIME);
             if (enemy->fChangeMovementCountdown <= 0) {
@@ -281,7 +281,7 @@ void updateActive_enemy(struct Enemy *enemy) {
             enemy->y += enemy->vel_y;
             break;
 
-        case 1:
+        case id_bravo:
             //Bravo
             if (enemy->iLevel == 1) {
                 enemy->vel_x = (1 * UNIT_SIZE);
@@ -294,7 +294,7 @@ void updateActive_enemy(struct Enemy *enemy) {
                 enemy->x -= SCREEN_WIDTH + enemy->width;
             }
             break;
-        case 2:
+        case id_charlie:
             //Charlie
             if (enemy->iLevel == 1) {
                 enemy->fActiveTime += DELTA_TIME;
@@ -332,11 +332,11 @@ void updateActive_enemy(struct Enemy *enemy) {
             }
             break;
 
-        case 3:
+        case id_delta:
             updatePosition_enemy(enemy, enemy->iType, enemy->iLevel);
             break;
 
-        case 4:
+        case id_echo:
             //Echo
             if (enemy->fWaitCountdown > 0) {
                 enemy->fWaitCountdown -= DELTA_TIME;
@@ -361,7 +361,7 @@ void updateActive_enemy(struct Enemy *enemy) {
             }
             break;
 
-        case 5:
+        case id_foxtrot:
             //Foxtrot
 
             if (enemy->fWaitCountdown > 0) {
@@ -420,33 +420,33 @@ void updateActive_enemy(struct Enemy *enemy) {
                 enemy->y += enemy->vel_y * DELTA_TIME;
             }
             break;
-        case 6:
+        case id_golf:
             //Golf
             update_enemy_golf(enemy);
             break;
 
-        case 7:
+        case id_hotel:
             //Hotel
             update_enemy_hotel(enemy);
             break;
 
-        case 8:
+        case id_india:
             //India
             update_enemy_india(enemy);
             break;
-        case 9:
+        case id_juliett:
             //Juliett
             update_enemy_juliett(enemy);
             break;
-        case 10:
+        case id_kilo:
             //Kilo
             update_enemy_kilo(enemy);
             break;
-        case 11:
+        case id_lima:
             //Lima
             update_enemy_lima(enemy);
             break;
-        case 12:
+        case id_mike:
             //Mike
             update_enemy_mike(enemy);
             break;
@@ -495,7 +495,7 @@ void draw_enemy(struct Enemy *enemy) {
 
         switch (enemy->iType) {
             //Alpha
-            case 0:
+            case id_alpha:
                 if (iSpriteIndex == 0) {
                     if (enemy->iLevel == 1) {
                         img = imgEnemyAlpha_L1_00;
@@ -514,7 +514,7 @@ void draw_enemy(struct Enemy *enemy) {
 
                 break;
                 //Bravo
-            case 1:
+            case id_bravo:
 
                 if (iSpriteIndex == 0) {
                     if (enemy->iLevel == 1) {
@@ -534,7 +534,7 @@ void draw_enemy(struct Enemy *enemy) {
 
                 break;
                 //Charlie
-            case 2:
+            case id_charlie:
 
                 if (iSpriteIndex == 0) {
                     if (enemy->iLevel == 1) {
@@ -554,7 +554,7 @@ void draw_enemy(struct Enemy *enemy) {
 
                 break;
                 //Delta
-            case 3:
+            case id_delta:
 
                 if (iSpriteIndex == 0) {
                     img = imgEnemyDelta_L1_00;
@@ -567,7 +567,7 @@ void draw_enemy(struct Enemy *enemy) {
                 break;
 
                 //Echo
-            case 4:
+            case id_echo:
                 if (iSpriteIndex == 0) {
                     if (enemy->fWaitCountdown > 0) {
                         img = imgEnemyEcho_L1_00;
@@ -585,7 +585,7 @@ void draw_enemy(struct Enemy *enemy) {
                 break;
 
                 //Foxtrot
-            case 5:
+            case id_foxtrot:
                 if (iSpriteIndex == 0) {
                     if (enemy->iLevel == 1) {
                         img = imgEnemyFoxtrot_L1_00;
@@ -605,38 +605,38 @@ void draw_enemy(struct Enemy *enemy) {
                 break;
 
                 //Golf
-            case 6:
+            case id_golf:
                 //draw_enemy_golf(enemy);
                 img = getTexture_enemy_golf(enemy);
 
                 break;
 
                 //Hotel
-            case 7:
+            case id_hotel:
                 img = getTexture_enemy_hotel(enemy);
                 break;
 
                 //India
-            case 8:
+            case id_india:
                 img = getTexture_enemy_india(enemy);
                 break;
                 //Juliett
-            case 9:
+            case id_juliett:
                 img = getTexture_enemy_juliett(enemy);
                 break;
 
                 //Kilo
-            case 10:
+            case id_kilo:
                 img = getTexture_enemy_kilo(enemy);
                 break;
 
                 //Lima
-            case 11:
+            case id_lima:
                 img = getTexture_enemy_lima(enemy);
                 break;
 
                 //Mike
-            case 12:
+            case id_mike:
                 img = getTexture_enemy_mike(enemy);
                 break;
 
@@ -723,7 +723,7 @@ void draw_enemy(struct Enemy *enemy) {
 */
         } else {
 
-            if (enemy->iType != 12) {//enemy mike
+            if (enemy->iType != id_mike) {//enemy mike
 
                 if (enemy->fDamagedCountdown > 0 || enemy->iHealth <= 0) {
                     SDL_SetTextureColorMod(img, 255, 0, 0);
@@ -843,8 +843,8 @@ void shoot_enemy(struct Enemy *enemy) {
     if (enemy != NULL && (enemy->fShootDelay <= 0) && enemy->isAlive) {
 
         switch (enemy->iType) {
-            case 0:
-            case 1:
+            case id_alpha:
+            case id_bravo:
                 bullet = malloc(sizeof(struct Bullet));
 
                 init_bullet(bullet, enemy->x + enemy->width / 2, enemy->y, 0);
@@ -856,7 +856,7 @@ void shoot_enemy(struct Enemy *enemy) {
                 Mix_PlayChannel(-1, soundEnemyShoot, 0);
                 break;
 
-            case 3:
+            case id_delta:
                 bullet = malloc(sizeof(struct Bullet));
 
                 init_bullet(bullet, enemy->x + enemy->width / 2, enemy->y, 0);
@@ -878,10 +878,10 @@ void shoot_enemy(struct Enemy *enemy) {
 
 void setShootDelay_enemy(struct Enemy *enemy) {
     switch (enemy->iType) {
-        case 0:
+        case id_alpha:
             enemy->fShootDelay = 1 + ((rand() % 50) * 0.1);  //between 1 and 6 seconds
             break;
-        case 1:
+        case id_bravo:
             if (enemy->iLevel == 1) {
                 enemy->fShootDelay = 5 + ((rand() % 50) * 0.1); //between 5 and 10 seconds
             } else if (enemy->iLevel == 2) {
@@ -889,7 +889,7 @@ void setShootDelay_enemy(struct Enemy *enemy) {
 
             }
             break;
-        case 3:
+        case id_delta:
             enemy->fShootDelay = 2; //2 seconds
             break;
     }
@@ -900,30 +900,30 @@ void damage_enemy(struct Enemy *enemy, int iDamageAmount) {
     int iTotalDamage = 0;
     int iCheckDestroy = TRUE;
 
-    if (enemy->iType == 4) {
+    if (enemy->iType == id_echo) {
         if (enemy->fWaitCountdown > 0) {
             iTotalDamage = iDamageAmount; //can only damage this enemy if it's waiting with eye open
         }
-    } else if (enemy->iType == 6) {
+    } else if (enemy->iType == id_golf) {
         damage_enemy_golf(enemy, iDamageAmount);
         iCheckDestroy = FALSE;
-    } else if (enemy->iType == 7) {
+    } else if (enemy->iType == id_hotel) {
         damage_enemy_hotel(enemy, iDamageAmount);
         iCheckDestroy = FALSE;
-    } else if (enemy->iType == 8) {
+    } else if (enemy->iType == id_india) {
         damage_enemy_india(enemy, iDamageAmount);
         iCheckDestroy = FALSE;
 
-    } else if (enemy->iType == 9) {
+    } else if (enemy->iType == id_juliett) {
         damage_enemy_juliett(enemy, iDamageAmount);
         iCheckDestroy = FALSE;
-    } else if (enemy->iType == 10) {
+    } else if (enemy->iType == id_kilo) {
         damage_enemy_kilo(enemy, iDamageAmount);
         iCheckDestroy = FALSE;
-    } else if (enemy->iType == 11) {
+    } else if (enemy->iType == id_lima) {
         damage_enemy_lima(enemy, iDamageAmount);
         iCheckDestroy = FALSE;
-    } else if (enemy->iType == 12) {
+    } else if (enemy->iType == id_mike) {
         damage_enemy_mike(enemy, iDamageAmount);
         iCheckDestroy = FALSE;
 
@@ -1064,7 +1064,7 @@ void destroy_enemy(struct Enemy *enemy) {
 
     switch (enemy->iType) {
         //Kilo
-        case 10:
+        case id_kilo:
             destroy_enemy_kilo(enemy);
 
             break;

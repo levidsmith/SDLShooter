@@ -1,22 +1,31 @@
 
-     0 0 0 0 0
-     0 0 0 0 0 
-     0 0 0 0 0
-     0 0 0 0 0
-     0 0 0 0 0 
-=
-     2 2 2 2 2
-     2 2 2 2 2
-     2 2 2 2 2
-     2 2 2 2 2
-     2 2 2 2 2
+
+
+    I I  I I   I I
+
+    I I  I I   I I
 
 =
-     4 4 4 4 4
-     4 4 4 4 4
+
+
+     J      J
+   J  J   J  J
+
+   I I I I I I 
+
 =
 
-    C         C
-    A A A A A A
-      B B B B
-    C         C
+   G     G
+   
+      H
+	  
+=
+
+      H
+=
+
+   I I  G  I I
+
+   J J  G  J J
+   
+   I I  G  J J

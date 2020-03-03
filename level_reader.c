@@ -76,7 +76,7 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
 
                 struct Enemy *e1;
                 e1 = malloc(sizeof(struct Enemy));
-                init_enemy(e1, x, y, 0, 1, TRUE);
+                init_enemy(e1, x, y, id_alpha, 1, TRUE);
                 configure_enemy(e1);
 
                 if (iDropCountdown <= 0) {
@@ -93,7 +93,7 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
 
                 struct Enemy *e1;
                 e1 = malloc(sizeof(struct Enemy));
-                init_enemy(e1, x, y, 0, 2, TRUE);
+                init_enemy(e1, x, y, id_alpha, 2, TRUE);
                 configure_enemy(e1);
 
                 if (iDropCountdown <= 0) {
@@ -110,7 +110,7 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
 
                 struct Enemy *e1;
                 e1 = malloc(sizeof(struct Enemy));
-                init_enemy(e1, x, y, 1, 1, TRUE);
+                init_enemy(e1, x, y, id_bravo, 1, TRUE);
                 configure_enemy(e1);
 
                 if (iDropCountdown <= 0) {
@@ -128,7 +128,7 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
 
                 struct Enemy *e1;
                 e1 = malloc(sizeof(struct Enemy));
-                init_enemy(e1, x, y, 1, 2, TRUE);
+                init_enemy(e1, x, y, id_bravo, 2, TRUE);
                 configure_enemy(e1);
 
                 if (iDropCountdown <= 0) {
@@ -146,7 +146,7 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
 
                 struct Enemy *e1;
                 e1 = malloc(sizeof(struct Enemy));
-                init_enemy(e1, x, y, 2, 1, FALSE);
+                init_enemy(e1, x, y, id_charlie, 1, FALSE);
                 configure_enemy(e1);
 
                 if (iDropCountdown <= 0) {
@@ -163,7 +163,7 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
 
                 struct Enemy *e1;
                 e1 = malloc(sizeof(struct Enemy));
-                init_enemy(e1, x, y, 2, 2, TRUE);
+                init_enemy(e1, x, y, id_charlie, 2, TRUE);
                 configure_enemy(e1);
 
                 if (iDropCountdown <= 0) {
@@ -182,7 +182,7 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
 
                     struct Enemy *e1;
                     e1 = malloc(sizeof(struct Enemy));
-                    init_enemy(e1, x, y, 3, 1, TRUE);
+                    init_enemy(e1, x, y, id_delta, 1, TRUE);
                     configure_enemy(e1);
 
                     if (iDropCountdown <= 0) {
@@ -203,7 +203,7 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
                 //Delta L2
                 struct Enemy *e1;
                 e1 = malloc(sizeof(struct Enemy));
-                init_enemy(e1, x, y, 4, 1, TRUE);
+                init_enemy(e1, x, y, id_echo, 1, TRUE);
                 configure_enemy(e1);
 
                 if (iDropCountdown <= 0) {
@@ -219,7 +219,7 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
                 //Echo L1
                 struct Enemy *e1;
                 e1 = malloc(sizeof(struct Enemy));
-                init_enemy(e1, x, y, 5, 1, TRUE);
+                init_enemy(e1, x, y, id_foxtrot, 1, TRUE);
                 configure_enemy(e1);
 
                 if (iDropCountdown <= 0) {
@@ -235,7 +235,7 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
                 //Echo L2
                 struct Enemy *e1;
                 e1 = malloc(sizeof(struct Enemy));
-                init_enemy(e1, x, y, 5, 2, TRUE);
+                init_enemy(e1, x, y, id_foxtrot, 2, TRUE);
                 configure_enemy(e1);
 
                 if (iDropCountdown <= 0) {
@@ -251,7 +251,7 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
                 //Foxtrot L1
                 struct Enemy *e1;
                 e1 = malloc(sizeof(struct Enemy));
-                init_enemy(e1, x, y, 6, 1, TRUE);
+                init_enemy(e1, x, y, id_golf, 1, TRUE);
                 configure_enemy(e1);
 
                 if (iDropCountdown <= 0) {
@@ -267,7 +267,7 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
                 //Foxtrot L2
                 struct Enemy *e1;
                 e1 = malloc(sizeof(struct Enemy));
-                init_enemy(e1, x, y, 6, 2, TRUE);
+                init_enemy(e1, x, y, id_golf, 2, TRUE);
                 configure_enemy(e1);
 
                 if (iDropCountdown <= 0) {
@@ -281,7 +281,7 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
                 //Golf L1
                 struct Enemy *e1;
                 e1 = malloc(sizeof(struct Enemy));
-                init_enemy(e1, x, y, 7, 1, TRUE);
+                init_enemy(e1, x, y, id_hotel, 1, TRUE);
                 configure_enemy(e1);
 
                 if (iDropCountdown <= 0) {
@@ -296,7 +296,7 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
                 //Golf L2
                 struct Enemy *e1;
                 e1 = malloc(sizeof(struct Enemy));
-                init_enemy(e1, x, y, 7, 2, TRUE);
+                init_enemy(e1, x, y, id_hotel, 2, TRUE);
                 configure_enemy(e1);
 
                 if (iDropCountdown <= 0) {
@@ -310,7 +310,21 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
                 //Hotel L1
                 struct Enemy *e1;
                 e1 = malloc(sizeof(struct Enemy));
-                init_enemy(e1, x, y, 8, 1, TRUE);
+                init_enemy(e1, x, y, id_india, 2, TRUE);
+                configure_enemy(e1);
+
+                if (iDropCountdown <= 0) {
+                    e1->hasDrop = TRUE;
+                    iDropCountdown = getDropCountdown();
+                } else {
+                    iDropCountdown--;
+                }
+                iEnemyCount++;
+            } else if (strLine[i] == 'H') {
+                //Hotel L1
+                struct Enemy *e1;
+                e1 = malloc(sizeof(struct Enemy));
+                init_enemy(e1, x, y, id_india, 1, TRUE);
                 configure_enemy(e1);
 
                 if (iDropCountdown <= 0) {
@@ -324,7 +338,7 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
                 //Juliett L1
                 struct Enemy *e1;
                 e1 = malloc(sizeof(struct Enemy));
-                init_enemy(e1, x, y, 9, 1, TRUE);
+                init_enemy(e1, x, y, id_juliett, 1, TRUE);
                 configure_enemy(e1);
 
                 if (iDropCountdown <= 0) {
@@ -338,7 +352,7 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
                 //Juliett L2
                 struct Enemy *e1;
                 e1 = malloc(sizeof(struct Enemy));
-                init_enemy(e1, x, y, 9, 2, TRUE);
+                init_enemy(e1, x, y, id_juliett, 2, TRUE);
                 configure_enemy(e1);
 
                 if (iDropCountdown <= 0) {
@@ -352,7 +366,7 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
                 //Kilo L1
                 struct Enemy *e1;
                 e1 = malloc(sizeof(struct Enemy));
-                init_enemy(e1, x, y, 10, 1, TRUE);
+                init_enemy(e1, x, y, id_kilo, 1, TRUE);
                 configure_enemy(e1);
 
                 if (iDropCountdown <= 0) {
@@ -367,7 +381,7 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
                 //Lima L1
                 struct Enemy *e1;
                 e1 = malloc(sizeof(struct Enemy));
-                init_enemy(e1, x, y, 11, 1, TRUE);
+                init_enemy(e1, x, y, id_lima, 1, TRUE);
                 configure_enemy(e1);
 
                 if (iDropCountdown <= 0) {
@@ -381,7 +395,7 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
                 //Lima L2
                 struct Enemy *e1;
                 e1 = malloc(sizeof(struct Enemy));
-                init_enemy(e1, x, y, 11, 2, TRUE);
+                init_enemy(e1, x, y, id_lima, 2, TRUE);
                 configure_enemy(e1);
 
                 if (iDropCountdown <= 0) {
@@ -395,7 +409,7 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
                 //Lima L2
                 struct Enemy *e1;
                 e1 = malloc(sizeof(struct Enemy));
-                init_enemy(e1, x, y, 12, 1, TRUE);
+                init_enemy(e1, x, y, id_mike, 1, TRUE);
                 configure_enemy(e1);
 
                 if (iDropCountdown <= 0) {
@@ -409,7 +423,7 @@ void spawnLevelEnemies(int iWorld, int iLevelToSpawn) {
                 //Lima L2
                 struct Enemy *e1;
                 e1 = malloc(sizeof(struct Enemy));
-                init_enemy(e1, x, y, 12, 2, TRUE);
+                init_enemy(e1, x, y, id_mike, 2, TRUE);
                 configure_enemy(e1);
 
                 if (iDropCountdown <= 0) {

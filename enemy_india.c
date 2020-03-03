@@ -10,6 +10,7 @@
 #include <math.h>
 
 #include "globals.h"
+#include "util.h"
 #include "enemy.h"
 #include "enemy_india.h"
 extern SDL_Texture *imgEnemyIndia_L1_00;
@@ -37,6 +38,17 @@ void init_enemy_india(struct Enemy *enemy) {
             enemy->height = 64;
             enemy->iHealth = 3;
             enemy->fIntroDelay = 0;
+
+            float fNormalizedX;
+            float fNormalizedY;
+            float fRand = getRandomFloat(0, 2 * M_PI);
+            fNormalizedX = cos(fRand);
+            fNormalizedY = sin(fRand);
+
+            enemy->vel_x = 2 * fNormalizedX;
+            enemy->vel_y = 2 * fNormalizedY;
+
+
             break;
         case 3:
             enemy->width = 32;

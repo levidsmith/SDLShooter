@@ -37,6 +37,8 @@ struct Enemy {
   void *subtype;
 };
 
+enum enemy_id { id_alpha, id_bravo, id_charlie, id_delta, id_echo, id_foxtrot, id_golf, id_hotel, id_india, id_juliett, id_kilo, id_lima, id_mike };
+
 
 
 

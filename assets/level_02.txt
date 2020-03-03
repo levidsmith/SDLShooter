@@ -1,24 +1,23 @@
+
+    A A A A A
+    A       A
+    A       A
+    A A A A A
+=
+
      A A B A A
      A A B A A
      B B B B B
      A A B A A
      A A B A A
 =
-       C
 
-   D       D
-=
-
-  E  E  E  E  E
+ 8 8 8    8 8 8
+ 8 8 8    8 8 8
 
 =
-     2 2 2 2 2
-     2 2 2 2 2
-     2 2 2 2 2
-     2 2 2 2 2
-     2 2 2 2 2
-
-=
-     4 4 4 4 4
-     4 4 4 4 4
+  A 8 B 8 A
+  A 8 B 8 A
+  A 8 B 8 A
+  A 8 B 8 A
 

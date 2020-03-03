@@ -1,28 +1,35 @@
 
 
+    L  L  L  L
 
-    K       K
+    L  L  L  L
+
 =
 
-        K
+    M  M  M  M
+
+	   L  L
+	
+	L        L
+
+=
+
+    K       K
+
+=
+
+     L  K  L
+
+
+     L     L
 
    K        K
 
 
 =
 
-    K         K
+    K  L  L  L  K
 
+    M  M  M  M  M
     
-    K         K
-=
-
-  E            E
-     4 4 4 4 4
-     4 4 4 4 4
-  E            E
-=
-
-   D         D
-   D         D
-   D         D
+    K  L  L  L  K   
