@@ -49,9 +49,34 @@ void init_ship(struct Ship *ship) {
     ship->fAttackPowerupDelay = 0;
     ship->fMaxSpeed = UNIT_SIZE * 5;
     ship->fMaxDeathDelay = 0.5;
+    
+    int i;
+    for (i = 0; i < NUM_WEAPONS; i++) {
+//        if (i == 0 || i == 3 || i == 4) {
+        if (i == 0) {
+            ship->iWeaponsEnabled[i] = TRUE;
+        } else {
+            ship->iWeaponsEnabled[i] = FALSE;
+        }
+    }
 
     printf("*** init ship complete\n");
 
+}
+
+void reset_ship(struct Ship *ship) {
+    ship->vel_x = 0;
+    ship->vel_y = 0;
+    ship->x = (SCREEN_WIDTH - ship->width) / 2;
+    ship->y = 720 - 128;
+    ship->isAlive = TRUE;
+    ship->fShootDelay = 0;
+    ship->iHealth = ship->iMaxHealth;
+    ship->fInvincibleDelay = 0;
+    ship->fDefensePowerupDelay = 0;
+    ship->fAttackPowerupDelay = 0;
+
+    
 }
 
 
@@ -265,7 +290,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
     int iEnergyRequired = 5;
     float bullet_x, bullet_y;
 
-    if (ship->iWeaponType == 0) {
+    if (ship->iWeaponType == id_weapon_normal) {
         //Normal Weapon
 
     //      iEnergyRequired = 5;
@@ -292,7 +317,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
 
             Mix_PlayChannel(-1, soundShoot, 0);
         }
-    } else if (ship->iWeaponType == 1) {
+    } else if (ship->iWeaponType == id_weapon_speed) {
         //Speed Shot
         float fShootDelay = 0.5;
         iEnergyRequired = getEnergyRequired(ship->iWeaponType, iLevel);
@@ -334,7 +359,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
         }
 
 
-    } else if (ship->iWeaponType == 2) {
+    } else if (ship->iWeaponType == id_weapon_multi) {
         //Multi Shot
 
         iEnergyRequired = getEnergyRequired(ship->iWeaponType, iLevel);
@@ -454,7 +479,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
 
             Mix_PlayChannel(-1, soundShoot, 0);
         }
-    } else if (ship->iWeaponType == 3) {
+    } else if (ship->iWeaponType == id_weapon_wave) {
         //Wave Shot
 
         iEnergyRequired = getEnergyRequired(ship->iWeaponType, iLevel);
@@ -546,7 +571,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
             Mix_PlayChannel(-1, soundShoot, 0);
         }
 
-    } else if (ship->iWeaponType == 4) {
+    } else if (ship->iWeaponType == id_weapon_blast) {
         //Blast Shot
 
         iEnergyRequired = getEnergyRequired(ship->iWeaponType, iLevel);
@@ -596,7 +621,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
             Mix_PlayChannel(-1, soundShoot, 0);
         }
 
-    } else if (ship->iWeaponType == 5) {
+    } else if (ship->iWeaponType == id_weapon_spin) {
         //Spin Shot
         iEnergyRequired = getEnergyRequired(ship->iWeaponType, iLevel);
 
@@ -685,7 +710,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
         }
 
 
-    } else if (ship->iWeaponType == 6) {
+    } else if (ship->iWeaponType == id_weapon_freeze) {
         //Freeze Shot
         iEnergyRequired = getEnergyRequired(ship->iWeaponType, iLevel);
 
@@ -722,7 +747,7 @@ void shoot_ship(struct Ship *ship, int iLevel, struct Node **listBullet) {
 
 
 
-    } else if (ship->iWeaponType == 7) {
+    } else if (ship->iWeaponType == id_weapon_seek) {
         //Seek Shot
         iEnergyRequired = getEnergyRequired(ship->iWeaponType, iLevel);
 
@@ -822,12 +847,45 @@ void applyPowerup_ship(struct Ship *ship, int iType) {
 }
 
 void selectWeaponUp_ship(struct Ship *ship) {
+    int i;
+    int iWeaponCheck;
+    
+    i = 1;
+    while (i < NUM_WEAPONS) {
+        iWeaponCheck = (ship->iWeaponType + i) % NUM_WEAPONS;
+        if (ship->iWeaponsEnabled[iWeaponCheck] == TRUE) {
+            ship->iWeaponType = iWeaponCheck;
+            Mix_PlayChannel(-1, soundWeaponSelect, 0);
+            break;
+        }
+        i++;
+    }
+    
+    /*
+    for (i = 0; i < NUM_WEAPONS; i++) {
+        if (ship->iWeaponsEnabled[i % NUM_WEAPONS] == TRUE) {
+            ship->iWeaponType = i % NUM_WEAPONS;
+            Mix_PlayChannel(-1, soundWeaponSelect, 0);
+            break;
+        }
+        
+    } */
+     
+    
+    /*
     ship->iWeaponType++;
     if (ship->iWeaponType >= NUM_WEAPONS) {
         ship->iWeaponType = 0;
     }
     Mix_PlayChannel(-1, soundWeaponSelect, 0);
+    */
+}
 
+void selectWeaponDown_ship(struct Ship *ship) {
+    ship->iWeaponType--;
+    if (ship->iWeaponType < 0) {
+        ship->iWeaponType = NUM_WEAPONS - 1;
+    }
 }
 
 float getCenterX_ship(struct Ship *ship) {
@@ -841,7 +899,7 @@ float getCenterY_ship(struct Ship *ship) {
 int getEnergyRequired(int iWeapon, int iLevel) {
     int iEnergy = -1;
     switch (iWeapon) {
-    case 0:
+    case id_weapon_normal:
         //normal shot
         switch (iLevel) {
         case 0:
@@ -852,7 +910,7 @@ int getEnergyRequired(int iWeapon, int iLevel) {
         }
         break;
 
-    case 1:
+    case id_weapon_speed:
         //speed shot
         switch (iLevel) {
         case 0:
@@ -866,7 +924,7 @@ int getEnergyRequired(int iWeapon, int iLevel) {
             break;
         }
         break;
-    case 2:
+    case id_weapon_multi:
         //multi shot
         switch (iLevel) {
         case 0:
@@ -880,7 +938,7 @@ int getEnergyRequired(int iWeapon, int iLevel) {
             break;
         }
         break;
-    case 3:
+    case id_weapon_wave:
         //wave shot
         switch (iLevel) {
         case 0:
@@ -894,21 +952,21 @@ int getEnergyRequired(int iWeapon, int iLevel) {
             break;
         }
         break;
-    case 4:
+    case id_weapon_blast:
         //blast shot
         switch (iLevel) {
         case 0:
-            iEnergy = 100;
+            iEnergy = 12;
             break;
         case 1:
-            iEnergy = 150;
+            iEnergy = 48;
             break;
         case 2:
-            iEnergy = 200;
+            iEnergy = 192;
             break;
         }
         break;
-    case 5:
+    case id_weapon_spin:
         //spin shot
         switch (iLevel) {
         case 0:
@@ -923,7 +981,7 @@ int getEnergyRequired(int iWeapon, int iLevel) {
         }
         break;
 
-    case 6:
+    case id_weapon_freeze:
         //freeze ray
         switch (iLevel) {
         case 0:
@@ -938,7 +996,7 @@ int getEnergyRequired(int iWeapon, int iLevel) {
         }
         break;
 
-    case 7:
+    case id_weapon_seek:
         //seek shot
         switch (iLevel) {
         case 0:

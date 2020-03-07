@@ -39,6 +39,7 @@ extern Mix_Music *musicGame[NUM_WORLDS];
 extern SDL_Texture *imgBackground[2];
 extern SDL_Texture *imgScoreText;
 extern SDL_Texture *imgLevelCompleteText;
+extern SDL_Texture *imgGetWeaponText;
 extern SDL_Texture *imgGameOverText;
 extern SDL_Texture *imgLevel;
 extern SDL_Texture *imgWeaponText;
@@ -60,7 +61,8 @@ float fHorizontalAxis = 0;
 int iButtonFire1Down = FALSE;
 int iButtonFire2Down = FALSE;
 int iButtonFire3Down = FALSE;
-int iButtonOptionDown = FALSE;
+int iButtonLeftBumperDown = FALSE;
+int iButtonRightBumperDown = FALSE;
 
 struct Ship *ship;
 struct Node *listBullet;
@@ -111,8 +113,11 @@ void start_screen_game() {
 
     if (ship == NULL) {
         ship = malloc(sizeof(struct Ship));
+        init_ship(ship);
+    } else {
+        reset_ship(ship);
     }
-    init_ship(ship);
+
 
     if (stats == NULL) {
         stats = malloc(sizeof(struct Stats));
@@ -130,7 +135,7 @@ void start_screen_game() {
     printf("Spawn world %d, level %d\n", iCurrentWorld, iCurrentLevel);
     spawnLevelEnemies(iCurrentWorld, iCurrentLevel);
 
-    stats->iScore = 0;
+ //   stats->iScore = 0;
     updateDisplayText();
     updateBackgroundPattern(4);
     iWorldComplete = FALSE;
@@ -552,6 +557,12 @@ void draw_screen_game() {
         pos.x = (SCREEN_WIDTH - pos.w) / 2;
         pos.y = 300 + (fKeyPressDelay * UNIT_SIZE);
         SDL_RenderCopy(renderer, imgLevelCompleteText, NULL, &pos);
+        
+        
+        SDL_QueryTexture(imgGetWeaponText, NULL, NULL, &(pos.w), &(pos.h));
+        pos.x = (SCREEN_WIDTH - pos.w) / 2;
+        pos.y = 400 + (fKeyPressDelay * UNIT_SIZE);
+        SDL_RenderCopy(renderer, imgGetWeaponText, NULL, &pos);
     }
 
     //Draw game over text
@@ -794,6 +805,17 @@ void checkLevelComplete() {
         iCurrentLevel++;
         if (iCurrentLevel > iLevelCount) {
             iWorldComplete = TRUE;
+            ship->iWeaponsEnabled[iCurrentWorld + 1] = TRUE;
+            
+                char strText[32];
+                if (iCurrentWorld + 1 < NUM_WEAPONS - 1) {
+                    sprintf(strText, "You get %s", strWeaponNames[iCurrentWorld + 1]);
+                } else {
+                    sprintf(strText, "");
+                }
+                SDL_Color colorText = { 0, 0, 255};
+                generateTextTexture(&imgGetWeaponText, strText, colorText, fontDefault);
+            
             stats->iWorldCompleted[iCurrentWorld] = TRUE;
             stats->iWorldTime[iCurrentWorld] = timeElapsed;
             fKeyPressDelay = 5;
@@ -852,12 +874,19 @@ void handleInput_screen_game(int iType, int iKey) {
             }
         } else if (iKey == SDLK_m) {
             Mix_VolumeMusic(0);
+        } else if (iKey == SDLK_DELETE) {
+            if (iButtonLeftBumperDown == FALSE) {
+                selectWeaponDown_ship(ship);
+                updateDisplayText();
+                iButtonLeftBumperDown = TRUE;
+            }
         } else if (iKey == SDLK_TAB) {
-            if (iButtonOptionDown == FALSE) {
+            if (iButtonRightBumperDown == FALSE) {
                 selectWeaponUp_ship(ship);
                 updateDisplayText();
-                iButtonOptionDown = TRUE;
+                iButtonRightBumperDown = TRUE;
             }
+
         }
 
     }
@@ -887,7 +916,9 @@ void handleInput_screen_game(int iType, int iKey) {
         } else if (iKey == SDLK_c) {
             iButtonFire3Down = FALSE;
         } else if (iKey == SDLK_TAB) {
-            iButtonOptionDown = FALSE;
+            iButtonRightBumperDown = FALSE;
+        } else if (iKey == SDLK_DELETE) {
+            iButtonLeftBumperDown = FALSE;
         }
     }
 

@@ -105,6 +105,7 @@ SDL_Texture *imgBullet[NUM_WEAPONS];
 SDL_Texture *imgBulletEnemy;
 SDL_Texture *imgScoreText;
 SDL_Texture *imgLevelCompleteText;
+SDL_Texture *imgGetWeaponText;
 SDL_Texture *imgGameOverText;
 SDL_Texture *imgLevel;
 SDL_Texture *imgWeaponText;
